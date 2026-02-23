@@ -1,4 +1,4 @@
-const VERSION = 'v38_2_2';
+const VERSION = 'v38_2_3';
 const CACHE_NAME = 'suite-csubli-' + VERSION;
 
 const URLS_TO_CACHE = [
@@ -27,8 +27,21 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('message', event => {
-  if (event && event.data && event.data.type === 'SKIP_WAITING') {
+  const data = event && event.data ? event.data : null;
+  if (!data) return;
+
+  if (data.type === 'SKIP_WAITING') {
     self.skipWaiting();
+    return;
+  }
+
+  if (data.type === 'GET_VERSION') {
+    try {
+      // responder por MessageChannel si existe
+      if (event.ports && event.ports[0]) {
+        event.ports[0].postMessage({ type:'VERSION', version: VERSION });
+      }
+    } catch(e) {}
   }
 });
 
