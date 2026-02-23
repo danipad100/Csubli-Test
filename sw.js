@@ -1,4 +1,4 @@
-const VERSION = 'v38_2';
+const VERSION = 'v38_2_1';
 const CACHE_NAME = 'suite-csubli-' + VERSION;
 
 const URLS_TO_CACHE = [
@@ -11,7 +11,6 @@ const URLS_TO_CACHE = [
 ];
 
 self.addEventListener('install', event => {
-  self.skipWaiting(); // ensure new SW can activate ASAP
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(URLS_TO_CACHE))
   );
@@ -27,7 +26,6 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Allow page to trigger immediate activation if waiting
 self.addEventListener('message', event => {
   if (event && event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
@@ -38,12 +36,10 @@ self.addEventListener('fetch', event => {
   const request = event.request;
   if (request.method !== 'GET') return;
 
-  // Cache-first for same-origin navigations/assets
   event.respondWith(
     caches.match(request).then(cached => {
       if (cached) return cached;
       return fetch(request).then(resp => {
-        // Optionally cache same-origin GET responses
         try {
           const url = new URL(request.url);
           if (url.origin === self.location.origin) {
