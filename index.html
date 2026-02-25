@@ -6790,6 +6790,15 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
   function setStatus(t){ if(statusEl) statusEl.textContent = t; }
   function hasSW(){ return ('serviceWorker' in navigator); }
 
+  const PWA_VER = 'v38_2_3';
+  // Registro ÚNICO del Service Worker (con bust de versión) para evitar falsos positivos.
+  try{
+    window.addEventListener('load', function(){
+      if(hasSW()) navigator.serviceWorker.register('./sw.js?v='+encodeURIComponent(PWA_VER)).catch(function(){});
+    });
+  }catch(e){}
+
+
   let reloading = false;
   function listenControllerChange(){
     if(!hasSW()) return;
@@ -6815,7 +6824,26 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
     btnApply.style.display = show ? '' : 'none';
   }
 
-  async function checkUpdates(){
+  
+  async function getSWVersion(sw){
+    return new Promise(function(resolve){
+      try{
+        if(!sw) return resolve(null);
+        const ch = new MessageChannel();
+        const t = setTimeout(function(){ resolve(null); }, 800);
+        ch.port1.onmessage = function(ev){
+          clearTimeout(t);
+          const d = ev && ev.data ? ev.data : null;
+          if(d && d.type === 'VERSION') return resolve(d.version || null);
+          resolve(null);
+        };
+        sw.postMessage({ type:'GET_VERSION' }, [ch.port2]);
+      }catch(e){
+        resolve(null);
+      }
+    });
+  }
+async function checkUpdates(){
     showApply(false);
 
     if(!hasSW()){
@@ -6838,15 +6866,23 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
       setStatus('No se pudo buscar actualizaciones.');
       return;
     }
-
     // Si ya hay uno esperando
     if(reg.waiting){
+      // Confirmar que realmente es una versión distinta (evita falsos positivos)
+      try{
+        const vA = await getSWVersion(reg.active);
+        const vW = await getSWVersion(reg.waiting);
+        if(vA && vW && vA === vW){
+          setStatus('Ya estás en la última versión.');
+          showApply(false);
+          return;
+        }
+      }catch(e){}
       setStatus('Actualización disponible.');
       showApply(true);
       return;
     }
-
-    // Si está instalando, esperar estado
+// Si está instalando, esperar estado
     if(reg.installing){
       const w = reg.installing;
       w.addEventListener('statechange', function(){
@@ -6910,6 +6946,11 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
 
   btnCheck && btnCheck.addEventListener('click', checkUpdates);
   btnApply && btnApply.addEventListener('click', applyUpdate);
+  // Compat: expone helper para botones antiguos
+  window.SuitePWA = window.SuitePWA || {};
+  window.SuitePWA.checkUpdates = checkUpdates;
+  window.SuitePWA.applyUpdate = applyUpdate;
+
 
   // Si hay un SW esperando al cargar, mostrarlo
   (async function(){
@@ -6920,11 +6961,21 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
     }
     const reg = await getReg();
     if(reg && reg.waiting){
+      try{
+        const vA = await getSWVersion(reg.active);
+        const vW = await getSWVersion(reg.waiting);
+        if(vA && vW && vA === vW){
+          setStatus('Ya estás en la última versión.');
+          showApply(false);
+          return;
+        }
+      }catch(e){}
       setStatus('Actualización disponible.');
       showApply(true);
     }else{
       setStatus('—');
     }
+  })();
   })();
 })();
 </script>
@@ -13435,13 +13486,6 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 </script>
 <script>
-if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('./sw.js').catch(console.error);
-  });
-}
-</script>
-<script>
 // ===== Margen/Markup FORZADO — Todos los módulos (sub_v15_, vin_, eti_, emp_, dtf_) =====
 (function(){
   function q(id){ return document.getElementById(id); }
@@ -18063,59 +18107,6 @@ body.dark #view-vinil #vinil_summary .tot .result{
   }
 })();
 </script>
-
-<script>
-/* === PWA SW register (version-bust) + update button support === */
-(function(){
-  if (!('serviceWorker' in navigator)) return;
-  var VER = 'v38_2';
-  var regRef = null;
-
-  function postSkipWaiting(){
-    try{
-      if (regRef && regRef.waiting){
-        regRef.waiting.postMessage({ type:'SKIP_WAITING' });
-      }
-    }catch(e){}
-  }
-
-  function onControllerChange(){
-    // Reload once new SW takes control
-    window.location.reload();
-  }
-
-  navigator.serviceWorker.addEventListener('controllerchange', onControllerChange);
-
-  window.SuitePWA = window.SuitePWA || {};
-  window.SuitePWA.checkUpdates = function(){
-    if (!regRef) return;
-    regRef.update().catch(function(){});
-    // If there's a waiting worker, activate it
-    if (regRef.waiting){
-      postSkipWaiting();
-      return;
-    }
-    // If a new one gets installed, it will become waiting
-    regRef.addEventListener('updatefound', function(){
-      var nw = regRef.installing;
-      if (!nw) return;
-      nw.addEventListener('statechange', function(){
-        if (nw.state === 'installed' && navigator.serviceWorker.controller){
-          // New content available
-          postSkipWaiting();
-        }
-      });
-    }, { once:true });
-  };
-
-  navigator.serviceWorker.register('sw.js?v='+encodeURIComponent(VER)).then(function(reg){
-    regRef = reg;
-    // expose registration for debugging if needed
-    window.SuitePWA._reg = reg;
-  }).catch(function(){});
-})();
-</script>
-
 
 <script>
 /* === PWA: bind update buttons (delegated) === */
