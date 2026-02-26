@@ -1679,7 +1679,7 @@ body.dark{ background: var(--bg) !important; }
 
 </style>
 </head>
-<body data-app-version="V38.2">
+<body data-app-version="V38.4">
 <div class="app">
 <header class="app-header"><div class="menu-wrapper" style="display:flex;align-items:center;gap:6px;"><button aria-expanded="false" aria-label="Abrir menú" class="burger" id="btnMenu" tabindex="0"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" style="display:block" viewbox="0 0 24 24" width="24"><line stroke-width="2.2" x1="3" x2="21" y1="7" y2="7"></line><line stroke-width="2.2" x1="3" x2="21" y1="12" y2="12"></line><line stroke-width="2.2" x1="3" x2="21" y1="17" y2="17"></line></svg></button><span class="menu-label">Menú</span></div><h1>Suite de Calculadoras</h1>
 <div class="header-right" style="display:flex;gap:8px;align-items:center">
@@ -6790,7 +6790,7 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
   function setStatus(t){ if(statusEl) statusEl.textContent = t; }
   function hasSW(){ return ('serviceWorker' in navigator); }
 
-  const PWA_VER = 'v38_2_3';
+  const PWA_VER = 'v38_4';
   // Registro ÚNICO del Service Worker (con bust de versión) para evitar falsos positivos.
   try{
     window.addEventListener('load', function(){
@@ -15993,6 +15993,8 @@ function refreshLoader(){
   }
 
   function reset(){
+    // V38_4: Reset debe dejar OFF Aplicar Ganancia / Aplicar Impuesto (no forzar ON)
+
     nameI.value = '';
 	    dirWrap.innerHTML = ''; depWrap.innerHTML='';
 	    if (areaWrap) areaWrap.innerHTML = '';
@@ -16005,7 +16007,7 @@ function refreshLoader(){
     indMensual.value='0,00'; indUnits.value='100';
     moOn.checked=false; const _moCfg=q('#pers_mo_cfg', view); if(_moCfg){ _moCfg.style.display='none'; _moCfg.dataset.forcedOpen=''; }
     moSueldo.value='0,00'; moHorasMes.value='160'; moSetup.value='0'; moRun.value='0'; moUnits.value='1';
-    gMode.value='Margen'; gOn.checked=true; gPct.value='30'; iOn.checked=true; iPct.value='16';
+    gMode.value='Margen'; gOn.checked=false; gPct.value='30'; iOn.checked=false; iPct.value='16';
     update();
   }
 
@@ -18121,6 +18123,115 @@ body.dark #view-vinil #vinil_summary .tot .result{
     }
   }
   document.addEventListener('click', handler, true);
+})();
+</script>
+
+
+<style id="copy-icon-buttons">
+/* === Copy Icon Buttons === */
+.icon-copy-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:26px;
+  height:26px;
+  margin-left:6px;
+  border-radius:9px;
+  border:1px solid rgba(0,0,0,.12);
+  background:transparent;
+  cursor:pointer;
+  padding:0;
+  /* FIX: en modo claro el icono debe verse gris/negro */
+  color:#222;
+}
+.icon-copy-btn svg{width:17px;height:17px;stroke:currentColor;fill:none}
+
+/* hover/active */
+.icon-copy-btn:hover{background:rgba(0,0,0,.04)}
+.icon-copy-btn:active{transform:scale(.96)}
+
+/* FIX: en modo oscuro el icono debe verse blanco */
+html[data-theme="dark"] .icon-copy-btn,
+body.dark .icon-copy-btn{
+  color:#fff;
+  border-color:rgba(255,255,255,.18);
+}
+html[data-theme="dark"] .icon-copy-btn:hover,
+body.dark .icon-copy-btn:hover{
+  background:rgba(255,255,255,.06);
+}
+
+@media print{
+  .icon-copy-btn{display:none!important}
+}
+</style>
+
+
+<script>
+(function(){
+  const SVG = `
+<svg viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+</svg>`;
+
+  const VALID = '.result, .tot, #resumen_general_total, [id*="venta"]';
+  const BLOCK = '.costos, .depreciacion, .material, .mano-obra, .directos';
+
+  function clean(v){
+    return (v||'').replace(/\s+/g,' ').trim();
+  }
+
+  function blocked(el){
+    return el.closest(BLOCK);
+  }
+
+  function hasBtn(el){
+    return el.parentElement?.querySelector('.icon-copy-btn');
+  }
+
+  function makeBtn(getText){
+    const b = document.createElement('button');
+    b.type='button';
+    b.className='icon-copy-btn';
+    b.innerHTML = SVG;
+    b.addEventListener('click', e=>{
+      e.preventDefault();
+      const val = clean(getText());
+      if(!val) return;
+      navigator.clipboard.writeText(val).then(()=>{
+        b.style.opacity='0.4';
+        setTimeout(()=>b.style.opacity='1',300);
+      });
+    });
+    return b;
+  }
+
+  function apply(){
+    document.querySelectorAll(VALID).forEach(el=>{
+      if(blocked(el)) return;
+      if(hasBtn(el)) return;
+
+      let target = el;
+
+      const wrap = document.createElement('span');
+      wrap.style.display='inline-flex';
+      wrap.style.alignItems='center';
+      wrap.style.gap='4px';
+
+      target.replaceWith(wrap);
+      wrap.appendChild(target);
+
+      const btn = makeBtn(()=>target.textContent);
+      wrap.appendChild(btn);
+    });
+  }
+
+  apply();
+
+  const obs = new MutationObserver(()=>apply());
+  obs.observe(document.body,{subtree:true,childList:true,characterData:true});
+
 })();
 </script>
 
