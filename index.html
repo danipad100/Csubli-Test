@@ -452,6 +452,18 @@ header{ display:flex; align-items:center; gap:8px; }
 
 .menu-wrapper .menu-label{margin-left:2px !important;}
 
+
+/* --- Responsive spacing for PWA action buttons (avoid mis-taps on mobile) --- */
+@media (max-width: 520px){
+  .pwa-actions{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px !important;
+  }
+  .pwa-actions #pwa_update_status{
+    margin-left: 0 !important;
+  }
+}
 </style>
 <style>input,select,textarea{font-size:16px!important}html,body{min-height:100vh;height:-webkit-fill-available}
 /* Menu label next to burger */
@@ -1429,9 +1441,10 @@ header{ display:flex; align-items:center; gap:8px; }
 </style>
 <link rel="manifest" href="manifest.json"/>
 <meta content="#ff7aa2" name="theme-color"/>
+<meta name="apple-mobile-web-app-title" content="Suite Csubli"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="default" name="apple-mobile-web-app-status-bar-style"/>
-<link href="icon-180.png" rel="apple-touch-icon"/>
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png"/>
 <link href="icon-192.png" rel="icon" sizes="192x192" type="image/png"/>
 <link href="icon-512.png" rel="icon" sizes="512x512" type="image/png"/>
 <style>input,select,textarea{font-size:16px!important}html,body{min-height:100vh;height:-webkit-fill-available}</style>
@@ -1650,6 +1663,28 @@ body.dark #btn_reset_general:hover{
 </style>
 
 
+
+<style id="pers-mo-responsive">
+/* Producto personalizable — Mano de obra: responsive (sin cambiar tamaño de botones Configurar / Agregar línea) */
+#view-personalizado .pers-mo-row{
+  flex-wrap: wrap !important;
+  overflow-x: visible !important;
+  align-items: flex-end !important;
+}
+#view-personalizado .pers-mo-row > div{
+  flex: 1 1 160px !important;
+  min-width: 160px !important;
+}
+#view-personalizado .pers-mo-row .pers-mo-del{
+  white-space: nowrap;
+}
+@media (max-width: 420px){
+  #view-personalizado .pers-mo-row > div{
+    flex-basis: 140px !important;
+    min-width: 140px !important;
+  }
+}
+</style>
 <style id="boot-hide-app">
   /* Evitar parpadeo al restaurar última vista: ocultar app hasta aplicar vista inicial */
   html.booting .app{ visibility:hidden; }
@@ -1679,7 +1714,7 @@ body.dark{ background: var(--bg) !important; }
 
 </style>
 </head>
-<body data-app-version="V38.8">
+<body data-app-version="V38.9">
 <div class="app">
 <header class="app-header"><div class="menu-wrapper" style="display:flex;align-items:center;gap:6px;"><button aria-expanded="false" aria-label="Abrir menú" class="burger" id="btnMenu" tabindex="0"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" style="display:block" viewbox="0 0 24 24" width="24"><line stroke-width="2.2" x1="3" x2="21" y1="7" y2="7"></line><line stroke-width="2.2" x1="3" x2="21" y1="12" y2="12"></line><line stroke-width="2.2" x1="3" x2="21" y1="17" y2="17"></line></svg></button><span class="menu-label">Menú</span></div><h1>Suite de Calculadoras</h1>
 <div class="header-right" style="display:flex;gap:8px;align-items:center">
@@ -3864,7 +3899,7 @@ body.dark{ background: var(--bg) !important; }
 <h4>Actualizaciones (PWA)</h4>
 <p style="margin:6px 0 0">Si tienes la Suite instalada como app (PWA), puedes buscar y aplicar actualizaciones desde aquí.</p>
 
-<div class="row" style="margin-top:10px;gap:8px;align-items:center;flex-wrap:wrap">
+<div class="row pwa-actions" style="margin-top:10px;gap:8px;align-items:center;flex-wrap:wrap">
   <button class="btn neutral" id="btn_pwa_check_updates" type="button">Buscar actualizaciones</button>
   <button class="btn ok" id="btn_pwa_apply_update" type="button" style="display:none">Actualizar ahora</button>
   <button class="btn" id="btn_restore_factory_defaults" type="button">Restablecer valores predeterminados</button>
@@ -6801,7 +6836,7 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
   function setStatus(t){ if(statusEl) statusEl.textContent = t; }
   function hasSW(){ return ('serviceWorker' in navigator); }
 
-  const PWA_VER = 'v38_5';
+  const PWA_VER = 'v38_9';
   // Registro ÚNICO del Service Worker (con bust de versión) para evitar falsos positivos.
   try{
     window.addEventListener('load', function(){
@@ -19029,25 +19064,6 @@ body.dark #view-dtf .dtf-rot90-toggle{color:#cbd5e1}
   ensureAll();
   setTimeout(ensureAll, 150);
   setTimeout(ensureAll, 600);
-})();
-</script>
-
-
-<script>
-(function(){
-  if (!('serviceWorker' in navigator)) return;
-  var SW_URL = './sw.js?v=v38_8';
-  window.addEventListener('load', function(){
-    navigator.serviceWorker.getRegistration().then(function(reg){
-      try {
-        var same = reg && reg.active && reg.active.scriptURL && reg.active.scriptURL.indexOf('sw.js') !== -1 && reg.active.scriptURL.indexOf('v38_8') !== -1;
-        if (same) return;
-      } catch(e){}
-      navigator.serviceWorker.register(SW_URL).catch(function(){});
-    }).catch(function(){ 
-      navigator.serviceWorker.register(SW_URL).catch(function(){});
-    });
-  });
 })();
 </script>
 
