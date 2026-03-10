@@ -1714,7 +1714,7 @@ body.dark{ background: var(--bg) !important; }
 
 </style>
 </head>
-<body data-app-version="V38.9">
+<body data-app-version="V38.10">
 <div class="app">
 <header class="app-header"><div class="menu-wrapper" style="display:flex;align-items:center;gap:6px;"><button aria-expanded="false" aria-label="Abrir menú" class="burger" id="btnMenu" tabindex="0"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" style="display:block" viewbox="0 0 24 24" width="24"><line stroke-width="2.2" x1="3" x2="21" y1="7" y2="7"></line><line stroke-width="2.2" x1="3" x2="21" y1="12" y2="12"></line><line stroke-width="2.2" x1="3" x2="21" y1="17" y2="17"></line></svg></button><span class="menu-label">Menú</span></div><h1>Suite de Calculadoras</h1>
 <div class="header-right" style="display:flex;gap:8px;align-items:center">
@@ -3441,7 +3441,7 @@ body.dark{ background: var(--bg) !important; }
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
 <div class="pill">Material a solicitar: <span class="result" id="dtf_mat_solicitar">—</span></div>
 <div class="pill">Costo DTF por unidad: <span class="result" id="dtf_costo_ud_dtf">$0.00</span></div>
-<div class="pill">Costo total por camiseta (estampada): <span class="result" id="dtf_costo_por_camiseta">$0.00</span></div>
+<div class="pill">Precio de Venta por camiseta: <span class="result" id="dtf_costo_por_camiseta">$0.00</span></div>
 </div>
 <div class="sep"></div>
 <div class="tot">Precio de Venta: <span class="result" id="dtf_total">$0.00</span></div>
@@ -4780,7 +4780,7 @@ sum_update();
 
     $("dtf_total_directos").textContent = fmt(directos);
     $("dtf_total_extras").textContent   = fmt(extras);
-    // --- Cálculos unitarios y costo por camiseta ---
+    // --- Cálculos unitarios y precio de venta por camiseta ---
     try{
       const cont = document.getElementById("dtf_bloques");
       let N = 0;
@@ -4799,7 +4799,9 @@ sum_update();
       const extras_unit = N>0 ? ((envio+dis+otros)/N) : 0;
       const perDTF = N>0 ? (directos/N) : 0;
       const costo_ud_dtf = perDTF + extras_unit + pla;
-      const costo_camiseta = prenda_ud + dep_ud + costo_ud_dtf;
+      const camisetasOut = ((document.getElementById("dtf_camisetas")?.textContent || "0")+"").replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.');
+      const camisetas = parseFloat(camisetasOut) || 0;
+      const costo_camiseta = camisetas > 0 ? (total/camisetas) : 0;
       const el1 = document.getElementById("dtf_costo_ud_dtf");
       const el2 = document.getElementById("dtf_costo_por_camiseta");
       el1 && (el1.textContent = fmt(costo_ud_dtf));
@@ -7407,6 +7409,9 @@ async function checkUpdates(){
     const sinGI = dtf_total + prenda_total + dep_total + extras_total;
     const subtotal = sinGI;
 
+    const camisetasOut = ((($('#dtf_camisetas')?.textContent) || '0')+'').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',', '.');
+    const camisetas = parseFloat(camisetasOut) || 0;
+
     const gPct = ($('#dtf_chk_ganancia')?.checked ? parseEU($('#dtf_ganancia')?.value) : 0);
     const iPct = ($('#dtf_chk_impuestos')?.checked ? parseEU($('#dtf_impuestos')?.value) : 0);
     const gVal = subtotal * (gPct/100);
@@ -7425,7 +7430,7 @@ async function checkUpdates(){
     set('dtf_impuestos_val', toUSD(iVal));
     set('dtf_total', toUSD(total));
     set('dtf_costo_ud_dtf', toUSD(unidades ? dtf_total/unidades : 0));
-    set('dtf_costo_por_camiseta', toUSD(unidades ? (sinGI/unidades) : 0));
+    set('dtf_costo_por_camiseta', toUSD(camisetas ? (total/camisetas) : 0));
 
     // material solicitar aprox: usar preview packing
     const {panels, label} = generatePreview(true);
@@ -7918,10 +7923,15 @@ let total_dep=0, dep_ud=0;
     ui.spanIVal.textContent = fmtUSD(valI);
     ui.spanTotal.textContent= fmtUSD(total);
 
-    // --- costo por unidad (DTF material y total camiseta)
+    // --- costo por unidad (DTF material y precio de venta por camiseta)
     const uds = Math.max(1, ds.reduce((a,b)=>a+b.n,0));
+    const porPrenda = Math.max(1, parseEU(ui.prDis?.value || '1'));
+    const camisetas = uds / porPrenda;
+    if(ui.spanUnid) ui.spanUnid.textContent = String(uds);
+    const outCamisetas = document.getElementById('dtf_camisetas');
+    if(outCamisetas) outCamisetas.textContent = String(camisetas % 1 === 0 ? camisetas : Number(camisetas.toFixed(2)).toString().replace('.', ','));
     ui.spanCud.textContent = fmtUSD(costo_material / uds);
-    ui.spanCam.textContent = fmtUSD(subtotal_no_gi / uds);
+    ui.spanCam.textContent = fmtUSD(camisetas > 0 ? (total / camisetas) : 0);
 
     // --- prorrateo por área (para cada diseño)
     const SEP = sep;
@@ -10840,7 +10850,7 @@ sum_update();
 
     $("dtf_total_directos").textContent = fmt(directos);
     $("dtf_total_extras").textContent   = fmt(extras);
-    // --- Cálculos unitarios y costo por camiseta ---
+    // --- Cálculos unitarios y precio de venta por camiseta ---
     try{
       const cont = document.getElementById("dtf_bloques");
       let N = 0;
@@ -10859,7 +10869,9 @@ sum_update();
       const extras_unit = N>0 ? ((envio+dis+otros)/N) : 0;
       const perDTF = N>0 ? (directos/N) : 0;
       const costo_ud_dtf = perDTF + extras_unit + pla;
-      const costo_camiseta = prenda_ud + dep_ud + costo_ud_dtf;
+      const camisetasOut = ((document.getElementById("dtf_camisetas")?.textContent || "0")+"").replace(/[^\d,.-]/g, '').replace(/\./g, '').replace(',', '.');
+      const camisetas = parseFloat(camisetasOut) || 0;
+      const costo_camiseta = camisetas > 0 ? (total/camisetas) : 0;
       const el1 = document.getElementById("dtf_costo_ud_dtf");
       const el2 = document.getElementById("dtf_costo_por_camiseta");
       el1 && (el1.textContent = fmt(costo_ud_dtf));
@@ -12109,6 +12121,9 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
     const sinGI = dtf_total + prenda_total + dep_total + extras_total;
     const subtotal = sinGI;
 
+    const camisetasOut = ((($('#dtf_camisetas')?.textContent) || '0')+'').replace(/[^\d,.-]/g,'').replace(/\./g,'').replace(',', '.');
+    const camisetas = parseFloat(camisetasOut) || 0;
+
     const gPct = ($('#dtf_chk_ganancia')?.checked ? parseEU($('#dtf_ganancia')?.value) : 0);
     const iPct = ($('#dtf_chk_impuestos')?.checked ? parseEU($('#dtf_impuestos')?.value) : 0);
     const gVal = subtotal * (gPct/100);
@@ -12127,7 +12142,7 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
     set('dtf_impuestos_val', toUSD(iVal));
     set('dtf_total', toUSD(total));
     set('dtf_costo_ud_dtf', toUSD(unidades ? dtf_total/unidades : 0));
-    set('dtf_costo_por_camiseta', toUSD(unidades ? (sinGI/unidades) : 0));
+    set('dtf_costo_por_camiseta', toUSD(camisetas ? (total/camisetas) : 0));
 
     // material solicitar aprox: usar preview packing
     const {panels, label} = generatePreview(true);
