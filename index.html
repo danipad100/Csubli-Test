@@ -1714,7 +1714,7 @@ body.dark{ background: var(--bg) !important; }
 
 </style>
 </head>
-<body data-app-version="V38.10">
+<body data-app-version="V38.11">
 <div class="app">
 <header class="app-header"><div class="menu-wrapper" style="display:flex;align-items:center;gap:6px;"><button aria-expanded="false" aria-label="Abrir menú" class="burger" id="btnMenu" tabindex="0"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" style="display:block" viewbox="0 0 24 24" width="24"><line stroke-width="2.2" x1="3" x2="21" y1="7" y2="7"></line><line stroke-width="2.2" x1="3" x2="21" y1="12" y2="12"></line><line stroke-width="2.2" x1="3" x2="21" y1="17" y2="17"></line></svg></button><span class="menu-label">Menú</span></div><h1>Suite de Calculadoras</h1>
 <div class="header-right" style="display:flex;gap:8px;align-items:center">
@@ -7926,12 +7926,17 @@ let total_dep=0, dep_ud=0;
     // --- costo por unidad (DTF material y precio de venta por camiseta)
     const uds = Math.max(1, ds.reduce((a,b)=>a+b.n,0));
     const porPrenda = Math.max(1, parseEU(ui.prDis?.value || '1'));
-    const camisetas = uds / porPrenda;
+    const prendaActiva = !!ui.prOn?.checked;
+    const camisetas = prendaActiva ? (uds / porPrenda) : 0;
     if(ui.spanUnid) ui.spanUnid.textContent = String(uds);
     const outCamisetas = document.getElementById('dtf_camisetas');
-    if(outCamisetas) outCamisetas.textContent = String(camisetas % 1 === 0 ? camisetas : Number(camisetas.toFixed(2)).toString().replace('.', ','));
-    ui.spanCud.textContent = fmtUSD(costo_material / uds);
-    ui.spanCam.textContent = fmtUSD(camisetas > 0 ? (total / camisetas) : 0);
+    if(outCamisetas){
+      outCamisetas.textContent = prendaActiva
+        ? String(camisetas % 1 === 0 ? camisetas : Number(camisetas.toFixed(2)).toString().replace('.', ','))
+        : '0';
+    }
+    ui.spanCud.textContent = fmtUSD(prendaActiva ? (costo_material / uds) : 0);
+    ui.spanCam.textContent = fmtUSD(prendaActiva && camisetas > 0 ? (total / camisetas) : 0);
 
     // --- prorrateo por área (para cada diseño)
     const SEP = sep;
@@ -18914,8 +18919,9 @@ body.dark .icon-copy-btn:hover{
 
   function syncResumen(){
     const disenos = getDesignBlocksTotal();
+    const prendaActiva = !!($('dtf_prenda_on') && $('dtf_prenda_on').checked);
     const porPrenda = Math.max(1, parseEUValue($('dtf_prenda_disenos')?.value || '1'));
-    const camisetas = disenos / porPrenda;
+    const camisetas = prendaActiva ? (disenos / porPrenda) : 0;
 
     const outDis = $('dtf_unidades');
     const outCam = $('dtf_camisetas');
@@ -18938,6 +18944,8 @@ body.dark .icon-copy-btn:hover{
     root.addEventListener('input', function(ev){
       if(!ev.target) return;
       if(
+        ev.target.id === 'dtf_prenda_on' ||
+        ev.target.id === 'dtf_prenda_on' ||
         ev.target.id === 'dtf_prenda_disenos' ||
         ev.target.id === 'dtf_n' ||
         /^dtf_n/.test(ev.target.id || '') ||
@@ -18949,6 +18957,7 @@ body.dark .icon-copy-btn:hover{
     root.addEventListener('change', function(ev){
       if(!ev.target) return;
       if(
+        ev.target.id === 'dtf_prenda_on' ||
         ev.target.id === 'dtf_prenda_disenos' ||
         ev.target.id === 'dtf_n' ||
         /^dtf_n/.test(ev.target.id || '') ||
