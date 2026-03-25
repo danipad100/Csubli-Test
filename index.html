@@ -1690,6 +1690,182 @@ body.dark #btn_reset_general:hover{
   html.booting .app{ visibility:hidden; }
 </style>
 <script>
+/* ============================================================
+   SUITE CURRENCY — Sistema global de divisa
+   ============================================================ */
+(function(){
+  var STORAGE_KEY = 'suite_currency_symbol';
+  var DEFAULT_SYM = '$';
+
+  window.SuiteCurrencies = [
+    { label: 'Dólar (USD)',               symbol: '$'    },
+    { label: 'Euro (EUR)',                 symbol: '€'    },
+    { label: 'Libra (GBP)',               symbol: '£'    },
+    { label: 'Bolívar (VES)',             symbol: 'Bs.'  },
+    { label: 'Peso colombiano (COP)',     symbol: 'COP$' },
+    { label: 'Peso mexicano (MXN)',       symbol: 'MX$'  },
+    { label: 'Peso argentino (ARS)',      symbol: 'AR$'  },
+    { label: 'Peso chileno (CLP)',        symbol: 'CL$'  },
+    { label: 'Sol peruano (PEN)',         symbol: 'S/.'  },
+    { label: 'Real brasileño (BRL)',     symbol: 'R$'   },
+    { label: 'Peso uruguayo (UYU)',       symbol: '$U'   },
+    { label: 'Boliviano (BOB)',           symbol: 'Bs'   },
+    { label: 'Guaraní (PYG)',             symbol: '₲'   },
+    { label: 'Colón costarricense (CRC)', symbol: '₡'   },
+  ];
+
+  var _sym = DEFAULT_SYM;
+  try { _sym = localStorage.getItem(STORAGE_KEY) || DEFAULT_SYM; } catch(e){}
+
+  window.Suite = window.Suite || {};
+  window.Suite.currency = { symbol: _sym };
+
+  /* ---- fmtUSD ---- */
+  function buildFmtUSD(sym){
+    return function(n){
+      if (!isFinite(+n)) n = 0;
+      var s = Number(n).toFixed(2).split('.');
+      var i = s[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+      return sym + ' ' + i + ',' + s[1];
+    };
+  }
+
+  function applySymbol(sym){
+    _sym = sym;
+    window.Suite.currency.symbol = sym;
+    window.fmtUSD = buildFmtUSD(sym);
+    window.Suite.fmtUSD = window.fmtUSD;
+    try { localStorage.setItem(STORAGE_KEY, sym); } catch(e){}
+  }
+
+  /* ---- Regex para labels: reemplaza "($)" solamente ----
+     Se construye una sola vez por llamada, no acumula. */
+  function replaceParens(text, newSym){
+    // Construir alternancia de todos los símbolos escapados
+    var parts = window.SuiteCurrencies
+      .map(function(c){ return c.symbol.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); })
+      .sort(function(a,b){ return b.length - a.length; });
+    var re = new RegExp('\\((?:' + parts.join('|') + ')\\)', 'g');
+    return text.replace(re, '(' + newSym + ')');
+  }
+
+  /* ---- Elementos de UI de divisa — excluir del barrido ---- */
+  /* Excluir del barrido: UI de divisa y el conversor de unidades */
+  var EXCLUDE_IDS = ['suite_currency_select', 'suite_currency_preview', 'view-conversor'];
+  function isUINode(node){
+    var p = (node.nodeType === 1) ? node : node.parentNode;
+    while(p){ if (p.id && EXCLUDE_IDS.indexOf(p.id) !== -1) return true; p = p.parentNode; }
+    return false;
+  }
+
+  /* ---- sweepDOM: estrategia sin acumulación ----
+     Para inputs readonly/.ud/.result:
+       1) Primera vez: guardar el valor numérico puro en data-currency-num
+       2) Siguientes veces: reconstruir desde data-currency-num
+     Para nodos de texto (labels):
+       Solo reemplazar el patrón "($)" — no tocar números */
+  function sweepDOM(newSym){
+    var root = document.querySelector('.app') || document.body;
+
+    /* 1. Labels y nodos de texto: solo patrón ($) */
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: function(node){
+        if (isUINode(node)) return NodeFilter.FILTER_REJECT;
+        var p = node.parentNode;
+        if (p && (p.tagName === 'INPUT' || p.tagName === 'TEXTAREA') && !p.readOnly){
+          return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    }, false);
+    var n;
+    while((n = walker.nextNode())){
+      var orig = n.nodeValue;
+      var rep  = replaceParens(orig, newSym);
+      if (rep !== orig) n.nodeValue = rep;
+    }
+
+    /* 2. Todos los elementos de resultado: inputs y spans/divs con clase result.
+          Estrategia: extraer el número puro en cada barrido usando stripRe,
+          sin caché — así siempre funciona sin importar cuántos cambios se hagan. */
+    var stripRe = buildStripRe();
+
+    function applyToEl(el, getText, setText){
+      if (isUINode(el)) return;
+      var raw = getText(el).trim();
+      if (!raw || raw === '—') return;
+      var numStr = raw.replace(stripRe, '').trim();
+      /* Validar que lo que queda parece un número EU (dígito al inicio) */
+      if (!numStr || !/^-?[\d]/.test(numStr)) return;
+      setText(el, newSym + ' ' + numStr);
+    }
+
+    /* inputs readonly y .ud */
+    root.querySelectorAll('input[readonly], input.ud').forEach(function(el){
+      applyToEl(el,
+        function(e){ return e.value; },
+        function(e, v){ e.value = v; }
+      );
+    });
+
+    /* span/div/b.result (totales, indirectos, resumen) */
+    root.querySelectorAll('span.result, div.result, b.result, strong.result, input.result').forEach(function(el){
+      if (el.tagName === 'INPUT'){
+        applyToEl(el, function(e){ return e.value; }, function(e,v){ e.value = v; });
+      } else {
+        applyToEl(el, function(e){ return e.textContent; }, function(e,v){ e.textContent = v; });
+      }
+    });
+
+    /* divs de costo por color en Vinil: "Costo: $ X,XX" */
+    root.querySelectorAll('div[id^="resultado"]').forEach(function(el){
+      if (isUINode(el)) return;
+      var raw = el.textContent.trim();
+      if (!raw) return;
+      var colonIdx = raw.indexOf(':');
+      if (colonIdx === -1) return;
+      var prefix  = raw.substring(0, colonIdx + 1) + ' ';
+      var valPart = raw.substring(colonIdx + 1).trim();
+      var numStr  = valPart.replace(stripRe, '').trim();
+      if (!numStr || !/^-?[\d]/.test(numStr)) return;
+      el.textContent = prefix + newSym + ' ' + numStr;
+    });
+  }
+
+  /* Regex que quita cualquier símbolo conocido del inicio de un string */
+  function buildStripRe(){
+    var parts = window.SuiteCurrencies
+      .map(function(c){ return c.symbol.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); })
+      .sort(function(a,b){ return b.length - a.length; });
+    return new RegExp('^\\s*(?:' + parts.join('|') + ')\\s*');
+  }
+
+  /* ---- API pública ---- */
+  window.Suite.currency.set = function(newSym){
+    applySymbol(newSym);
+    sweepDOM(newSym);
+    var sel = document.getElementById('suite_currency_select');
+    if (sel && sel.value !== newSym) sel.value = newSym;
+    /* Segundo pase tras recálculos automáticos */
+    setTimeout(function(){ sweepDOM(newSym); }, 350);
+  };
+
+  /* ---- Arrancar ---- */
+  applySymbol(_sym);
+  function onReady(){
+    if (_sym !== DEFAULT_SYM){
+      sweepDOM(_sym);
+      setTimeout(function(){ sweepDOM(_sym); }, 400);
+    }
+  }
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', onReady);
+  } else {
+    onReady();
+  }
+})();
+</script>
+<script>
   (function(){
     try{
       document.documentElement.classList.add('booting');
@@ -1714,7 +1890,7 @@ body.dark{ background: var(--bg) !important; }
 
 </style>
 </head>
-<body data-app-version="V38.11">
+<body data-app-version="V38.15">
 <div class="app">
 <header class="app-header"><div class="menu-wrapper" style="display:flex;align-items:center;gap:6px;"><button aria-expanded="false" aria-label="Abrir menú" class="burger" id="btnMenu" tabindex="0"><svg fill="none" height="24" stroke="currentColor" stroke-linecap="round" style="display:block" viewbox="0 0 24 24" width="24"><line stroke-width="2.2" x1="3" x2="21" y1="7" y2="7"></line><line stroke-width="2.2" x1="3" x2="21" y1="12" y2="12"></line><line stroke-width="2.2" x1="3" x2="21" y1="17" y2="17"></line></svg></button><span class="menu-label">Menú</span></div><h1>Suite de Calculadoras</h1>
 <div class="header-right" style="display:flex;gap:8px;align-items:center">
@@ -1838,6 +2014,18 @@ body.dark{ background: var(--bg) !important; }
 <div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="vin_d_tinta_ud" readonly="" type="text"/></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="vin_d_tinta_qty_use" min="0" step="1" type="number" value="1"/></div>
 <div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="vin_d_tinta_util" readonly="" type="text" value="$ 0,00"/></div>
+</div>
+<div class="row" style="gap:8px;align-items:center;margin-top:10px">
+<label class="chk-label" style="display:flex;align-items:center;gap:8px">
+<input id="vin_d_pelusas_on" type="checkbox"/> Quita pelusas
+  </label>
+</div>
+<div class="row">
+<div style="flex:1;min-width:110px"><label>Cant.</label><input id="vin_d_pelusas_cant" min="0" step="1" type="number" value="50"/></div>
+<div style="flex:1;min-width:110px"><label>Precio ($)</label><input id="vin_d_pelusas_precio" step="0.01" type="text" value="3,00"/></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="vin_d_pelusas_ud" readonly="" type="text"/></div>
+<div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="vin_d_pelusas_qty_use" min="0" step="1" type="number" value="1"/></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="vin_d_pelusas_util" readonly="" type="text" value="$ 0,00"/></div>
 </div>
 </div>
 
@@ -2005,20 +2193,20 @@ body.dark{ background: var(--bg) !important; }
 <h3 style="margin:0">Resumen de Vinil</h3>
 </div>
 <div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
-<div class="pill">Directos: <span class="result" id="vinil_pro_directos">$0.00</span></div>
-<div class="pill">Depreciación: <span class="result" id="vinil_pro_dep">$0.00</span></div>
-<div class="pill">Adicionales (aj.): <span class="result" id="vinil_pro_adic">$0.00</span></div>
+<div class="pill">Directos: <span class="result" id="vinil_pro_directos">$ 0,00</span></div>
+<div class="pill">Depreciación: <span class="result" id="vinil_pro_dep">$ 0,00</span></div>
+<div class="pill">Adicionales (aj.): <span class="result" id="vinil_pro_adic">$ 0,00</span></div>
 <div class="pill">Merma: <span class="result" id="vinil_pro_merma">0%</span></div>
 </div>
 <div class="sep"></div>
-<div class="tot">Total Vinil: <span class="result" id="vinil_pro_total">$0.00</span></div>
+<div class="tot">Total Vinil: <span class="result" id="vinil_pro_total">$ 0,00</span></div>
 </div>
 
 
 <div class="card md-12 indA-card" id="vin_ind_card"><h4>Costos indirectos</h4><div class="row" style="gap:10px;align-items:center;flex-wrap:wrap"><label style="display:flex;align-items:center;gap:8px;margin:0"><input id="vin_ind_on" type="checkbox"/> Activar</label><div class="pill indA-pill">Costo Ud. (indirectos): <span class="result" id="vin_ind_ud">$ 0,00</span></div><div style="margin-left:auto"><button class="btn" id="vin_ind_cfg_btn">Configurar</button></div></div><div class="sep"></div><div id="vin_ind_cfg" style="display:none"><div class="row" style="gap:14px;flex-wrap:wrap"><div style="min-width:160px;flex:1"><label>Alquiler (mensual)</label><input id="vin_ind_alquiler" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Internet (mensual)</label><input id="vin_ind_internet" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Suscripciones (mensual)</label><input id="vin_ind_suscripciones" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Transporte (mensual)</label><input id="vin_ind_transporte" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Electricidad (mensual)</label><input id="vin_ind_electricidad" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Publicidad (mensual)</label><input id="vin_ind_publicidad" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Otros (mensual)</label><input id="vin_ind_otros" type="text" value="0,00"/></div><div style="min-width:120px"><label>Unidades/mes</label><input class="indA-small" id="vin_ind_units" min="1" step="1" type="number" value="100"/></div></div></div></div><div class="card md-12" id="vinil_gi_card">
 <h4 style="margin:0 0 10px">Ganancia e Impuestos</h4>
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
-<div class="pill">Total sin G/I: <span class="result" id="vin_subtotal_no_gi">$0.00</span></div>
+<div class="pill">Total sin G/I: <span class="result" id="vin_subtotal_no_gi">$ 0,00</span></div>
 </div>
 <div class="sep"></div>
 <div class="row" style="justify-content:space-between;align-items:center;gap:10px;margin-top:6px">
@@ -2049,12 +2237,12 @@ body.dark{ background: var(--bg) !important; }
 </div>
 </div>
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
-<div class="pill">Subtotal: <span class="result" id="vin_subtotal">$0.00</span></div>
-<div class="pill">+ Ganancia: <span class="result" id="vin_ganancia_val">$0.00</span></div>
-<div class="pill">+ Impuestos: <span class="result" id="vin_impuestos_val">$0.00</span></div>
+<div class="pill">Subtotal: <span class="result" id="vin_subtotal">$ 0,00</span></div>
+<div class="pill">+ Ganancia: <span class="result" id="vin_ganancia_val">$ 0,00</span></div>
+<div class="pill">+ Impuestos: <span class="result" id="vin_impuestos_val">$ 0,00</span></div>
 </div>
 <div class="sep"></div>
-<div class="tot">Precio de Venta: <span class="result" id="vin_total">$0.00</span></div>
+<div class="tot">Precio de Venta: <span class="result" id="vin_total">$ 0,00</span></div>
 <div class="row" style="gap:8px;justify-content:center">
 <button class="copy-btn" id="vinil_pro_copy">Copiar</button>
 <button class="copy-btn" id="vinil_pro_print">Exportar PDF / Imprimir</button>
@@ -2136,7 +2324,7 @@ body.dark{ background: var(--bg) !important; }
 <div class="row" style="gap:8px;align-items:flex-end;flex-wrap:wrap">
 <div style="flex:1;min-width:140px">
 <label>Valor</label>
-<input id="len_val" step="0.0001" type="number" value="1"/>
+<input id="len_val" type="text" inputmode="decimal" value="1"/>
 </div>
 <div style="flex:1;min-width:160px">
 <label>De</label>
@@ -2171,7 +2359,7 @@ body.dark{ background: var(--bg) !important; }
 <div class="row" style="gap:8px;align-items:flex-end;flex-wrap:wrap">
 <div style="flex:1;min-width:140px">
 <label>Valor</label>
-<input id="area_val" step="0.0001" type="number" value="1"/>
+<input id="area_val" type="text" inputmode="decimal" value="1"/>
 </div>
 <div style="flex:1;min-width:160px">
 <label>De</label>
@@ -2202,7 +2390,7 @@ body.dark{ background: var(--bg) !important; }
 <div class="row" style="gap:8px;align-items:flex-end;flex-wrap:wrap">
 <div style="flex:1;min-width:140px">
 <label>Valor</label>
-<input id="mass_val" step="0.0001" type="number" value="1"/>
+<input id="mass_val" type="text" inputmode="decimal" value="1"/>
 </div>
 <div style="flex:1;min-width:160px">
 <label>De</label>
@@ -2233,7 +2421,7 @@ body.dark{ background: var(--bg) !important; }
 <div class="row" style="gap:8px;align-items:flex-end;flex-wrap:wrap">
 <div style="flex:1;min-width:140px">
 <label>Valor</label>
-<input id="tmp_val" step="0.01" type="number" value="0"/>
+<input id="tmp_val" type="text" inputmode="decimal" value="0"/>
 </div>
 <div style="flex:1;min-width:160px">
 <label>De</label>
@@ -2262,15 +2450,15 @@ body.dark{ background: var(--bg) !important; }
 <div class="row" style="gap:8px;align-items:flex-end;flex-wrap:wrap">
 <div style="flex:1;min-width:140px">
 <label>Anchura (cm)</label>
-<input id="dpi_w_cm" step="0.01" type="number" value="10"/>
+<input id="dpi_w_cm" type="text" inputmode="decimal" value="10"/>
 </div>
 <div style="flex:1;min-width:140px">
 <label>Altura (cm)</label>
-<input id="dpi_h_cm" step="0.01" type="number" value="10"/>
+<input id="dpi_h_cm" type="text" inputmode="decimal" value="10"/>
 </div>
 <div style="flex:1;min-width:140px">
 <label>DPI</label>
-<input id="dpi_dpi" step="1" type="number" value="300"/>
+<input id="dpi_dpi" type="text" inputmode="numeric" value="300"/>
 </div>
 <div style="flex:1;min-width:180px">
 <label>Salida (px)</label>
@@ -2280,15 +2468,15 @@ body.dark{ background: var(--bg) !important; }
 <div class="row" style="gap:8px;align-items:flex-end;flex-wrap:wrap;margin-top:8px">
 <div style="flex:1;min-width:140px">
 <label>Anchura (px)</label>
-<input id="px_w" step="1" type="number" value="1181"/>
+<input id="px_w" type="text" inputmode="numeric" value="1181"/>
 </div>
 <div style="flex:1;min-width:140px">
 <label>Altura (px)</label>
-<input id="px_h" step="1" type="number" value="1181"/>
+<input id="px_h" type="text" inputmode="numeric" value="1181"/>
 </div>
 <div style="flex:1;min-width:140px">
 <label>DPI</label>
-<input id="px_dpi" step="1" type="number" value="300"/>
+<input id="px_dpi" type="text" inputmode="numeric" value="300"/>
 </div>
 <div style="flex:1;min-width:220px">
 <label>Salida (cm)</label>
@@ -2382,6 +2570,20 @@ body.dark{ background: var(--bg) !important; }
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="d_funda_cant" min="0" step="1" type="number" value="50"/></div>
 <div style="flex:1;min-width:110px"><label>Precio ($)</label><input id="d_funda_precio" min="0" step="0.01" type="text" value="15,00"/></div>
 <div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="d_funda_ud" readonly="" type="text"/></div>
+<div style="flex:1;min-width:140px"><label>Cantidad a utilizar</label><input id="d_funda_use" min="0" step="1" type="number" value="1"/></div>
+<div style="flex:1;min-width:140px"><label>Costo utilizado</label><input class="ud" id="d_funda_used" readonly="" type="text"/></div>
+</div>
+<div class="row" style="gap:8px;align-items:center;margin-top:10px">
+<label class="chk-label" style="display:flex;align-items:center;gap:8px">
+<input id="sub_d_pelusas_on" type="checkbox"/> Quita pelusas
+  </label>
+</div>
+<div class="row">
+<div style="flex:1;min-width:110px"><label>Cant.</label><input id="sub_d_pelusas_cant" min="0" step="1" type="number" value="50"/></div>
+<div style="flex:1;min-width:110px"><label>Precio ($)</label><input id="sub_d_pelusas_precio" min="0" step="0.01" type="text" value="3,00"/></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="sub_d_pelusas_ud" readonly="" type="text"/></div>
+<div style="flex:1;min-width:140px"><label>Cantidad a utilizar</label><input id="sub_d_pelusas_use" min="0" step="1" type="number" value="1"/></div>
+<div style="flex:1;min-width:140px"><label>Costo utilizado</label><input class="ud" id="sub_d_pelusas_used" readonly="" type="text"/></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -2474,6 +2676,8 @@ body.dark{ background: var(--bg) !important; }
 <div style="flex:1;min-width:120px"><label>Precio ($)</label><input id="e_horno_precio" min="0" step="0.01" type="text" value="350,00"/></div>
 <div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="e_horno_mes" readonly="" type="text"/></div>
 <div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="e_horno_ud" readonly="" type="text"/></div>
+<div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="sub_e_horno_uses" min="0" step="1" type="number" value="1"/></div>
+<div style="flex:1;min-width:140px"><label>Costo utilizado</label><input class="ud" id="sub_e_horno_used" readonly="" type="text"/></div>
 </div>
 </div>
 <!-- Costos indirectos -->
@@ -2482,9 +2686,9 @@ body.dark{ background: var(--bg) !important; }
 <!-- Totales / G&I / Mano de obra -->
 <div class="card md-12">
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
-<div class="pill">Total directos: <span class="result" id="sub_v15_total_directos">$0.00</span></div>
-<div class="pill">Total depreciación: <span class="result" id="sub_v15_total_depr">$0.00</span></div>
-<div class="pill">Total sin G/I: <span class="result" id="sub_v15_subtotal_no_gi">$0.00</span></div>
+<div class="pill">Total directos: <span class="result" id="sub_v15_total_directos">$ 0,00</span></div>
+<div class="pill">Total depreciación: <span class="result" id="sub_v15_total_depr">$ 0,00</span></div>
+<div class="pill">Total sin G/I: <span class="result" id="sub_v15_subtotal_no_gi">$ 0,00</span></div>
 </div>
 <div class="sep"></div>
 <div class="row" style="justify-content:space-between;align-items:center;gap:10px;margin-top:6px">
@@ -2509,12 +2713,12 @@ body.dark{ background: var(--bg) !important; }
 <div style="flex:1;min-width:160px"><label><input checked="" id="sub_v15_chk_impuestos" type="checkbox"/> Impuestos (%)</label><input id="sub_v15_impuestos" min="0" step="1" type="number" value="16"/></div>
 </div>
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
-<div class="pill">Subtotal: <span class="result" id="sub_v15_subtotal">$0.00</span></div>
-<div class="pill">+ Ganancia: <span class="result" id="sub_v15_ganancia_val">$0.00</span></div>
-<div class="pill">+ Impuestos: <span class="result" id="sub_v15_impuestos_val">$0.00</span></div>
+<div class="pill">Subtotal: <span class="result" id="sub_v15_subtotal">$ 0,00</span></div>
+<div class="pill">+ Ganancia: <span class="result" id="sub_v15_ganancia_val">$ 0,00</span></div>
+<div class="pill">+ Impuestos: <span class="result" id="sub_v15_impuestos_val">$ 0,00</span></div>
 </div>
 <div class="sep"></div>
-<div class="tot">Precio de Venta: <span class="result" id="sub_v15_total">$0.00</span></div>
+<div class="tot">Precio de Venta: <span class="result" id="sub_v15_total">$ 0,00</span></div>
 <div class="center-actions">
 <button class="copy-btn" id="sub_v15_btn_print">Exportar a PDF / Imprimir</button>
 <button class="copy-btn" id="sub_v15_btn_copy">Copiar</button>
@@ -2792,9 +2996,9 @@ body.dark{ background: var(--bg) !important; }
 <!-- Totales / G&I / Mano de obra -->
 <div class="card md-12" id="esf_gi_card">
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
-<div class="pill">Total directos: <span class="result" id="esf_total_directos">$0.00</span></div>
-<div class="pill">Total depreciación: <span class="result" id="esf_total_depr">$0.00</span></div>
-<div class="pill">Total sin G/I: <span class="result" id="esf_subtotal_no_gi">$0.00</span></div>
+<div class="pill">Total directos: <span class="result" id="esf_total_directos">$ 0,00</span></div>
+<div class="pill">Total depreciación: <span class="result" id="esf_total_depr">$ 0,00</span></div>
+<div class="pill">Total sin G/I: <span class="result" id="esf_subtotal_no_gi">$ 0,00</span></div>
 </div>
 <div class="sep"></div>
 <div class="row" style="justify-content:space-between;align-items:center;gap:10px;margin-top:6px">
@@ -2823,13 +3027,13 @@ body.dark{ background: var(--bg) !important; }
 <div style="flex:1;min-width:160px"><label><input checked="" id="esf_chk_impuestos" type="checkbox"/> Impuestos (%)</label><input id="esf_impuestos" min="0" step="1" type="number" value="16"/></div>
 </div>
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
-<div class="pill">Subtotal: <span class="result" id="esf_subtotal">$0.00</span></div>
-<div class="pill">+ Ganancia: <span class="result" id="esf_ganancia_val">$0.00</span></div>
-<div class="pill">+ Impuestos: <span class="result" id="esf_impuestos_val">$0.00</span></div>
+<div class="pill">Subtotal: <span class="result" id="esf_subtotal">$ 0,00</span></div>
+<div class="pill">+ Ganancia: <span class="result" id="esf_ganancia_val">$ 0,00</span></div>
+<div class="pill">+ Impuestos: <span class="result" id="esf_impuestos_val">$ 0,00</span></div>
 </div>
 <div class="sep"></div>
 <div class="row" style="justify-content:space-between;align-items:center">
-<div class="tot">Precio de Venta: <span class="result" id="esf_total">$0.00</span></div>
+<div class="tot">Precio de Venta: <span class="result" id="esf_total">$ 0,00</span></div>
 <button class="btn reset" id="esf_btn_reset">Reset</button>
 <div class="center-actions">
     <button class="copy-btn" id="esf_btn_print" type="button">Exportar a PDF / Imprimir</button>
@@ -3028,9 +3232,9 @@ body.dark{ background: var(--bg) !important; }
 </div>
 <div class="card md-12 indA-card" id="eti_ind_card"><h4>Costos indirectos</h4><div class="row" style="gap:10px;align-items:center;flex-wrap:wrap"><label style="display:flex;align-items:center;gap:8px;margin:0"><input id="eti_ind_on" type="checkbox"/> Activar</label><div class="pill indA-pill">Costo Ud. (indirectos): <span class="result" id="eti_ind_ud">$ 0,00</span></div><div style="margin-left:auto"><button class="btn" id="eti_ind_cfg_btn">Configurar</button></div></div><div class="sep"></div><div id="eti_ind_cfg" style="display:none"><div class="row" style="gap:14px;flex-wrap:wrap"><div style="min-width:160px;flex:1"><label>Alquiler (mensual)</label><input id="eti_ind_alquiler" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Internet (mensual)</label><input id="eti_ind_internet" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Suscripciones (mensual)</label><input id="eti_ind_suscripciones" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Transporte (mensual)</label><input id="eti_ind_transporte" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Electricidad (mensual)</label><input id="eti_ind_electricidad" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Publicidad (mensual)</label><input id="eti_ind_publicidad" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Otros (mensual)</label><input id="eti_ind_otros" type="text" value="0,00"/></div><div style="min-width:120px"><label>Unidades/mes</label><input class="indA-small" id="eti_ind_units" min="1" step="1" type="number" value="100"/></div></div></div></div><div class="card md-12">
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
-<div class="pill">Total directos: <span class="result" id="eti_total_directos">$0.00</span></div>
-<div class="pill">Total depreciación: <span class="result" id="eti_total_depr">$0.00</span></div>
-<div class="pill">Total sin G/I: <span class="result" id="eti_subtotal_no_gi">$0.00</span></div>
+<div class="pill">Total directos: <span class="result" id="eti_total_directos">$ 0,00</span></div>
+<div class="pill">Total depreciación: <span class="result" id="eti_total_depr">$ 0,00</span></div>
+<div class="pill">Total sin G/I: <span class="result" id="eti_subtotal_no_gi">$ 0,00</span></div>
 </div>
 <div class="sep"></div>
 <div class="row" style="justify-content:space-between;align-items:center;gap:10px;margin-top:6px">
@@ -3055,12 +3259,12 @@ body.dark{ background: var(--bg) !important; }
 <div style="flex:1;min-width:160px"><label><input checked="" id="eti_chk_impuestos" type="checkbox"/> Impuestos (%)</label><input id="eti_impuestos" min="0" step="1" type="number" value="16"/></div>
 </div>
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
-<div class="pill">Subtotal: <span class="result" id="eti_subtotal">$0.00</span></div>
-<div class="pill">+ Ganancia: <span class="result" id="eti_ganancia_val">$0.00</span></div>
-<div class="pill">+ Impuestos: <span class="result" id="eti_impuestos_val">$0.00</span></div>
+<div class="pill">Subtotal: <span class="result" id="eti_subtotal">$ 0,00</span></div>
+<div class="pill">+ Ganancia: <span class="result" id="eti_ganancia_val">$ 0,00</span></div>
+<div class="pill">+ Impuestos: <span class="result" id="eti_impuestos_val">$ 0,00</span></div>
 </div>
 <div class="sep"></div>
-<div class="tot">Precio de Venta: <span class="result" id="eti_total">$0.00</span></div>
+<div class="tot">Precio de Venta: <span class="result" id="eti_total">$ 0,00</span></div>
 <div class="center-actions">
 <button class="copy-btn" id="btn_print_eti">Exportar a PDF / Imprimir</button>
 <button class="copy-btn" id="btn_copy_eti">Copiar</button>
@@ -3137,9 +3341,9 @@ body.dark{ background: var(--bg) !important; }
 </div>
 </div><div class="card md-12 indA-card" id="emp_ind_card"><h4>Costos indirectos</h4><div class="row" style="gap:10px;align-items:center;flex-wrap:wrap"><label style="display:flex;align-items:center;gap:8px;margin:0"><input id="emp_ind_on" type="checkbox"/> Activar</label><div class="pill indA-pill">Costo Ud. (indirectos): <span class="result" id="emp_ind_ud">$ 0,00</span></div><div style="margin-left:auto"><button class="btn" id="emp_ind_cfg_btn">Configurar</button></div></div><div class="sep"></div><div id="emp_ind_cfg" style="display:none"><div class="row" style="gap:14px;flex-wrap:wrap"><div style="min-width:160px;flex:1"><label>Alquiler (mensual)</label><input id="emp_ind_alquiler" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Internet (mensual)</label><input id="emp_ind_internet" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Suscripciones (mensual)</label><input id="emp_ind_suscripciones" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Transporte (mensual)</label><input id="emp_ind_transporte" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Electricidad (mensual)</label><input id="emp_ind_electricidad" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Publicidad (mensual)</label><input id="emp_ind_publicidad" type="text" value="0,00"/></div><div style="min-width:160px;flex:1"><label>Otros (mensual)</label><input id="emp_ind_otros" type="text" value="0,00"/></div><div style="min-width:120px"><label>Unidades/mes</label><input class="indA-small" id="emp_ind_units" min="1" step="1" type="number" value="100"/></div></div></div></div><div class="card md-12" id="emp_totales_card">
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
-<div class="pill">Total directos: <span class="result" id="emp_total_directos">$0.00</span></div>
-<div class="pill">Total depreciación: <span class="result" id="emp_total_depr">$0.00</span></div>
-<div class="pill">Total sin G/I: <span class="result" id="emp_subtotal_no_gi">$0.00</span></div>
+<div class="pill">Total directos: <span class="result" id="emp_total_directos">$ 0,00</span></div>
+<div class="pill">Total depreciación: <span class="result" id="emp_total_depr">$ 0,00</span></div>
+<div class="pill">Total sin G/I: <span class="result" id="emp_subtotal_no_gi">$ 0,00</span></div>
 </div>
 <div class="sep"></div>
 <div class="row" style="justify-content:space-between;align-items:center;gap:10px;margin-top:6px">
@@ -3167,12 +3371,12 @@ body.dark{ background: var(--bg) !important; }
 
 
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
-<div class="pill">Subtotal: <span class="result" id="emp_subtotal">$0.00</span></div>
-<div class="pill">+ Ganancia: <span class="result" id="emp_ganancia_val">$0.00</span></div>
-<div class="pill">+ Impuestos: <span class="result" id="emp_impuestos_val">$0.00</span></div>
+<div class="pill">Subtotal: <span class="result" id="emp_subtotal">$ 0,00</span></div>
+<div class="pill">+ Ganancia: <span class="result" id="emp_ganancia_val">$ 0,00</span></div>
+<div class="pill">+ Impuestos: <span class="result" id="emp_impuestos_val">$ 0,00</span></div>
 </div>
 <div class="sep"></div>
-<div class="tot">Precio de Venta: <span class="result" id="emp_total">$0.00</span></div>
+<div class="tot">Precio de Venta: <span class="result" id="emp_total">$ 0,00</span></div>
 <div class="center-actions">
 <button class="copy-btn" id="btn_print_emp">Exportar a PDF / Imprimir</button>
 <button class="copy-btn" id="btn_copy_emp">Copiar</button>
@@ -3398,11 +3602,11 @@ body.dark{ background: var(--bg) !important; }
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
 <div class="pill">Cantidad de diseños: <span class="result" id="dtf_unidades">0</span></div>
 <div class="pill">Cantidad de camisetas: <span class="result" id="dtf_camisetas">0</span></div>
-<div class="pill">Total directos: <span class="result" id="dtf_total_directos">$0.00</span></div>
-<div class="pill">Prendas: <span class="result" id="dtf_total_prenda">$0.00</span></div>
-<div class="pill">Depreciación plancha: <span class="result" id="dtf_total_dep">$0.00</span></div>
-<div class="pill">Extras: <span class="result" id="dtf_total_extras">$0.00</span></div>
-<div class="pill">Total sin G/I: <span class="result" id="dtf_subtotal_no_gi">$0.00</span></div>
+<div class="pill">Total directos: <span class="result" id="dtf_total_directos">$ 0,00</span></div>
+<div class="pill">Prendas: <span class="result" id="dtf_total_prenda">$ 0,00</span></div>
+<div class="pill">Depreciación plancha: <span class="result" id="dtf_total_dep">$ 0,00</span></div>
+<div class="pill">Extras: <span class="result" id="dtf_total_extras">$ 0,00</span></div>
+<div class="pill">Total sin G/I: <span class="result" id="dtf_subtotal_no_gi">$ 0,00</span></div>
 </div>
 <div class="sep"></div>
 <div class="row" style="justify-content:space-between;align-items:center;gap:10px;margin-top:6px">
@@ -3433,18 +3637,18 @@ body.dark{ background: var(--bg) !important; }
 </div>
 </div>
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
-<div class="pill">Subtotal: <span class="result" id="dtf_subtotal">$0.00</span></div>
-<div class="pill">+ Ganancia: <span class="result" id="dtf_ganancia_val">$0.00</span></div>
-<div class="pill">+ Impuestos: <span class="result" id="dtf_impuestos_val">$0.00</span></div>
+<div class="pill">Subtotal: <span class="result" id="dtf_subtotal">$ 0,00</span></div>
+<div class="pill">+ Ganancia: <span class="result" id="dtf_ganancia_val">$ 0,00</span></div>
+<div class="pill">+ Impuestos: <span class="result" id="dtf_impuestos_val">$ 0,00</span></div>
 </div>
 <div class="sep"></div>
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
 <div class="pill">Material a solicitar: <span class="result" id="dtf_mat_solicitar">—</span></div>
-<div class="pill">Costo DTF por unidad: <span class="result" id="dtf_costo_ud_dtf">$0.00</span></div>
-<div class="pill">Precio de Venta por camiseta: <span class="result" id="dtf_costo_por_camiseta">$0.00</span></div>
+<div class="pill">Costo DTF por unidad: <span class="result" id="dtf_costo_ud_dtf">$ 0,00</span></div>
+<div class="pill">Precio de Venta por camiseta: <span class="result" id="dtf_costo_por_camiseta">$ 0,00</span></div>
 </div>
 <div class="sep"></div>
-<div class="tot">Precio de Venta: <span class="result" id="dtf_total">$0.00</span></div>
+<div class="tot">Precio de Venta: <span class="result" id="dtf_total">$ 0,00</span></div>
 <div class="center-actions">
 <button class="copy-btn" id="btn_print_dtf">Exportar a PDF / Imprimir</button>
 <button class="copy-btn" id="btn_copy_dtf">Copiar</button>
@@ -3608,9 +3812,9 @@ body.dark{ background: var(--bg) !important; }
 </div>
 <div class="card md-12" id="pap_tot_card">
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
-<div class="pill">Total directos: <span class="result" id="pap_total_directos">$0.00</span></div>
-<div class="pill">Total depreciación: <span class="result" id="pap_total_depr">$0.00</span></div>
-<div class="pill">Total sin G/I: <span class="result" id="pap_subtotal_no_gi">$0.00</span></div>
+<div class="pill">Total directos: <span class="result" id="pap_total_directos">$ 0,00</span></div>
+<div class="pill">Total depreciación: <span class="result" id="pap_total_depr">$ 0,00</span></div>
+<div class="pill">Total sin G/I: <span class="result" id="pap_subtotal_no_gi">$ 0,00</span></div>
 </div>
 <div class="sep"></div>
 <div class="row" style="justify-content:space-between;align-items:center;gap:10px;margin-top:6px">
@@ -3643,12 +3847,12 @@ body.dark{ background: var(--bg) !important; }
 </div>
 </div>
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
-<div class="pill">Subtotal: <span class="result" id="pap_subtotal">$0.00</span></div>
-<div class="pill">+ Ganancia: <span class="result" id="pap_ganancia_val">$0.00</span></div>
-<div class="pill">+ Impuestos: <span class="result" id="pap_impuestos_val">$0.00</span></div>
+<div class="pill">Subtotal: <span class="result" id="pap_subtotal">$ 0,00</span></div>
+<div class="pill">+ Ganancia: <span class="result" id="pap_ganancia_val">$ 0,00</span></div>
+<div class="pill">+ Impuestos: <span class="result" id="pap_impuestos_val">$ 0,00</span></div>
 </div>
 <div class="sep"></div>
-<div class="tot">Precio de Venta: <span class="result" id="pap_total">$0.00</span></div>
+<div class="tot">Precio de Venta: <span class="result" id="pap_total">$ 0,00</span></div>
 <div class="center-actions">
 <button class="copy-btn" id="pap_btn_print">Exportar a PDF / Imprimir</button>
 <button class="copy-btn" id="pap_btn_copy">Copiar</button>
@@ -3729,11 +3933,11 @@ body.dark{ background: var(--bg) !important; }
 </div>
 <div class="card md-12">
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
-<div class="pill">Total mensajería: <span class="result" id="env_total_mensajeria">$0.00</span></div>
-<div class="pill">Extras: <span class="result" id="env_total_extras">$0.00</span></div>
+<div class="pill">Total mensajería: <span class="result" id="env_total_mensajeria">$ 0,00</span></div>
+<div class="pill">Extras: <span class="result" id="env_total_extras">$ 0,00</span></div>
 </div>
 <div class="sep"></div>
-<div class="tot">Total Envíos: <span class="result" id="env_total">$0.00</span></div>
+<div class="tot">Total Envíos: <span class="result" id="env_total">$ 0,00</span></div>
 <div class="center-actions">
 <button class="copy-btn" id="btn_copy_env">Copiar</button>
 <button class="copy-btn" id="btn_print_env">Exportar a PDF / Imprimir</button>
@@ -3792,7 +3996,7 @@ body.dark{ background: var(--bg) !important; }
     }
     return parseFloat(s) || 0;
   }
-  function fmtUSD(n){ return '$ ' + (Intl.NumberFormat('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}).format(isFinite(n)?n:0)); }
+  function fmtUSD(n){ return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + (Intl.NumberFormat('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}).format(isFinite(n)?n:0)); }
 
   // Sources (módulos)
   const SRC = {
@@ -3894,6 +4098,15 @@ body.dark{ background: var(--bg) !important; }
       (Vinil, Sublimación, DTF, Papelería, Etiquetas, Empaques y Envíos). Puedes usar un solo módulo
       o varios a la vez y luego ver el total combinado en <b>Resumen General</b>. Todos los importes
       se ingresan en <b>formato europeo</b> (coma decimal), por ejemplo: <code>20,00</code>.</p>
+
+<div class="sep"></div>
+<h4>Divisa de la Suite</h4>
+<p style="margin:6px 0 8px">Selecciona el símbolo de moneda que se mostrará en todos los módulos. El cambio es inmediato y se guarda para la próxima apertura.</p>
+<div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
+  <select id="suite_currency_select" style="min-width:220px;max-width:320px;padding:8px 12px;border-radius:10px;border:1.5px solid var(--brand);font-size:14px;font-family:inherit;background:var(--card);color:var(--ink);cursor:pointer"></select>
+  <span id="suite_currency_preview" style="font-weight:600;font-size:18px;color:var(--brand);min-width:100px"></span>
+</div>
+<p class="muted" style="margin:6px 0 0">El símbolo reemplaza visualmente al <b>$</b> en todos los totales, resultados y precios de la Suite. Los cálculos no cambian.</p>
 
 <div class="sep"></div>
 <h4>Actualizaciones (PWA)</h4>
@@ -4070,7 +4283,7 @@ body.dark{ background: var(--bg) !important; }
 // ============ Helpers (formato, UI, clipboard) ============
 const USD_FMT = new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'});
 const BS_FMT  = new Intl.NumberFormat('es-VE',{minimumFractionDigits:2,maximumFractionDigits:2});
-function fmtUSD(n){return '$ ' + fmtEU(isFinite(n)?n:0)}
+function fmtUSD(n){return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU(isFinite(n)?n:0)}
 function fmtBs(n){return 'Bs '+BS_FMT.format(isFinite(n)?n:0)}
 function parseNum(v){ if(typeof v==='number') return v; if(!v) return 0; v=String(v).replace(/[^0-9.,-]/g,'').replace(/,/g,''); return parseFloat(v)||0; }
 
@@ -4133,7 +4346,7 @@ function qs(id){return document.getElementById(id)}
     const [a,b] = s.split('.');
     return a.replace(/\B(?=(\d{3})+(?!\d))/g,'.') + (dec?(','+b):'');
   }
-  function fmtUSD(n){ return '$ '+fmtEU(n); }
+  function fmtUSD(n){ return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$')+'  '+fmtEU(n); }
 
   function onlyEUInput(el){
     if(!el) return;
@@ -4235,7 +4448,7 @@ function qs(id){return document.getElementById(id)}
       total += parseFloat(t)||0;
     });
         // Update material (adicionales) with the raw sum of bloques
-    var adicEl = qs("#vinil_adicionales"); if (adicEl) { adicEl.textContent = "$ " + fmtEU(total); }
+    var adicEl = qs("#vinil_adicionales"); if (adicEl) { adicEl.textContent = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU(total); }
 // Merma legacy disabled; handled by Vinil Pro merma slider
 const extras = (typeof window._vinilExtras === 'number') ? window._vinilExtras : 0;
     const grand = total + extras;
@@ -4678,7 +4891,7 @@ sum_update();
 // ============ DTF (servicio externo) ============
 (() => {
   const $ = (id) => document.getElementById(id);
-  const fmt = (n)=>'$ ' + fmtEU(isFinite(n)?n:0);
+  const fmt = (n)=>(window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$')+'  '+fmtEU(isFinite(n)?n:0);
   const num = (el)=>parseNum(el?.value);
   const clamp = (n)=>isFinite(n)?n:0;
 
@@ -4973,7 +5186,7 @@ $("btn_copy_dtf")?.addEventListener("click", ()=>{
     t += inc("sum_emp","sum_incluir_emp");
     t += inc("sum_env","sum_incluir_env");
     t += inc("sum_dtf","sum_incluir_dtf");
-    totalEl.textContent = '$ ' + fmtEU(isFinite(t)?t:0);
+    totalEl.textContent = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU(isFinite(t)?t:0);
   };
 
   ["sum_incluir_vinil","sum_incluir_sublim","sum_incluir_etiq","sum_incluir_emp","sum_incluir_env","sum_incluir_dtf"].forEach(id=>{
@@ -5011,7 +5224,7 @@ function drawBarChart(canvas, labels, data){
     ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(padL+plotW,y); ctx.stroke();
     const v = (maxV*i/steps);
     ctx.fillStyle='#6b7280'; ctx.font='12px sans-serif';
-    ctx.fillText('$'+v.toFixed(0), 6, y+4);
+    ctx.fillText((window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$')+v.toFixed(0), 6, y+4);
   }
   // Bars
   const n = data.length;
@@ -5032,7 +5245,7 @@ function drawBarChart(canvas, labels, data){
 // === DTF module extensions ===
 (() => {
   const $ = (id) => document.getElementById(id);
-  const fmt = (n)=>'$ ' + fmtEU(isFinite(n)?n:0);
+  const fmt = (n)=>(window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$')+'  '+fmtEU(isFinite(n)?n:0);
   const num = (el)=>parseNum(el?.value);
   const clamp = (n)=>isFinite(n)?n:0;
   const ANCHO_CM = 57;
@@ -5485,7 +5698,7 @@ html[data-theme="dark"] *::-webkit-scrollbar-thumb{ background:#293445; }
 const debounce = (fn, ms=180) => { let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a), ms); }; };
 function num(v){ return parseFloat(v)||0; }
 function clamp0(n){ return isFinite(n) && n>=0 ? n : 0; }
-function fmtUSD(n){ return '$ ' + fmtEU(n); }
+function fmtUSD(n){ return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU(n); }
 
 // ENVIOS (fix V19 EU)
 (function(){
@@ -5503,8 +5716,8 @@ function fmtUSD(n){ return '$ ' + fmtEU(n); }
   const fmtIntl = (Intl && Intl.NumberFormat) ? new Intl.NumberFormat('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) : null;
   function moneyEU(n){
     n = isFinite(n) ? +n : 0;
-    if (fmtIntl) return '$ ' + fmtIntl.format(n);
-    const s = n.toFixed(2), p = s.split('.'); return '$ ' + p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.') + ',' + p[1];
+    if (fmtIntl) return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtIntl.format(n);
+    const s = n.toFixed(2), p = s.split('.'); return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.') + ',' + p[1];
   }
   function setText(id, n){ const el=document.getElementById(id); if(el) el.textContent = moneyEU(n); }
 
@@ -5778,7 +5991,7 @@ function fmtUSD(n){ return '$ ' + fmtEU(n); }
       return mens+exEmbal+exFrag+exSeguro+exOtros;
     })();
     const env = readEnv;
-    const set=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent='$ '+formatEU(isFinite(v)?v:0,2); };
+    const set=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=(window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$')+'  '+formatEU(isFinite(v)?v:0,2); };
     set('sum_vinil',vin); set('sum_sublim',sub); set('sum_etiq',etq); set('sum_emp',emp); set('sum_env',env);
 
     let total=0;
@@ -5831,7 +6044,7 @@ function fmtUSD(n){ return '$ ' + fmtEU(n); }
   let tmr=null; function schedule(){ if(tmr) clearTimeout(tmr); tmr=setTimeout(function(){ try{ window.resumen_update(); }catch(_){ } }, 120); }
   ['input','change','click'].forEach(ev=>document.addEventListener(ev, schedule, true));
 
-  if (typeof window.fmtUSD === 'function') window.fmtUSD = n => '$ ' + formatEU(isFinite(n)?Number(n):0, 2);
+  if (typeof window.fmtUSD === 'function') window.fmtUSD = n => (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + formatEU(isFinite(n)?Number(n):0, 2);
   if (typeof window.fmtBs  === 'function') window.fmtBs  = n => 'Bs ' + formatEU(isFinite(n)?Number(n):0, 2);
 
   function init(){
@@ -5901,8 +6114,8 @@ function fmtUSD(n){ return '$ ' + fmtEU(n); }
     el.addEventListener('input', ()=>{ el.value = el.value.replace(/[^\d.,-]/g,''); });
     el.addEventListener('blur', ()=>{ el.value = fmtEU(parseEU(el.value)); });
   }
-  function setMoney(el, n){ if(el) el.value = '$ ' + fmtEU(n); }
-  function setText(el, n){ if(el){ el.textContent = '$ ' + fmtEU(n); } }
+  function setMoney(el, n){ if(el) el.value = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU(n); }
+  function setText(el, n){ if(el){ el.textContent = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU(n); } }
 
   // Attach EU inputs
   [q('#cd_cant'), q('#cd_precio')].forEach(onlyEUInput);
@@ -6014,8 +6227,8 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
     var a = p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');
     return dec ? (a+','+p[1]) : a;
   }
-  function setMoneyInput(el, n){ if(el){ el.value = '$ ' + fmtEU(n); } }
-  function setMoneyText(el, n){ if(el){ el.textContent = '$ ' + fmtEU(n); } }
+  function setMoneyInput(el, n){ if(el){ el.value = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU(n); } }
+  function setMoneyText(el, n){ if(el){ el.textContent = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU(n); } }
 
   function recalcExtras(){
     var elEnabled = q('#cd_enabled');
@@ -6094,7 +6307,7 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
   function parseEU(v){ if(v==null) return 0; v=String(v).replace(/[^\d.,-]/g,'').trim(); if(!v) return 0; if(v.indexOf(',')>=0){ v=v.replace(/\./g,'').replace(',', '.'); } return parseFloat(v)||0; }
   function parseEUin(el){ return parseEU(el && el.value); }
   function fmtEU(n,dec){ if(dec===void 0) dec=2; if(!isFinite(n)) n=0; var s=Number(n).toFixed(dec); var p=s.split('.'); return p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.') + (dec?(','+p[1]):''); }
-  function money(n){ return '$ '+fmtEU(n); }
+  function money(n){ return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$')+'  '+fmtEU(n); }
   function setMoneyInput(el,n){ if(el){ el.value = money(n); } }
   function setMoneyText(el,n){ if(el){ el.textContent = money(n); } }
 
@@ -6236,7 +6449,7 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
     var intPart = parts[0];
     var dec = parts[1];
     intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    return sign + '$ ' + intPart + ',' + dec;
+    return sign + (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + intPart + ',' + dec;
   }
 
   function getNumericFromSpanOrInput(id){
@@ -6467,7 +6680,7 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
   function qa(s){ try{return Array.prototype.slice.call(document.querySelectorAll(s));}catch(e){return [];} }
   function num(el){ if(!el) return 0; var v=String(el.value||'').replace(/[^\d.,-]/g,'').trim(); if(!v) return 0; if(v.indexOf(',')>=0){ v=v.replace(/\./g,'').replace(',', '.'); } return parseFloat(v)||0; }
   function fmt(n,d){ if(d===void 0) d=2; if(!isFinite(n)) n=0; var s=Number(n).toFixed(d), p=s.split('.'); return p[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.')+(d?(','+p[1]):''); }
-  function money(n){ return '$ '+fmt(n); }
+  function money(n){ return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$')+'  '+fmt(n); }
   function setIn(id,val){ var el=document.getElementById(id); if(el) el.value = money(val); }
   function setTx(id,val){ var el=document.getElementById(id); if(el) el.textContent = money(val); }
 
@@ -6813,6 +7026,50 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
 })();
 </script>
 <script>
+/* ---- Suite Currency Selector: init UI ---- */
+(function(){
+  function initCurrencySelector(){
+    var sel = document.getElementById('suite_currency_select');
+    var preview = document.getElementById('suite_currency_preview');
+    if (!sel || !window.SuiteCurrencies) return;
+
+    // Poblar opciones
+    sel.innerHTML = '';
+    window.SuiteCurrencies.forEach(function(c){
+      var opt = document.createElement('option');
+      opt.value = c.symbol;
+      opt.textContent = c.label + '  (' + c.symbol + ')';
+      sel.appendChild(opt);
+    });
+
+    // Seleccionar la divisa actual
+    var cur = (window.Suite && window.Suite.currency) ? window.Suite.currency.symbol : '$';
+    sel.value = cur;
+    updatePreview(cur);
+
+    // Evento cambio
+    sel.addEventListener('change', function(){
+      var newSym = sel.value;
+      updatePreview(newSym);
+      if (window.Suite && window.Suite.currency && typeof window.Suite.currency.set === 'function'){
+        window.Suite.currency.set(newSym);
+      }
+    });
+
+    function updatePreview(sym){
+      if (!preview) return;
+      preview.textContent = sym + ' 1.234,56';
+    }
+  }
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initCurrencySelector);
+  } else {
+    initCurrencySelector();
+  }
+})();
+</script>
+<script>
 // Instrucciones: copiar/imprimir
 (function(){
   const copyBtn = document.getElementById('btn_copy_help');
@@ -6838,7 +7095,7 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
   function setStatus(t){ if(statusEl) statusEl.textContent = t; }
   function hasSW(){ return ('serviceWorker' in navigator); }
 
-  const PWA_VER = 'v38_9';
+  const PWA_VER = 'v38_15';
   // Registro ÚNICO del Service Worker (con bust de versión) para evitar falsos positivos.
   try{
     window.addEventListener('load', function(){
@@ -7325,8 +7582,8 @@ async function checkUpdates(){
           </div>
         </div>
         <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px">
-          <div class="pill">DTF (ud): <span class="result" id="dtf_cost_ud${id}">$0.00</span></div>
-          <div class="pill">Total diseño (DTF): <span class="result" id="dtf_cost_total${id}">$0.00</span></div>
+          <div class="pill">DTF (ud): <span class="result" id="dtf_cost_ud${id}">$ 0,00</span></div>
+          <div class="pill">Total diseño (DTF): <span class="result" id="dtf_cost_total${id}">$ 0,00</span></div>
           <button type="button" class="copy-btn" data-copy="${id}">Copiar</button>
         </div>
       </div>`;
@@ -7541,7 +7798,7 @@ async function checkUpdates(){
   const root = document.getElementById('view-dtf'); if(!root) return;
   const $  = (sel, ctx=root) => ctx.querySelector(sel);
   const $$ = (sel, ctx=root) => Array.prototype.slice.call(ctx.querySelectorAll(sel));
-  const fmtUSD = (n)=> ('$ ' + (typeof fmtEU==='function' ? fmtEU(n||0) : (Number(n||0).toFixed(2).replace('.',','))));
+  const fmtUSD = (n)=> ((window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + (typeof fmtEU==='function' ? fmtEU(n||0) : (Number(n||0).toFixed(2).replace('.',','))));
   const parseEU = (v)=>{
     if(v==null) return 0; v = String(v).trim();
     v = v.replace(/[^\d,.\-]/g, '');
@@ -7651,8 +7908,8 @@ async function checkUpdates(){
         <button class="btn reset del">Eliminar</button>
       </div>
       <div class="row" style="gap:8px;margin-top:8px">
-        <div class="pill">DTF (ud): <span class="result cud">$0.00</span></div>
-        <div class="pill">Total diseño (DTF): <span class="result ctot">$0.00</span></div>
+        <div class="pill">DTF (ud): <span class="result cud">$ 0,00</span></div>
+        <div class="pill">Total diseño (DTF): <span class="result ctot">$ 0,00</span></div>
         <button class="copy-btn copy">Copiar</button>
       </div>`;
     wrap.querySelector('.del').addEventListener('click', ()=>{ wrap.remove(); computeAll(false); });
@@ -8004,7 +8261,7 @@ let total_dep=0, dep_ud=0;
 <script>
 // VINIL_DEP_FORCE_V2 — corrige cálculo y sincroniza Resumen (actualiza #vinil_dep y #vinil_pro_dep)
 (function(){
-  function money(n){ return '$ ' + (typeof fmtEU==='function' ? fmtEU(n||0) : (Number(n||0).toFixed(2).replace('.',','))); }
+  function money(n){ return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + (typeof fmtEU==='function' ? fmtEU(n||0) : (Number(n||0).toFixed(2).replace('.',','))); }
   function num(v){
     if(v==null) return 0;
     if(v.value!==undefined) v=v.value;
@@ -8098,7 +8355,7 @@ let total_dep=0, dep_ud=0;
 <script>
 (function(){
   // Utilidades numéricas con formato US para consistencia interna
-  const fmt = (n)=>{ if(!isFinite(n)) return '$ 0,00'; const v = (Math.round(n*100)/100).toFixed(2); const parts = v.split('.'); const intp = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.'); return '$ ' + intp + ',' + parts[1];};
+  const fmt = (n)=>{ if(!isFinite(n)) return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' 0,00'; const v = (Math.round(n*100)/100).toFixed(2); const parts = v.split('.'); const intp = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.'); return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + intp + ',' + parts[1];};
   const q = (sel, root=document)=>root.querySelector(sel);
   const all = (sel, root=document)=>Array.from(root.querySelectorAll(sel));
 
@@ -8250,9 +8507,44 @@ Precio de Venta: ${q('#sub_total').textContent}`;
 </script>
 <script>
 (function(){
+  // Formato EU: coma decimal, punto miles
   function fmt(x){
     if (Number.isNaN(x) || !isFinite(x)) return "—";
-    return (Math.round(x * 10000)/10000).toString();
+    var rounded = Math.round(x * 10000) / 10000;
+    var s = rounded.toString();
+    var parts = s.split('.');
+    var intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return parts.length > 1 ? intPart + ',' + parts[1] : intPart;
+  }
+
+  // Parseo EU: acepta punto o coma como decimal
+  function parseConv(s){
+    if (!s) return 0;
+    s = String(s).trim();
+    // Si tiene coma: tratar como EU (1.234,56 → 1234.56 ; 1,5 → 1.5)
+    if (s.indexOf(',') >= 0){
+      s = s.replace(/\./g, '').replace(',', '.');
+    }
+    return parseFloat(s) || 0;
+  }
+
+  // Normalizar input al salir del foco: punto → coma
+  function normInput(el){
+    el.addEventListener('blur', function(){
+      var v = parseConv(el.value);
+      if (isFinite(v) && el.value.trim() !== '') {
+        el.value = fmt(v);
+      }
+    });
+    // Mientras escribe: si teclea punto, convertirlo a coma en tiempo real
+    el.addEventListener('keyup', function(e){
+      var pos = el.selectionStart;
+      if (el.value.indexOf('.') >= 0){
+        el.value = el.value.replace('.', ',');
+        // Restaurar posición del cursor
+        try { el.setSelectionRange(pos, pos); } catch(err){}
+      }
+    });
   }
 
   // Longitud
@@ -8263,11 +8555,12 @@ Precio de Venta: ${q('#sub_total').textContent}`;
   const lenFactors = { mm:0.1, cm:1, m:100, in:2.54, ft:30.48, yd:91.44 }; // to cm
 
   function updLen(){
-    const v = parseFloat(lenVal.value||"0");
+    const v = parseConv(lenVal.value);
     const cm = v * (lenFactors[lenFrom.value] || 1);
     const res = cm / (lenFactors[lenTo.value] || 1);
     lenOut.value = fmt(res);
   }
+  if(lenVal) normInput(lenVal);
   ['input','change'].forEach(evt=>{
     lenVal?.addEventListener(evt, updLen);
     lenFrom?.addEventListener(evt, updLen);
@@ -8282,11 +8575,12 @@ Precio de Venta: ${q('#sub_total').textContent}`;
   const areaFactors = { cm2:1, m2:10000, in2:6.4516, ft2:929.0304 }; // to cm2
 
   function updArea(){
-    const v = parseFloat(areaVal.value||"0");
+    const v = parseConv(areaVal.value);
     const cm2 = v * (areaFactors[areaFrom.value] || 1);
     const res = cm2 / (areaFactors[areaTo.value] || 1);
     areaOut.value = fmt(res);
   }
+  if(areaVal) normInput(areaVal);
   ['input','change'].forEach(evt=>{
     areaVal?.addEventListener(evt, updArea);
     areaFrom?.addEventListener(evt, updArea);
@@ -8301,11 +8595,12 @@ Precio de Venta: ${q('#sub_total').textContent}`;
   const massFactors = { g:1, kg:1000, lb:453.59237, oz:28.349523125 }; // to grams
 
   function updMass(){
-    const v = parseFloat(massVal.value||"0");
+    const v = parseConv(massVal.value);
     const g = v * (massFactors[massFrom.value] || 1);
     const res = g / (massFactors[massTo.value] || 1);
     massOut.value = fmt(res);
   }
+  if(massVal) normInput(massVal);
   ['input','change'].forEach(evt=>{
     massVal?.addEventListener(evt, updMass);
     massFrom?.addEventListener(evt, updMass);
@@ -8331,11 +8626,12 @@ Precio de Venta: ${q('#sub_total').textContent}`;
     return k;
   }
   function updTmp(){
-    const v = parseFloat(tmpVal.value||"0");
+    const v = parseConv(tmpVal.value);
     const K = toK(v, tmpFrom.value);
     const res = fromK(K, tmpTo.value);
     tmpOut.value = fmt(res);
   }
+  if(tmpVal) normInput(tmpVal);
   ['input','change'].forEach(evt=>{
     tmpVal?.addEventListener(evt, updTmp);
     tmpFrom?.addEventListener(evt, updTmp);
@@ -8349,15 +8645,18 @@ Precio de Venta: ${q('#sub_total').textContent}`;
   const dpiPxOut = document.getElementById('dpi_px_out');
 
   function updPx(){
-    const wcm = parseFloat(dpiWcm.value||"0");
-    const hcm = parseFloat(dpiHcm.value||"0");
-    const dpi = parseFloat(dpiDpi.value||"0");
+    const wcm = parseConv(dpiWcm.value);
+    const hcm = parseConv(dpiHcm.value);
+    const dpi = parseConv(dpiDpi.value);
     const pxf = dpi/2.54;
     const pxW = Math.round(wcm * pxf);
     const pxH = Math.round(hcm * pxf);
     if(isFinite(pxW) && isFinite(pxH)) dpiPxOut.value = pxW + " × " + pxH;
     else dpiPxOut.value = "—";
   }
+  if(dpiWcm) normInput(dpiWcm);
+  if(dpiHcm) normInput(dpiHcm);
+  if(dpiDpi) normInput(dpiDpi);
   ['input','change'].forEach(evt=>{
     dpiWcm?.addEventListener(evt, updPx);
     dpiHcm?.addEventListener(evt, updPx);
@@ -8369,15 +8668,18 @@ Precio de Venta: ${q('#sub_total').textContent}`;
   const pxDpi = document.getElementById('px_dpi');
   const pxCmOut = document.getElementById('px_cm_out');
   function updCm(){
-    const w = parseFloat(pxW.value||"0");
-    const h = parseFloat(pxH.value||"0");
-    const dpi = parseFloat(pxDpi.value||"0");
+    const w = parseConv(pxW.value);
+    const h = parseConv(pxH.value);
+    const dpi = parseConv(pxDpi.value);
     const cmf = 2.54/dpi;
     const cmW = w * cmf;
     const cmH = h * cmf;
     if(isFinite(cmW) && isFinite(cmH)) pxCmOut.value = fmt(cmW) + " × " + fmt(cmH);
     else pxCmOut.value = "—";
   }
+  if(pxW) normInput(pxW);
+  if(pxH) normInput(pxH);
+  if(pxDpi) normInput(pxDpi);
   ['input','change'].forEach(evt=>{
     pxW?.addEventListener(evt, updCm);
     pxH?.addEventListener(evt, updCm);
@@ -8444,7 +8746,7 @@ Precio de Venta: ${q('#sub_total').textContent}`;
     if (node.tagName === 'INPUT'){
       // If it already has $ or other symbol, preserve
       const hasCurrency = /^\s*[$€Bs\.]/.test(node.value || '');
-      node.value = hasCurrency ? (node.value.replace(/^\s*[$€Bs\.]+\s*/, '$ ') + v) : v;
+      node.value = hasCurrency ? (node.value.replace(/^\s*[$€Bs\.]+\s*/, (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ') + v) : v;
     }else{
       node.textContent = v;
     }
@@ -8645,7 +8947,7 @@ Precio de Venta: ${q('#sub_total').textContent}`;
     const a = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');
     return a + (dec?(','+parts[1]):'');
   }
-  function money(n){ return '$ ' + fmtEU(n); }
+  function money(n){ return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU(n); }
   function parseAny(v){
     if (v==null) return 0;
     if (typeof v === 'number') return v;
@@ -8693,7 +8995,7 @@ Precio de Venta: ${q('#sub_total').textContent}`;
     const [a,b] = s.split('.');
     return a.replace(/\B(?=(\d{3})+(?!\d))/g,'.') + (dec?(','+b):'');
   }
-  function money(n){ return '$ ' + fmtEU(n); }
+  function money(n){ return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU(n); }
   function parseAny(s){
     if (s==null) return 0;
     if (typeof s === 'number') return s;
@@ -8748,7 +9050,7 @@ Precio de Venta: ${q('#sub_total').textContent}`;
     const a = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.');
     return a + ',' + parts[1];
   }
-  function money2(n){ return '$ ' + fmtEU2(n); }
+  function money2(n){ return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU2(n); }
 
   function mirrorDTF(){
     const src = document.getElementById('dtf_total');            // visible en módulo DTF
@@ -8804,9 +9106,9 @@ Precio de Venta: ${q('#sub_total').textContent}`;
     if (s.indexOf(',') >= 0){ s = s.replace(/\./g,'').replace(',', '.'); }
     return parseFloat(s) || 0;
   }
-  function moneyEU(n){ try { return '$ ' + fmtEU(isFinite(n)?n:0); } catch(e){ 
+  function moneyEU(n){ try { return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU(isFinite(n)?n:0); } catch(e){ 
     if (!isFinite(n)) n=0; const s=Number(n).toFixed(2); const [a,b]=s.split('.');
-    return '$ ' + a.replace(/\B(?=(\d{3})+(?!\d))/g,'.') + ',' + b;
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + a.replace(/\B(?=(\d{3})+(?!\d))/g,'.') + ',' + b;
   }}
 
   // Define/update window.resumen_update to include DTF
@@ -8870,7 +9172,7 @@ Precio de Venta: ${q('#sub_total').textContent}`;
     try {
       // Locale con coma decimal; forzamos 2 decimales fijos.
       const nf = new Intl.NumberFormat('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      return (n) => '$ ' + nf.format(isFinite(n) ? +n : 0);
+      return (n) => (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + nf.format(isFinite(n) ? +n : 0);
     } catch(e) {
       return null;
     }
@@ -8878,13 +9180,13 @@ Precio de Venta: ${q('#sub_total').textContent}`;
 
   function moneyEU(n){
     // Si la suite define fmtEU, úsalo (evita doble formateo)
-    try { if (typeof fmtEU === 'function') return '$ ' + fmtEU(isFinite(n)?+n:0); } catch {}
+    try { if (typeof fmtEU === 'function') return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU(isFinite(n)?+n:0); } catch {}
     if (_fmtIntl) return _fmtIntl(n);
     // Fallback manual
     n = isFinite(n) ? +n : 0;
     const s = n.toFixed(2);
     const [a,b] = s.split('.');
-    return '$ ' + a.replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ',' + b;
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + a.replace(/\B(?=(\d{3})+(?!\d))/g, '.') + ',' + b;
   }
 
   // 3) Evitar parpadeos: sólo escribir si cambia
@@ -9002,13 +9304,7 @@ Precio de Venta: ${q('#sub_total').textContent}`;
       out = (n||0).toLocaleString('es-ES',{ minimumFractionDigits:2, maximumFractionDigits:2 });
     }
     // Asegurar el prefijo $ siempre
-    if (!/\$/u.test(out)) out = '$ ' + out;
-    return out;
-  }catch(e){}
-    }
-    let out = (n||0).toLocaleString('es-ES',{ minimumFractionDigits:2, maximumFractionDigits:2 });
-    // asegurar prefijo $ si falta
-    if (!/^\s*\$/u.test(out)) out = '$ ' + out;
+    if (!out.includes((window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$'))) out = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + out;
     return out;
   }
 
@@ -9051,7 +9347,9 @@ Precio de Venta: ${q('#sub_total').textContent}`;
     const chkI = document.getElementById(chkIId)?.checked;
     const pG = euParse(document.getElementById(pGId)?.value);
     const pI = euParse(document.getElementById(pIId)?.value);
-    const g = chkG ? base * (pG/100) : 0;
+    const modoEl = document.getElementById('esf_modo_ganancia');
+    const modo = modoEl ? modoEl.value : 'markup';
+    const g = chkG ? (modo==='margen' ? base*(pG/(100-pG)) : base*(pG/100)) : 0;
     const i = chkI ? (base + g) * (pI/100) : 0;
 
     const subEl = document.getElementById(subtotalId); if (subEl) subEl.textContent = euro(base);
@@ -9102,9 +9400,6 @@ Precio de Venta: ${q('#sub_total').textContent}`;
 
   document.addEventListener('DOMContentLoaded', ()=>{
     ['vin','dtf','sub','eti','emp'].forEach(wire);
-    // Sincronización suave con los cálculos existentes
-    const tick = ()=>{ requestAnimationFrame(()=>{ refreshAll(); setTimeout(tick, 120); }); };
-    tick();
   });
 })();
 </script>
@@ -9132,7 +9427,9 @@ Precio de Venta: ${q('#sub_total').textContent}`;
     const chkI = document.getElementById(ids.chkI)?.checked;
     const pG = euParse(document.getElementById(ids.pG)?.value);
     const pI = euParse(document.getElementById(ids.pI)?.value);
-    const g = chkG ? subtotal*(pG/100) : 0;
+    const modoEl = document.getElementById('esf_modo_ganancia');
+    const modo = modoEl ? modoEl.value : 'markup';
+    const g = chkG ? (modo==='margen' ? subtotal*(pG/(100-pG)) : subtotal*(pG/100)) : 0;
     const i = chkI ? (subtotal+g)*(pI/100) : 0;
     const set = (id,val)=>{ const el=document.getElementById(id); if(!el) return; const txt=euro(val); if(el.textContent!==txt) el.textContent=txt; };
     set(ids.subtotal, subtotal);
@@ -9157,7 +9454,7 @@ Precio de Venta: ${q('#sub_total').textContent}`;
   }
   function euro(n){ try{ if(typeof fmtUSD==='function') return fmtUSD(n); }catch(e){}
     let out=(n||0).toLocaleString('es-ES',{ minimumFractionDigits:2, maximumFractionDigits:2 });
-    if(!/^\s*\$/u.test(out)) out = '$ ' + out;
+    if(!out.includes((window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$'))) out = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + out;
     return out;
   }
   function moCalc(pref){
@@ -9185,12 +9482,14 @@ Precio de Venta: ${q('#sub_total').textContent}`;
       const pill = document.getElementById(pref+'_mo_pill'); if(pill) pill.style.display='none';
     }
     const subtotal = base + mo;
-    // G/I
+    // G/I — respeta modo Margen/Markup si existe el selector
     const chkG = document.getElementById(ids.chkG)?.checked;
     const chkI = document.getElementById(ids.chkI)?.checked;
     const pG = euParse(document.getElementById(ids.pG)?.value);
     const pI = euParse(document.getElementById(ids.pI)?.value);
-    const g = chkG ? subtotal*(pG/100) : 0;
+    const modoEl = document.getElementById('esf_modo_ganancia');
+    const modo = modoEl ? modoEl.value : 'markup';
+    const g = chkG ? (modo==='margen' ? subtotal*(pG/(100-pG)) : subtotal*(pG/100)) : 0;
     const i = chkI ? (subtotal+g)*(pI/100) : 0;
     // paint
     const set = (id,val)=>{ const el=document.getElementById(id); if(!el) return; const txt=euro(val); if(el.textContent!==txt) el.textContent=txt; };
@@ -9226,273 +9525,9 @@ Precio de Venta: ${q('#sub_total').textContent}`;
     });
   });
   function tick(){ CFGS.forEach(c=>apply(c.pref, c.ids)); }
-  // gentle sync loop
-  let __mo_last=0; const __mo_loop=()=>{ const now=performance.now(); if(now-__mo_last>350){ __mo_last=now; tick(); } requestAnimationFrame(__mo_loop); }; requestAnimationFrame(__mo_loop);
   document.addEventListener('DOMContentLoaded', function(){ vin_bind_observer(); tick(); });
 })();
 /* MO CORE END */
-</script>
-<script id="sub_patch_v14">
-(()=>{
-
-  if (window.__SUB_V14_PATCHED__) return;
-  window.__SUB_V14_PATCHED__ = true;
-
-  const $ = (sel, root=document) => root.querySelector(sel);
-  const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
-  const inView = $('#view-sublimacion') || document;
-
-  // --- Safe EU parsing / formatting (event-driven, sin MutationObserver)
-  const toEU = (n) => {
-    if (!isFinite(n)) n = 0;
-    const s = Number(n).toFixed(2);
-    return '$ ' + s.replace('.', ',');
-  };
-  const parseEU = (v) => {
-    if (v == null) return 0;
-    if (typeof v === 'number') return v;
-    let s = String(v).trim();
-    if (s === '') return 0;
-    s = s.replace(/[^0-9,.\-]/g, '');
-    const hasComma = s.indexOf(',') >= 0;
-    const hasDot = s.indexOf('.') >= 0;
-    if (hasComma && hasDot) {
-      s = s.replace(/\./g, '').replace(',', '.');
-    } else if (hasComma && !hasDot) {
-      s = s.replace(',', '.');
-    }
-    const num = parseFloat(s);
-    return isFinite(num) ? num : 0;
-  };
-
-  const traceOn = location.hash.includes('trace');
-  const TRACE = (...args)=>{ if(traceOn) console.log('[SUB]', ...args); };
-
-  // --- Mapeo de elementos de Sublimación
-  const ids = [
-    'd_prod_on','d_prod_cant','d_prod_precio','d_prod_ud',
-    'd_papel_on','d_papel_cant','d_papel_precio','d_papel_ud',
-    'd_tinta_on','d_tinta_cant','d_tinta_precio','d_tinta_ud',
-    'd_cinta_on','d_cinta_cant','d_cinta_precio','d_cinta_ud',
-    'd_empaque_on','d_empaque_cant','d_empaque_precio','d_empaque_ud',
-    'e_impresora_on','e_impresora_precio','e_impresora_mes','e_impresora_ud',
-    'e_plancha_on','e_plancha_precio','e_plancha_mes','e_plancha_ud',
-    'e_pc_on','e_pc_precio','e_pc_mes','e_pc_ud',
-    'e_prensa_on','e_prensa_precio','e_prensa_mes','e_prensa_ud',
-    'e_resistencia_on','e_resistencia_precio','e_resistencia_mes','e_resistencia_ud',
-    'sub_total_directos','sub_total_depr','sub_subtotal_no_gi',
-    'chk_ganancia','sub_ganancia','chk_impuestos','sub_impuestos',
-    'sub_subtotal','sub_ganancia_val','sub_impuestos_val','sub_total',
-    'btn_reset_sub','btn_copy_sub','btn_print_sub',
-    'sub_mo_on','sub_mo_cfg_btn','sub_mo_cfg','sub_mo_sueldo','sub_mo_horas_mes','sub_mo_setup','sub_mo_run','sub_mo_units','sub_mo_pill','sub_mo_val'
-  ];
-  const el = Object.fromEntries(ids.map(id=>[id, $('#'+id, inView)]));
-
-  if (!el.sub_total) { console.warn('[SUB] Module not detected'); return; }
-
-  const readNum = (input) => {
-    if (!input) return 0;
-    if (input.type === 'number') {
-      const v = parseFloat(input.value);
-      return isFinite(v) ? v : 0;
-    } else {
-      return parseEU(input.value);
-    }
-  };
-
-  function directos(){
-    let total = 0;
-    function unitCost(chk, cant, precio, out){
-      let val = 0;
-      if (chk && chk.checked) {
-        const c = readNum(cant);
-        const p = readNum(precio);
-        if (c > 0) val = p / c;
-      }
-      if (out) out.value = toEU(val);
-      return val;
-    }
-    total += unitCost(el.d_prod_on, el.d_prod_cant, el.d_prod_precio, el.d_prod_ud);
-    total += unitCost(el.d_papel_on, el.d_papel_cant, el.d_papel_precio, el.d_papel_ud);
-    total += unitCost(el.d_tinta_on, el.d_tinta_cant, el.d_tinta_precio, el.d_tinta_ud);
-    total += unitCost(el.d_cinta_on, el.d_cinta_cant, el.d_cinta_precio, el.d_cinta_ud);
-    total += unitCost(el.d_empaque_on, el.d_empaque_cant, el.d_empaque_precio, el.d_empaque_ud);
-    el.sub_total_directos.textContent = toEU(total);
-    TRACE('directos', total);
-    return total;
-  }
-
-  function depreciacion(){
-    let total = 0;
-    function depMesUd(chk, precio, outMes, outUd){
-      let mes = 0, ud = 0;
-      if (chk && chk.checked) {
-        const pr = readNum(precio);
-        const prod = parseEU(precio.getAttribute('data-prod') || '100');
-        mes = pr / 24;
-        if (prod > 0) ud = mes / prod;
-      }
-      if (outMes) outMes.value = toEU(mes);
-      if (outUd) outUd.value = toEU(ud);
-      return ud;
-    }
-    total += depMesUd(el.e_impresora_on, el.e_impresora_precio, el.e_impresora_mes, el.e_impresora_ud);
-    total += depMesUd(el.e_plancha_on, el.e_plancha_precio, el.e_plancha_mes, el.e_plancha_ud);
-    total += depMesUd(el.e_pc_on, el.e_pc_precio, el.e_pc_mes, el.e_pc_ud);
-    total += depMesUd(el.e_prensa_on, el.e_prensa_precio, el.e_prensa_mes, el.e_prensa_ud);
-    total += depMesUd(el.e_resistencia_on, el.e_resistencia_precio, el.e_resistencia_mes, el.e_resistencia_ud);
-    el.sub_total_depr.textContent = toEU(total);
-    TRACE('depreciacion', total);
-    return total;
-  }
-
-  function manoObraVal(){
-    if (!el.sub_mo_on || !el.sub_mo_on.checked) {
-      if (el.sub_mo_pill) el.sub_mo_pill.style.display = 'none';
-      if (el.sub_mo_val) el.sub_mo_val.textContent = toEU(0);
-      TRACE('mo OFF');
-      return 0;
-    }
-    const sueldo = readNum(el.sub_mo_sueldo);
-    const horasMes = Math.max(1, readNum(el.sub_mo_horas_mes));
-    const setupMin = Math.max(0, readNum(el.sub_mo_setup));
-    const runMin = Math.max(0, readNum(el.sub_mo_run));
-    const units = Math.max(1, readNum(el.sub_mo_units));
-
-    const minMes = horasMes * 60;
-    const costoMin = sueldo / minMes;
-    const totalMin = setupMin + (runMin * units);
-    const costo = costoMin * totalMin / Math.max(units, 1);
-
-    if (el.sub_mo_pill) el.sub_mo_pill.style.display = '';
-    if (el.sub_mo_val) el.sub_mo_val.textContent = toEU(costo);
-    TRACE('mo', {sueldo, horasMes, setupMin, runMin, units, costo});
-    return costo;
-  }
-
-  function recalc(){
-    const d = directos();
-    const dep = depreciacion();
-    const sinGI = d + dep;
-    el.sub_subtotal_no_gi.textContent = toEU(sinGI);
-
-    const mo = manoObraVal();
-    const base = sinGI + mo;
-
-    const ganPct = (el.chk_ganancia && el.chk_ganancia.checked) ? (readNum(el.sub_ganancia) || 0) : 0;
-    const ganVal = base * ganPct / 100;
-    el.sub_ganancia_val.textContent = toEU(ganVal);
-
-    const impPct = (el.chk_impuestos && el.chk_impuestos.checked) ? (readNum(el.sub_impuestos) || 0) : 0;
-    const impVal = (base + ganVal) * impPct / 100;
-    el.sub_impuestos_val.textContent = toEU(impVal);
-
-    const subtotal = base;
-    el.sub_subtotal.textContent = toEU(subtotal);
-
-    const total = subtotal + ganVal + impVal;
-    el.sub_total.textContent = toEU(total);
-
-    TRACE('totales', {sinGI, mo, base, ganPct, ganVal, impPct, impVal, subtotal, total});
-  }
-
-  function copyDesglose(){
-    const txt = [
-      '--- Sublimación (desglose) ---',
-      'Directos: ' + el.sub_total_directos.textContent,
-      'Depreciación: ' + el.sub_total_depr.textContent,
-      'Sin G/I: ' + el.sub_subtotal_no_gi.textContent,
-      el.sub_mo_on && el.sub_mo_on.checked ? ('Mano de obra: ' + el.sub_mo_val.textContent) : 'Mano de obra: $ 0,00',
-      'Subtotal: ' + el.sub_subtotal.textContent,
-      '+ Ganancia: ' + el.sub_ganancia_val.textContent,
-      '+ Impuestos: ' + el.sub_impuestos_val.textContent,
-      'Precio de Venta: ' + el.sub_total.textContent
-    ].join('\n');
-    navigator.clipboard.writeText(txt).catch(()=>{});
-  }
-
-  // --- Toggle robusto de "Configurar"
-  function isCollapsed(node){
-    if (!node) return true;
-    if (node.hidden) return true;
-    const cl = node.classList || {contains:()=>false};
-    if (cl.contains('hidden') || cl.contains('d-none') || cl.contains('is-hidden') || cl.contains('collapse')) return true;
-    const cs = getComputedStyle(node);
-    if (cs.display === 'none' || cs.visibility === 'hidden' || cs.maxHeight === '0px' || cs.height === '0px') return true;
-    return false;
-  }
-
-  function toggleMoConfig(force){
-    if (!el.sub_mo_cfg) return;
-    const open = (force !== undefined) ? !!force : isCollapsed(el.sub_mo_cfg);
-    if (open){
-      el.sub_mo_cfg.hidden = false;
-      el.sub_mo_cfg.style.display = '';
-      el.sub_mo_cfg.classList.remove('hidden','d-none','is-hidden','collapse');
-      if (el.sub_mo_cfg_btn) el.sub_mo_cfg_btn.setAttribute('aria-expanded','true');
-      TRACE('MO cfg → OPEN');
-    } else {
-      el.sub_mo_cfg.hidden = true;
-      el.sub_mo_cfg.style.display = 'none';
-      // añadimos una clase genérica por si hay estilos dependientes
-      el.sub_mo_cfg.classList.add('hidden');
-      if (el.sub_mo_cfg_btn) el.sub_mo_cfg_btn.setAttribute('aria-expanded','false');
-      TRACE('MO cfg → CLOSED');
-    }
-  }
-
-  // --- Reset
-  function resetModulo(){
-    $$('#view-sublimacion input[type="checkbox"]').forEach(cb=>{
-      if (cb === el.chk_ganancia || cb === el.chk_impuestos) {
-        cb.checked = true;
-      } else {
-        cb.checked = false;
-      }
-    });
-    if (el.sub_mo_pill) el.sub_mo_pill.style.display = 'none';
-    recalc();
-  }
-
-  // --- Wiring
-  const onInputs = [
-    'd_prod_on','d_prod_cant','d_prod_precio',
-    'd_papel_on','d_papel_cant','d_papel_precio',
-    'd_tinta_on','d_tinta_cant','d_tinta_precio',
-    'd_cinta_on','d_cinta_cant','d_cinta_precio',
-    'd_empaque_on','d_empaque_cant','d_empaque_precio',
-    'e_impresora_on','e_impresora_precio',
-    'e_plancha_on','e_plancha_precio',
-    'e_pc_on','e_pc_precio',
-    'e_prensa_on','e_prensa_precio',
-    'e_resistencia_on','e_resistencia_precio',
-    'chk_ganancia','sub_ganancia','chk_impuestos','sub_impuestos',
-    'sub_mo_on','sub_mo_sueldo','sub_mo_horas_mes','sub_mo_setup','sub_mo_run','sub_mo_units'
-  ];
-  onInputs.forEach(id=>{
-    const node = el[id];
-    if (!node) return;
-    node.addEventListener(node.type === 'checkbox' ? 'change' : 'input', recalc, {passive:true});
-  });
-
-  if (el.sub_mo_cfg_btn && el.sub_mo_cfg) {
-    // Accesibilidad
-    el.sub_mo_cfg_btn.setAttribute('aria-controls','sub_mo_cfg');
-    el.sub_mo_cfg_btn.setAttribute('aria-expanded', String(!isCollapsed(el.sub_mo_cfg)));
-    el.sub_mo_cfg_btn.addEventListener('click', (ev)=>{
-      ev.preventDefault();
-      toggleMoConfig();
-    }, {passive:false});
-  }
-
-  if (el.btn_copy_sub) el.btn_copy_sub.addEventListener('click', copyDesglose, {passive:true});
-  if (el.btn_print_sub) el.btn_print_sub.addEventListener('click', ()=>window.print(), {passive:true});
-  if (el.btn_reset_sub) el.btn_reset_sub.addEventListener('click', resetModulo);
-
-  // Primera pasada
-  recalc();
-
-})();
 </script>
 <script id="suite_clean_remove_bcv">
 document.addEventListener('DOMContentLoaded', function(){
@@ -9572,7 +9607,7 @@ document.addEventListener('DOMContentLoaded', function(){
   // === Helpers EU ===
   const toEU = (n)=>{
     if (!isFinite(n)) n = 0;
-    return "$ " + n.toFixed(2).replace(".", ",");
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + n.toFixed(2).replace(".", ",");
   };
   const toEUPlain = (n)=>{
     if (!isFinite(n)) n = 0;
@@ -9653,6 +9688,20 @@ document.addEventListener('DOMContentLoaded', function(){
 
     emp_use: $("#sub_d_empaque_use", view),
     emp_used: $("#sub_d_empaque_used", view),
+
+    funda_on: $("#d_funda_on", view),
+    funda_cant: $("#d_funda_cant", view),
+    funda_precio: $("#d_funda_precio", view),
+    funda_ud: $("#d_funda_ud", view),
+    funda_use: $("#d_funda_use", view),
+    funda_used: $("#d_funda_used", view),
+
+    pelusas_on: $("#sub_d_pelusas_on", view),
+    pelusas_cant: $("#sub_d_pelusas_cant", view),
+    pelusas_precio: $("#sub_d_pelusas_precio", view),
+    pelusas_ud: $("#sub_d_pelusas_ud", view),
+    pelusas_use: $("#sub_d_pelusas_use", view),
+    pelusas_used: $("#sub_d_pelusas_used", view),
   };
 
   // === Depreciación: refs ===
@@ -9691,6 +9740,13 @@ document.addEventListener('DOMContentLoaded', function(){
     re_ud: $("#sub_e_res_ud", view),
     re_uses: $("#sub_e_res_uses", view),
     re_used: $("#sub_e_res_used", view),
+
+    hor_on:  $("#e_horno_on", view),
+    hor_precio: $("#e_horno_precio", view),
+    hor_mes: $("#e_horno_mes", view),
+    hor_ud: $("#e_horno_ud", view),
+    hor_uses: $("#sub_e_horno_uses", view),
+    hor_used: $("#sub_e_horno_used", view),
   };
 
   // === Totales/GI/MO ===
@@ -9771,6 +9827,8 @@ document.addEventListener('DOMContentLoaded', function(){
     d.tinta_ud.value  = toEU(unitCost(d.tinta_cant, d.tinta_precio));
     d.cinta_ud.value  = toEU(unitCost(d.cinta_cant, d.cinta_precio));
     d.emp_ud.value    = toEU(unitCost(d.emp_cant, d.emp_precio));
+    d.funda_ud.value  = toEU(unitCost(d.funda_cant, d.funda_precio));
+    d.pelusas_ud.value = toEU(unitCost(d.pelusas_cant, d.pelusas_precio));
 
     // Consumo real (SIEMPRE visible)
     const prod_ud_raw  = unitCost(d.prod_cant, d.prod_precio);
@@ -9778,24 +9836,32 @@ document.addEventListener('DOMContentLoaded', function(){
     const tinta_ud_raw = unitCost(d.tinta_cant, d.tinta_precio);
     const cinta_ud_raw = unitCost(d.cinta_cant, d.cinta_precio);
     const emp_ud_raw   = unitCost(d.emp_cant, d.emp_precio);
+    const funda_ud_raw = unitCost(d.funda_cant, d.funda_precio);
+    const pelusas_ud_raw = unitCost(d.pelusas_cant, d.pelusas_precio);
     const prod_used  = prod_ud_raw  * clampPos(parseEU(d.prod_use.value));
     const papel_used = papel_ud_raw * clampPos(parseEU(d.papel_use.value));
     const tinta_used = tinta_ud_raw * clampPos(parseEU(d.tinta_use.value));
     const cinta_used = cinta_ud_raw * clampPos(parseEU(d.cinta_use.value));
     const emp_used   = emp_ud_raw   * clampPos(parseEU(d.emp_use.value));
+    const funda_used = funda_ud_raw * clampPos(parseEU(d.funda_use.value));
+    const pelusas_used = pelusas_ud_raw * clampPos(parseEU(d.pelusas_use.value));
     d.prod_used.value  = toEU(prod_used);
     d.papel_used.value = toEU(papel_used);
     d.tinta_used.value = toEU(tinta_used);
     d.cinta_used.value = toEU(cinta_used);
     d.emp_used.value   = toEU(emp_used);
+    d.funda_used.value = toEU(funda_used);
+    d.pelusas_used.value = toEU(pelusas_used);
 
         // Totales directos (solo si checkbox ON) — ahora usan Costo utilizado
     let directos = 0;
-    if(d.prod_on.checked)  directos += prod_used;
-    if(d.papel_on.checked) directos += papel_used;
-    if(d.tinta_on.checked) directos += tinta_used;
-    if(d.cinta_on.checked) directos += cinta_used;
-    if(d.emp_on.checked)   directos += emp_used;
+    if(d.prod_on.checked)    directos += prod_used;
+    if(d.papel_on.checked)   directos += papel_used;
+    if(d.tinta_on.checked)   directos += tinta_used;
+    if(d.cinta_on.checked)   directos += cinta_used;
+    if(d.emp_on.checked)     directos += emp_used;
+    if(d.funda_on.checked)   directos += funda_used;
+    if(d.pelusas_on.checked) directos += pelusas_used;
 
     // Depreciación visibles SIEMPRE
     const imp_mes = depMes(parseEU(e.imp_precio.value));
@@ -9823,17 +9889,24 @@ document.addEventListener('DOMContentLoaded', function(){
     e.re_mes.value = toEU(re_mes);
     e.re_ud.value  = toEU(re_ud);
 
+    const hor_mes = depMes(parseEU(e.hor_precio.value));
+    const hor_ud  = depUd(parseEU(e.hor_precio.value), parseEU(e.hor_precio.dataset.prod||100));
+    e.hor_mes.value = toEU(hor_mes);
+    e.hor_ud.value  = toEU(hor_ud);
+
     // Consumo real en depreciación (SIEMPRE visible)
     const imp_used = imp_ud * clampPos(parseEU(e.imp_uses.value));
     const pla_used = pla_ud * clampPos(parseEU(e.pla_uses.value));
     const pc_used  = pc_ud  * clampPos(parseEU(e.pc_uses.value));
     const pr_used  = pr_ud  * clampPos(parseEU(e.pr_uses.value));
     const re_used  = re_ud  * clampPos(parseEU(e.re_uses.value));
+    const hor_used = hor_ud * clampPos(parseEU(e.hor_uses.value));
     e.imp_used.value = toEU(imp_used);
     e.pla_used.value = toEU(pla_used);
     e.pc_used.value  = toEU(pc_used);
     e.pr_used.value  = toEU(pr_used);
     e.re_used.value  = toEU(re_used);
+    e.hor_used.value = toEU(hor_used);
 
         // Total depreciación (solo si checkbox ON) — ahora usa Costo utilizado
     let depr = 0;
@@ -9842,6 +9915,7 @@ document.addEventListener('DOMContentLoaded', function(){
     if(e.pc_on.checked)  depr += pc_used;
     if(e.pr_on.checked)  depr += pr_used;
     if(e.re_on.checked)  depr += re_used;
+    if(e.hor_on.checked) depr += hor_used;
 
     // Sin G/I
     const no_gi = directos + depr;
@@ -9872,8 +9946,8 @@ document.addEventListener('DOMContentLoaded', function(){
   // === Eventos ===
   // formatear precios con coma
   const precioInputs = [
-    d.prod_precio,d.papel_precio,d.tinta_precio,d.cinta_precio,d.emp_precio,
-    e.imp_precio,e.pla_precio,e.pc_precio,e.pr_precio,e.re_precio
+    d.prod_precio,d.papel_precio,d.tinta_precio,d.cinta_precio,d.emp_precio,d.pelusas_precio,
+    e.imp_precio,e.pla_precio,e.pc_precio,e.pr_precio,e.re_precio,e.hor_precio
   ];
   precioInputs.forEach(inp => {
     if(!inp) return;
@@ -9895,14 +9969,17 @@ document.addEventListener('DOMContentLoaded', function(){
     d.tinta_on,d.tinta_cant,d.tinta_precio,
     d.cinta_on,d.cinta_cant,d.cinta_precio,
     d.emp_on,d.emp_cant,d.emp_precio,
-    d.prod_use,d.papel_use,d.tinta_use,d.cinta_use,d.emp_use,
+    d.funda_on,d.funda_cant,d.funda_precio,
+    d.pelusas_on,d.pelusas_cant,d.pelusas_precio,
+    d.prod_use,d.papel_use,d.tinta_use,d.cinta_use,d.emp_use,d.funda_use,d.pelusas_use,
 
     e.imp_on,e.imp_precio,
     e.pla_on,e.pla_precio,
     e.pc_on,e.pc_precio,
     e.pr_on,e.pr_precio,
     e.re_on,e.re_precio,
-    e.imp_uses,e.pla_uses,e.pc_uses,e.pr_uses,e.re_uses,
+    e.hor_on,e.hor_precio,
+    e.imp_uses,e.pla_uses,e.pc_uses,e.pr_uses,e.re_uses,e.hor_uses,
 
     t.chk_g,t.g_pct,t.chk_i,t.i_pct,
     t.mo_on,t.mo_sueldo,t.mo_horas,t.mo_setup,t.mo_run,t.mo_units
@@ -9970,6 +10047,7 @@ document.addEventListener('DOMContentLoaded', function(){
     d.tinta_on.checked = false;
     d.cinta_on.checked = false;
     d.emp_on.checked = false;
+    if(d.pelusas_on) d.pelusas_on.checked = false;
 
     d.prod_sel.value = "taza11";
     applyProductDefaults("taza11");
@@ -9977,9 +10055,12 @@ document.addEventListener('DOMContentLoaded', function(){
     d.tinta_cant.value = 300; d.tinta_precio.value = "40,00";
     d.cinta_cant.value = 100; d.cinta_precio.value = "3,00";
     d.emp_cant.value   = 50;  d.emp_precio.value   = "5,00";
+    if(d.pelusas_cant) d.pelusas_cant.value = 50;
+    if(d.pelusas_precio) d.pelusas_precio.value = "3,00";
 
     // Consumo real defaults
     d.prod_use.value = 1; d.papel_use.value = 1; d.tinta_use.value = 1; d.cinta_use.value = 1; d.emp_use.value = 1;
+    if(d.pelusas_use) d.pelusas_use.value = 1;
 
     // Depreciación
     e.imp_on.checked = false; e.imp_precio.value = "240,00";
@@ -10012,10 +10093,12 @@ document.addEventListener('DOMContentLoaded', function(){
   applyProductDefaults("taza11");
   // Estado inicial: todos los checkboxes en OFF (solo Sublimación)
   d.prod_on.checked=false; d.papel_on.checked=false; d.tinta_on.checked=false; d.cinta_on.checked=false; d.emp_on.checked=false;
+  if(d.pelusas_on) d.pelusas_on.checked=false;
   e.imp_on.checked=false; e.pla_on.checked=false; e.pc_on.checked=false; e.pr_on.checked=false; e.re_on.checked=false;
   t.chk_g.checked=false; t.chk_i.checked=false; t.mo_on.checked=false; if(t.mo_cfg) t.mo_cfg.style.display="none";
   // Defaults consumo real
   d.prod_use.value=1; d.papel_use.value=1; d.tinta_use.value=1; d.cinta_use.value=1; d.emp_use.value=1;
+  if(d.pelusas_use) d.pelusas_use.value=1;
   e.imp_uses.value=1; e.pla_uses.value=1; e.pc_uses.value=1; e.pr_uses.value=1; e.re_uses.value=1;
   recalc();
 })();
@@ -10094,7 +10177,7 @@ document.addEventListener('DOMContentLoaded', function(){
 // ============ Helpers (formato, UI, clipboard) ============
 const USD_FMT = new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'});
 const BS_FMT  = new Intl.NumberFormat('es-VE',{minimumFractionDigits:2,maximumFractionDigits:2});
-function fmtUSD(n){return '$ ' + fmtEU(isFinite(n)?n:0)}
+function fmtUSD(n){return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU(isFinite(n)?n:0)}
 function fmtBs(n){return 'Bs '+BS_FMT.format(isFinite(n)?n:0)}
 function parseNum(v){ if(typeof v==='number') return v; if(!v) return 0; v=String(v).replace(/[^0-9.,-]/g,'').replace(/,/g,''); return parseFloat(v)||0; }
 
@@ -10157,7 +10240,7 @@ function qs(id){return document.getElementById(id)}
     const [a,b] = s.split('.');
     return a.replace(/\B(?=(\d{3})+(?!\d))/g,'.') + (dec?(','+b):'');
   }
-  function fmtUSD(n){ return '$ '+fmtEU(n); }
+  function fmtUSD(n){ return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$')+'  '+fmtEU(n); }
 
   function onlyEUInput(el){
     if(!el) return;
@@ -10259,7 +10342,7 @@ function qs(id){return document.getElementById(id)}
       total += parseFloat(t)||0;
     });
         // Update material (adicionales) with the raw sum of bloques
-    var adicEl = qs("#vinil_adicionales"); if (adicEl) { adicEl.textContent = "$ " + fmtEU(total); }
+    var adicEl = qs("#vinil_adicionales"); if (adicEl) { adicEl.textContent = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU(total); }
 // Merma legacy disabled; handled by Vinil Pro merma slider
 const extras = (typeof window._vinilExtras === 'number') ? window._vinilExtras : 0;
     const grand = total + extras;
@@ -10325,7 +10408,7 @@ const extras = (typeof window._vinilExtras === 'number') ? window._vinilExtras :
     // 3) Apagar checkboxes relevantes del módulo Vinil
     [
       'cd_enabled',
-      'vin_d_papel_on','vin_d_cinta_on','vin_d_tinta_on',
+      'vin_d_papel_on','vin_d_cinta_on','vin_d_tinta_on','vin_d_pelusas_on',
       'vin_ind_on',
       'vin_mo_on',
       'vin_chk_ganancia','vin_chk_impuestos'
@@ -10337,13 +10420,13 @@ const extras = (typeof window._vinilExtras === 'number') ? window._vinilExtras :
     // 3b) Reset de "consumo real" (Cantidad a utilizar / Cant. de usos)
     [
       'cd_qty_use',
-      'vin_d_papel_qty_use','vin_d_cinta_qty_use','vin_d_tinta_qty_use'
+      'vin_d_papel_qty_use','vin_d_cinta_qty_use','vin_d_tinta_qty_use','vin_d_pelusas_qty_use'
     ].forEach(function(id){
       var el = document.getElementById(id);
       if (el) el.value = '1';
     });
     [
-      'cd_costo_util','vin_d_papel_util','vin_d_cinta_util','vin_d_tinta_util'
+      'cd_costo_util','vin_d_papel_util','vin_d_cinta_util','vin_d_tinta_util','vin_d_pelusas_util'
     ].forEach(function(id){
       var el = document.getElementById(id);
       if (el) el.value = '$ 0,00';
@@ -10753,7 +10836,7 @@ sum_update();
 // ============ DTF (servicio externo) ============
 (() => {
   const $ = (id) => document.getElementById(id);
-  const fmt = (n)=>'$ ' + fmtEU(isFinite(n)?n:0);
+  const fmt = (n)=>(window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$')+'  '+fmtEU(isFinite(n)?n:0);
   const num = (el)=>parseNum(el?.value);
   const clamp = (n)=>isFinite(n)?n:0;
 
@@ -11048,7 +11131,7 @@ $("btn_copy_dtf")?.addEventListener("click", ()=>{
     t += inc("sum_emp","sum_incluir_emp");
     t += inc("sum_env","sum_incluir_env");
     t += inc("sum_dtf","sum_incluir_dtf");
-    totalEl.textContent = '$ ' + fmtEU(isFinite(t)?t:0);
+    totalEl.textContent = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU(isFinite(t)?t:0);
   };
 
   ["sum_incluir_vinil","sum_incluir_sublim","sum_incluir_etiq","sum_incluir_emp","sum_incluir_env","sum_incluir_dtf"].forEach(id=>{
@@ -11086,7 +11169,7 @@ function drawBarChart(canvas, labels, data){
     ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(padL+plotW,y); ctx.stroke();
     const v = (maxV*i/steps);
     ctx.fillStyle='#6b7280'; ctx.font='12px sans-serif';
-    ctx.fillText('$'+v.toFixed(0), 6, y+4);
+    ctx.fillText((window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$')+v.toFixed(0), 6, y+4);
   }
   // Bars
   const n = data.length;
@@ -11107,7 +11190,7 @@ function drawBarChart(canvas, labels, data){
 // === DTF module extensions ===
 (() => {
   const $ = (id) => document.getElementById(id);
-  const fmt = (n)=>'$ ' + fmtEU(isFinite(n)?n:0);
+  const fmt = (n)=>(window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$')+'  '+fmtEU(isFinite(n)?n:0);
   const num = (el)=>parseNum(el?.value);
   const clamp = (n)=>isFinite(n)?n:0;
   const ANCHO_CM = 57;
@@ -11415,8 +11498,8 @@ function drawBarChart(canvas, labels, data){
     el.addEventListener('input', ()=>{ el.value = el.value.replace(/[^\d.,-]/g,''); });
     el.addEventListener('blur', ()=>{ el.value = fmtEU(parseEU(el.value)); });
   }
-  function setMoney(el, n){ if(el) el.value = '$ ' + fmtEU(n); }
-  function setText(el, n){ if(el){ el.textContent = '$ ' + fmtEU(n); } }
+  function setMoney(el, n){ if(el) el.value = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU(n); }
+  function setText(el, n){ if(el){ el.textContent = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEU(n); } }
 
   // Attach EU inputs
   [q('#cd_cant'), q('#cd_precio')].forEach(onlyEUInput);
@@ -12042,8 +12125,8 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
           </div>
         </div>
         <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px">
-          <div class="pill">DTF (ud): <span class="result" id="dtf_cost_ud${id}">$0.00</span></div>
-          <div class="pill">Total diseño (DTF): <span class="result" id="dtf_cost_total${id}">$0.00</span></div>
+          <div class="pill">DTF (ud): <span class="result" id="dtf_cost_ud${id}">$ 0,00</span></div>
+          <div class="pill">Total diseño (DTF): <span class="result" id="dtf_cost_total${id}">$ 0,00</span></div>
           <button type="button" class="copy-btn" data-copy="${id}">Copiar</button>
         </div>
       </div>`;
@@ -12298,7 +12381,7 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
     const s = Number(n||0).toFixed(2);
     const parts = s.split('.');
     const intp = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    return '$ ' + intp + ',' + parts[1];
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + intp + ',' + parts[1];
   }
 
   function registerIndirectos(cfg){
@@ -12401,7 +12484,7 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
     const s = Number(n||0).toFixed(2);
     const parts = s.split('.');
     const intp = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    return '$ ' + intp + ',' + parts[1];
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + intp + ',' + parts[1];
   }
 
   const ids = {
@@ -12464,7 +12547,7 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
     const s = Number(n||0).toFixed(2);
     const parts = s.split('.');
     const intp = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    return '$ ' + intp + ',' + parts[1];
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + intp + ',' + parts[1];
   }
 
   const ids = {
@@ -12555,7 +12638,7 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
     const s = Number(n||0).toFixed(2);
     const parts = s.split('.');
     const intp = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    return '$ ' + intp + ',' + parts[1];
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + intp + ',' + parts[1];
   }
 
   const ids = {
@@ -12647,7 +12730,7 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
     const s = Number(n||0).toFixed(2);
     const parts = s.split('.');
     const intp = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    return '$ ' + intp + ',' + parts[1];
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + intp + ',' + parts[1];
   }
 
   const ids = {
@@ -12789,7 +12872,7 @@ Adicionales vinil: ${q('#vinil_adicionales').textContent}`;
     const s = Number(n||0).toFixed(2);
     const parts = s.split('.');
     const intp = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    return '$ ' + intp + ',' + parts[1];
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + intp + ',' + parts[1];
   }
 
   const ids = {
@@ -13184,8 +13267,8 @@ body.dark #view-vinil .calc-block .copy-btn[data-remove]{
     return isFinite(n)? n : 0;
   }
   function fmtLocal(n){
-    try { return (typeof fmtUSD==='function') ? fmtUSD(n) : ('$ ' + (Number(n||0)).toFixed(2)); }
-    catch(e){ return '$ ' + (Number(n||0)).toFixed(2); }
+    try { return (typeof fmtUSD==='function') ? fmtUSD(n) : ((window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + (Number(n||0)).toFixed(2)); }
+    catch(e){ return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + (Number(n||0)).toFixed(2); }
   }
   function updFunda(){
     var q = toNumEUUS(document.getElementById('d_funda_cant')?.value);
@@ -13225,7 +13308,7 @@ body.dark #view-vinil .calc-block .copy-btn[data-remove]{
     const s = n.toFixed(2);
     const [intp, dec] = s.split(".");
     const intEU = intp.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    return "$ " + intEU + "," + dec;
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + intEU + ',' + dec;
   };
   const parseEU = (v)=>{
     if (typeof v !== "string") return (isFinite(v)?Number(v):0);
@@ -13271,15 +13354,20 @@ body.dark #view-vinil .calc-block .copy-btn[data-remove]{
       ["sub_d_papel_on","sub_d_papel_cant","sub_d_papel_precio","sub_d_papel_ud"],
       ["sub_d_tinta_on","sub_d_tinta_cant","sub_d_tinta_precio","sub_d_tinta_ud"],
       ["sub_d_cinta_on","sub_d_cinta_cant","sub_d_cinta_precio","sub_d_cinta_ud"],
-      ["d_funda_on","d_funda_cant","d_funda_precio","d_funda_ud"],
-      ["sub_d_empaque_on","sub_d_empaque_cant","sub_d_empaque_precio","sub_d_empaque_ud"]
+      ["d_funda_on","d_funda_cant","d_funda_precio","d_funda_ud","d_funda_used","d_funda_use"],
+      ["sub_d_empaque_on","sub_d_empaque_cant","sub_d_empaque_precio","sub_d_empaque_ud"],
+      ["sub_d_pelusas_on","sub_d_pelusas_cant","sub_d_pelusas_precio","sub_d_pelusas_ud","sub_d_pelusas_used","sub_d_pelusas_use"]
     ];
     let total = 0;
-    for(const [onId, cantId, precioId, udId] of rows){
+    for(const [onId, cantId, precioId, udId, usedId, useId] of rows){
       const cant = parseEU($("#"+cantId)?.value||"0");
       const precio = parseEU($("#"+precioId)?.value||"0");
       const unit = ud(precio,cant);
       if ($("#"+udId)) $("#"+udId).value = fmtEU(unit);
+      if (usedId && useId) {
+        const use = Math.max(0, parseEU($("#"+useId)?.value||"1"));
+        if ($("#"+usedId)) $("#"+usedId).value = fmtEU(unit * use);
+      }
       const on = $("#"+onId)?.checked;
       if (on) total += unit;
     }
@@ -13295,10 +13383,10 @@ body.dark #view-vinil .calc-block .copy-btn[data-remove]{
       ["sub_e_pc_on","sub_e_pc_precio","sub_e_pc_mes","sub_e_pc_ud", prodDefault],
       ["sub_e_prensa_on","sub_e_prensa_precio","sub_e_prensa_mes","sub_e_prensa_ud", prodDefault],
       ["sub_e_res_on","sub_e_res_precio","sub_e_res_mes","sub_e_res_ud", prodDefault],
-      ["e_horno_on","e_horno_precio","e_horno_mes","e_horno_ud", prodDefault]
+      ["e_horno_on","e_horno_precio","e_horno_mes","e_horno_ud", prodDefault, "sub_e_horno_used","sub_e_horno_uses"]
     ];
     let total = 0;
-    for (const [onId, precioId, mesId, udId, prodMesDefault] of depRows){
+    for (const [onId, precioId, mesId, udId, prodMesDefault, usedId, usesId] of depRows){
       const precio = parseEU($("#"+precioId)?.value||"0");
       const prodMesAttr = $("#"+precioId)?.getAttribute("data-prod");
       const prodMes = parseEU(prodMesAttr||"") || prodMesDefault;
@@ -13306,6 +13394,11 @@ body.dark #view-vinil .calc-block .copy-btn[data-remove]{
       const cUd = cMes / (prodMes || prodDefault);
       if ($("#"+mesId)) $("#"+mesId).value = fmtEU(cMes);
       if ($("#"+udId)) $("#"+udId).value = fmtEU(cUd);
+      if (usedId && usesId) {
+        const uses = Math.max(0, parseEU($("#"+usesId)?.value||"1"));
+        const cUsed = cUd * uses;
+        if ($("#"+usedId)) $("#"+usedId).value = fmtEU(cUsed);
+      }
       const on = $("#"+onId)?.checked;
       if (on) total += cUd;
     }
@@ -13394,6 +13487,7 @@ body.dark #view-vinil .calc-block .copy-btn[data-remove]{
       "sub_d_cinta_on","sub_d_cinta_cant","sub_d_cinta_precio",
       "d_funda_on","d_funda_cant","d_funda_precio",
       "sub_d_empaque_on","sub_d_empaque_cant","sub_d_empaque_precio",
+      "sub_d_pelusas_on","sub_d_pelusas_cant","sub_d_pelusas_precio",
       // dep
       "sub_e_impresora_on","sub_e_impresora_precio",
       "sub_e_plancha_on","sub_e_plancha_precio",
@@ -13818,7 +13912,7 @@ document.addEventListener('DOMContentLoaded', function(){
     return a + ',' + parts[1];
   }
 }
-  function set$(id,n){ var el=q(id); if(el){ el.textContent = '$ ' + fmt(n); } }
+  function set$(id,n){ var el=q(id); if(el){ el.textContent = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmt(n); } }
   function ensureSelector(prefix){
     var g = q(prefix+'ganancia'); if (!g) return;
     if (q(prefix+'ganancia_mode')) return;
@@ -13912,7 +14006,7 @@ function compute(prefix){
   if (!document.getElementById('view-papeleria')) return;
   const q=id=>document.getElementById(id);
   const parseEU=(v)=>{ if(typeof v==='number') return v; v=(v||'').toString().trim().replace(/\./g,'').replace(',','.'); let n=parseFloat(v); return isNaN(n)?0:n; };
-  const fmtEU=(n)=>'$ '+(isFinite(n)?n:0).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const fmtEU=(n)=>(window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$')+'  '+(isFinite(n)?n:0).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
 
   function unitUd(cant,precio){ cant=parseEU(cant); precio=parseEU(precio); return cant>0?precio/cant:0; }
   function depMes(precio){ return parseEU(precio)/24; }
@@ -14057,8 +14151,8 @@ document.addEventListener('click', function(ev){
     return isNaN(n) ? 0 : n;
   }
   function fmtUSD(n){
-    try { return '$ ' + new Intl.NumberFormat('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2}).format(+n||0); }
-    catch(_){ const x = Math.round(((+n)||0)*100)/100; return '$ ' + x.toFixed(2).replace('.',','); }
+    try { return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + new Intl.NumberFormat('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2}).format(+n||0); }
+    catch(_){ const x = Math.round(((+n)||0)*100)/100; return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + x.toFixed(2).replace('.',','); }
   }
 
   // ===== Directos helpers =====
@@ -14171,8 +14265,8 @@ document.addEventListener('click', function(ev){
     var x = parseFloat(s); return isNaN(x)?0:x;
   }
   function papEuro(n){
-    try{ return '$ ' + new Intl.NumberFormat('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2}).format(+n||0); }
-    catch(_){ var x = Math.round(((+n)||0)*100)/100; return '$ ' + (x.toFixed(2).replace('.',',')); }
+    try{ return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + new Intl.NumberFormat('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2}).format(+n||0); }
+    catch(_){ var x = Math.round(((+n)||0)*100)/100; return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + (x.toFixed(2).replace('.',',')); }
   }
 
   function papResetStrict(){
@@ -14271,7 +14365,7 @@ document.addEventListener('click', function(ev){
     n = Math.abs(n);
     let s = n.toFixed(2).replace('.',',');
     s = s.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    return sign + '$ ' + s;
+    return sign + (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + s;
   };
   const setMoney = (el, n)=>{ if(el) el.value = fmtEU(n); };
   function unit(cant, precio){ cant = parseEU(cant); precio = parseEU(precio); return cant>0 ? (precio/cant) : 0; }
@@ -14378,7 +14472,7 @@ document.addEventListener('click', function(ev){
     if (!isFinite(n)) n = 0;
     const s = (Math.round(n*100)/100).toFixed(2);
     const [i,d] = s.split(".");
-    return "$ " + i.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "," + d;
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + i.replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "," + d;
   };
   const fmtUSD = n => "$" + (Math.round((n||0)*100)/100).toFixed(2);
 
@@ -14578,138 +14672,6 @@ document.addEventListener('click', function(ev){
 })();
 </script>
 <script>
-// --- Injected patch: Vinil module guard + EU formatting + correct totals (non-destructive) ---
-(function(){
-  // LEGACY VINIL PATCH DISABLED: lógica reemplazada por vinil_rewrite_logic (V32)
-  return;
-
-  const $ = (q,ctx=document)=>ctx.querySelector(q);
-  const $$ = (q,ctx=document)=>Array.from(ctx.querySelectorAll(q));
-
-  // EU formatter / parser
-  function fmtEU(n){
-    if (isNaN(n) || n == null) n = 0;
-    const parts = Number(n).toFixed(2).split('.');
-    const int = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    return '$ ' + int + ',' + parts[1];
-  }
-  function parseAny(txt){
-    if (typeof txt !== 'string') return (Number(txt)||0);
-    // Try EU $ 1.234,56
-    let t = txt.trim();
-    // remove currency and spaces
-    t = t.replace(/[^\d,\.\-]/g,'');
-    // if has comma as decimal and dots as thousands
-    if (t.includes(',') && (t.lastIndexOf(',') > t.lastIndexOf('.'))) {
-      t = t.replace(/\./g,'').replace(',','.');
-    }
-    // else assume dot decimal
-    let v = parseFloat(t);
-    return isNaN(v) ? 0 : v;
-  }
-
-  // Guard to avoid re-entrant updates that cause flicker
-  let _vin_updating = false;
-  function guard(fn){
-    if (_vin_updating) return;
-    _vin_updating = true;
-    try { fn && fn(); } finally { _vin_updating = false; }
-  }
-
-  // Recompute bottom card consistently using displayed partials (directos, dep, indirectos, MO)
-  function vin_recompute_totals(){
-    const root = $('#view-vinil');
-    if (!root) return;
-    const dirTxt = $('#vinil_pro_directos')?.textContent || '0';
-    const depTxt = $('#vinil_pro_dep')?.textContent || '0';
-    const indOn  = $('#vin_ind_on')?.checked || false;
-    const indTxt = $('#vin_ind_ud')?.textContent || '0';
-    const moOn   = $('#vin_mo_on')?.checked || false;
-    const moTxt  = $('#vin_mo_val')?.textContent || '0';
-
-    const dir = parseAny(dirTxt);
-    const dep = parseAny(depTxt);
-    const ind = indOn ? parseAny(indTxt) : 0;
-    const mo  = moOn ? parseAny(moTxt) : 0;
-
-    const subtotalNoGI = dir + dep + ind + mo;
-
-    const giBox = $('#vinil_gi_card');
-    if (giBox){
-      // pintar "Total sin G/I" y "Subtotal" en EU
-      const subNoGiEl = $('#vin_subtotal_no_gi');
-      if (subNoGiEl) subNoGiEl.textContent = fmtEU(subtotalNoGI);
-
-      const subEl = $('#vin_subtotal');
-      if (subEl) subEl.textContent = fmtEU(subtotalNoGI);
-
-      // Ganancia / Impuestos
-      const ganOn = $('#vin_chk_ganancia')?.checked ?? true;
-      const impOn = $('#vin_chk_impuestos')?.checked ?? true;
-      const ganPct = parseAny($('#vin_ganancia')?.value || '0');
-      const impPct = parseAny($('#vin_impuestos')?.value || '0');
-
-      const ganVal = ganOn ? subtotalNoGI * (ganPct/100) : 0;
-      const impVal = impOn ? (subtotalNoGI + ganVal) * (impPct/100) : 0;
-
-      const ganEl = $('#vin_ganancia_val');
-      if (ganEl) ganEl.textContent = fmtEU(ganVal);
-      const impEl = $('#vin_impuestos_val');
-      if (impEl) impEl.textContent = fmtEU(impVal);
-
-      const totalEl = $('#vin_total');
-      if (totalEl) totalEl.textContent = fmtEU(subtotalNoGI + ganVal + impVal);
-    }
-
-    // Top "Total Vinil" debe incluir Directos + Depreciación + Indirectos (no G/I)
-    const topTotal = $('#vinil_pro_total');
-    if (topTotal){
-      topTotal.textContent = fmtEU(dir + dep + ind);
-    }
-
-    // Normalizar formato EU en los pill superiores
-    const normEU = ['#vinil_pro_directos','#vinil_pro_dep','#vinil_pro_adic','#vinil_pro_total'];
-    normEU.forEach(sel => {
-      const el = $(sel);
-      if (!el) return;
-      const v = parseAny(el.textContent);
-      el.textContent = fmtEU(v);
-    });
-
-    // Mostrar/ocultar MO pill
-    const moPill = $('#vin_mo_pill');
-    if (moPill) moPill.style.display = moOn && parseAny(moTxt) > 0 ? '' : 'none';
-  }
-
-  // Attach guarded wrappers to existing functions (non-destructive)
-  ['recalc_all_vinil','vinil_actualizarTotal','vin_update_total'].forEach(name=>{
-    const orig = window[name];
-    if (typeof orig === 'function'){
-      window[name] = function(){
-        return guard(function(){
-          const out = orig.apply(this, arguments);
-          vin_recompute_totals();
-          return out;
-        });
-      };
-    }
-  });
-
-  // Also recalc on typical inputs in the GI card
-  const root = document;
-  const triggers = ['#vin_chk_ganancia','#vin_chk_impuestos','#vin_ganancia','#vin_impuestos',
-                    '#vin_ind_on','#vin_mo_on'];
-  function bind(el){
-    if (!el) return;
-    ['input','change'].forEach(ev=>el.addEventListener(ev, ()=>guard(vin_recompute_totals)));
-  }
-  triggers.forEach(sel=>bind($(sel, root)));
-
-  // Run once after load (small delay to let original scripts wire up)
-  window.addEventListener('load', ()=> setTimeout(()=>guard(vin_recompute_totals), 120));
-})();
-</script>
-<script>
 // --- Injected patch: Vinil Reset unificado (apaga todos los checkboxes del módulo) ---
 (function(){
   const $ = (q,ctx=document)=>ctx.querySelector(q);
@@ -14735,7 +14697,7 @@ document.addEventListener('click', function(ev){
 (function(){
   const $ = (q,ctx=document)=>ctx.querySelector(q);
   const $$ = (q,ctx=document)=>Array.from(ctx.querySelectorAll(q));
-  function fmtEU(n){ if(isNaN(n)||n==null)n=0; const parts=Number(n).toFixed(2).split('.'); const i=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.'); return '$ ' + i + ',' + parts[1]; }
+  function fmtEU(n){ if(isNaN(n)||n==null)n=0; const parts=Number(n).toFixed(2).split('.'); const i=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.'); return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + i + ',' + parts[1]; }
   function p(txt){ if(typeof txt!=='string') return Number(txt)||0; let t=txt.replace(/[^\d,\.\-]/g,''); if(t.includes(',') && t.lastIndexOf(',')>t.lastIndexOf('.')){ t=t.replace(/\./g,'').replace(',','.'); } const v=parseFloat(t); return isNaN(v)?0:v; }
   function unit(c,pr){ const cc=p(c), pp=p(pr); return cc>0? pp/cc : 0; }
 
@@ -15056,11 +15018,14 @@ document.addEventListener('click', function(ev){
     return isNaN(v) ? 0 : v;
   }
   function pers_euro(num){
+    var sym = (window.Suite && window.Suite.currency) ? window.Suite.currency.symbol : '$';
     try{
-      if(window.Suite && typeof Suite.euro==='function') return Suite.euro(num);
+      if(window.Suite && typeof Suite.euro==='function'){
+        return sym + ' ' + Suite.euro(num);
+      }
     }catch(e){}
     const n = Number(num||0);
-    return '$ ' + n.toFixed(2).replace('.', ',');
+    return sym + ' ' + n.toFixed(2).replace('.', ',');
   }
 
   // Storage
@@ -15462,16 +15427,16 @@ document.addEventListener('click', function(ev){
         <div class="card md-12" id="pers_summary">
           <h4 style="margin:0 0 6px">Resumen</h4>
           <div class="row" style="gap:10px;flex-wrap:wrap">
-            <div class="pill">Directos: <strong id="pers_pill_dir">—</strong></div>
-            <div class="pill">Depreciación: <strong id="pers_pill_dep">—</strong></div>
-            <div class="pill">Indirectos: <strong id="pers_pill_ind">—</strong></div>
-            <div class="pill">Mano de obra: <strong id="pers_pill_mo">—</strong></div>
-            <div class="pill">Subtotal: <strong id="pers_pill_sub">—</strong></div>
-            <div class="pill">+ Ganancia: <strong id="pers_pill_g">—</strong></div>
-            <div class="pill">+ Impuestos: <strong id="pers_pill_i">—</strong></div>
+            <div class="pill">Directos: <strong class="result" id="pers_pill_dir">—</strong></div>
+            <div class="pill">Depreciación: <strong class="result" id="pers_pill_dep">—</strong></div>
+            <div class="pill">Indirectos: <strong class="result" id="pers_pill_ind">—</strong></div>
+            <div class="pill">Mano de obra: <strong class="result" id="pers_pill_mo">—</strong></div>
+            <div class="pill">Subtotal: <strong class="result" id="pers_pill_sub">—</strong></div>
+            <div class="pill">+ Ganancia: <strong class="result" id="pers_pill_g">—</strong></div>
+            <div class="pill">+ Impuestos: <strong class="result" id="pers_pill_i">—</strong></div>
           </div>
           <div class="sep"></div>
-          <div class="tot">Precio de Venta: <span id="pers_pv">$ 0,00</span></div>
+          <div class="tot">Precio de Venta: <span class="result" id="pers_pv">$ 0,00</span></div>
 		  <div class="center-actions" style="gap:10px;flex-wrap:wrap">
           <button class="btn" id="pers_btn_print" type="button">Exportar a PDF / Imprimir</button>
           <button class="btn reset" id="pers_reset" type="button">Reset</button>
@@ -15552,7 +15517,7 @@ document.addEventListener('click', function(ev){
       const sum = [
         indAlq,indInt,indSus,indTra,indEle,indPub,indOtr
       ].map(el => el ? pers_parseEU(el.value) : 0).reduce((a,b)=>a+b,0);
-      indMensual.value = pers_euro(sum).replace('$ ',''); // guardamos solo número EU
+      indMensual.value = pers_euro(sum).replace((window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ', ''); // guardamos solo número EU
     }
 
     if (indCfgBtn){
@@ -15749,7 +15714,7 @@ document.addEventListener('click', function(ev){
 	        const pillCost = q('.pers-area-pill-cost', r);
 	        if (pillPCM2){
           const v = (isFinite(precioCm2)?precioCm2:0);
-          pillPCM2.textContent = '$ ' + v.toFixed(6).replace('.', ',');
+          pillPCM2.textContent = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + v.toFixed(6).replace('.', ',');
         }
         if (pillArea) pillArea.textContent = (isFinite(areaFinal)?areaFinal:0).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
 	        if (pillCost) pillCost.textContent = pers_euro(costo);
@@ -16455,7 +16420,7 @@ function refreshLoader(){
     if (!isFinite(n)) n = 0;
     const v = Math.round((n + Number.EPSILON) * 100) / 100;
     // "$ 1.234,56" style
-    return v.toLocaleString('es-ES', { style:'currency', currency:'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace('US$', '$');
+    return v.toLocaleString('es-ES', { style:'currency', currency:'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace('US$', (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$'));
   };
   const fmtEUplain = n => (isFinite(n)?n:0).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
   const parseEU = (v) => {
@@ -16485,6 +16450,7 @@ function refreshLoader(){
     papelOn:'vin_d_papel_on', papelCant:'vin_d_papel_cant', papelPrec:'vin_d_papel_precio', papelUd:'vin_d_papel_ud', papelQtyUse:'vin_d_papel_qty_use', papelUtil:'vin_d_papel_util',
     cintaOn:'vin_d_cinta_on', cintaCant:'vin_d_cinta_cant', cintaPrec:'vin_d_cinta_precio', cintaUd:'vin_d_cinta_ud', cintaQtyUse:'vin_d_cinta_qty_use', cintaUtil:'vin_d_cinta_util',
     tintaOn:'vin_d_tinta_on', tintaCant:'vin_d_tinta_cant', tintaPrec:'vin_d_tinta_precio', tintaUd:'vin_d_tinta_ud', tintaQtyUse:'vin_d_tinta_qty_use', tintaUtil:'vin_d_tinta_util',
+    pelusasOn:'vin_d_pelusas_on', pelusasCant:'vin_d_pelusas_cant', pelusasPrec:'vin_d_pelusas_precio', pelusasUd:'vin_d_pelusas_ud', pelusasQtyUse:'vin_d_pelusas_qty_use', pelusasUtil:'vin_d_pelusas_util',
     // Indirectos
     indOn:'vin_ind_on', indUD:'vin_ind_ud', indCfgBtn:'vin_ind_cfg_btn', indCfg:'vin_ind_cfg', indUnits:'vin_ind_units',
     indFields:['vin_ind_alquiler','vin_ind_internet','vin_ind_suscripciones','vin_ind_transporte','vin_ind_electricidad','vin_ind_publicidad','vin_ind_otros'],
@@ -16527,37 +16493,44 @@ function refreshLoader(){
     // Item principal (cd_*)
     const cd_on = byId(ids.cdOn)?.checked;
     const cd_ud = costoUd(byId(ids.cdCant)?.value, byId(ids.cdPrecio)?.value);
-    if (byId(ids.cdUd)) byId(ids.cdUd).value = '$ ' + fmtEUplain(cd_ud);
+    if (byId(ids.cdUd)) byId(ids.cdUd).value = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEUplain(cd_ud);
 
     const cd_qty = Math.max(0, parseEU(byId(ids.cdQtyUse)?.value));
     const cd_util = cd_ud * cd_qty;
-    if (byId(ids.cdUtil)) byId(ids.cdUtil).value = '$ ' + fmtEUplain(cd_util);
+    if (byId(ids.cdUtil)) byId(ids.cdUtil).value = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEUplain(cd_util);
     if (cd_on) t += cd_util;
 
     // papel / cinta / tinta (opcionales)
     const papel_ud = costoUd(byId(ids.papelCant)?.value, byId(ids.papelPrec)?.value);
-    if (byId(ids.papelUd)) byId(ids.papelUd).value = '$ ' + fmtEUplain(papel_ud);
+    if (byId(ids.papelUd)) byId(ids.papelUd).value = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEUplain(papel_ud);
     const papel_qty = Math.max(0, parseEU(byId(ids.papelQtyUse)?.value));
     const papel_util = papel_ud * papel_qty;
-    if (byId(ids.papelUtil)) byId(ids.papelUtil).value = '$ ' + fmtEUplain(papel_util);
+    if (byId(ids.papelUtil)) byId(ids.papelUtil).value = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEUplain(papel_util);
     if (byId(ids.papelOn)?.checked) t += papel_util;
 
     const cinta_ud = costoUd(byId(ids.cintaCant)?.value, byId(ids.cintaPrec)?.value);
-    if (byId(ids.cintaUd)) byId(ids.cintaUd).value = '$ ' + fmtEUplain(cinta_ud);
+    if (byId(ids.cintaUd)) byId(ids.cintaUd).value = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEUplain(cinta_ud);
     const cinta_qty = Math.max(0, parseEU(byId(ids.cintaQtyUse)?.value));
     const cinta_util = cinta_ud * cinta_qty;
-    if (byId(ids.cintaUtil)) byId(ids.cintaUtil).value = '$ ' + fmtEUplain(cinta_util);
+    if (byId(ids.cintaUtil)) byId(ids.cintaUtil).value = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEUplain(cinta_util);
     if (byId(ids.cintaOn)?.checked) t += cinta_util;
 
     const tinta_ud = costoUd(byId(ids.tintaCant)?.value, byId(ids.tintaPrec)?.value);
-    if (byId(ids.tintaUd)) byId(ids.tintaUd).value = '$ ' + fmtEUplain(tinta_ud);
+    if (byId(ids.tintaUd)) byId(ids.tintaUd).value = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEUplain(tinta_ud);
     const tinta_qty = Math.max(0, parseEU(byId(ids.tintaQtyUse)?.value));
     const tinta_util = tinta_ud * tinta_qty;
-    if (byId(ids.tintaUtil)) byId(ids.tintaUtil).value = '$ ' + fmtEUplain(tinta_util);
+    if (byId(ids.tintaUtil)) byId(ids.tintaUtil).value = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEUplain(tinta_util);
     if (byId(ids.tintaOn)?.checked) t += tinta_util;
 
+    const pelusas_ud = costoUd(byId(ids.pelusasCant)?.value, byId(ids.pelusasPrec)?.value);
+    if (byId(ids.pelusasUd)) byId(ids.pelusasUd).value = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEUplain(pelusas_ud);
+    const pelusas_qty = Math.max(0, parseEU(byId(ids.pelusasQtyUse)?.value));
+    const pelusas_util = pelusas_ud * pelusas_qty;
+    if (byId(ids.pelusasUtil)) byId(ids.pelusasUtil).value = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEUplain(pelusas_util);
+    if (byId(ids.pelusasOn)?.checked) t += pelusas_util;
+
     if (byId(ids.rDir)) byId(ids.rDir).textContent = fmtEU(t);
-    const leg = byId('vinil_directos'); if (leg) leg.textContent = '$ ' + fmtEUplain(t);
+    const leg = byId('vinil_directos'); if (leg) leg.textContent = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEUplain(t);
     return t;
   };
 
@@ -16580,18 +16553,18 @@ function refreshLoader(){
         cUd = (cMes / UNITS_PER_MONTH);
       }
 
-      if (mes) mes.value = '$ ' + fmtEUplain(cMes);
-      if (ud)  ud.value  = '$ ' + fmtEUplain(cUd);
+      if (mes) mes.value = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEUplain(cMes);
+      if (ud)  ud.value  = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEUplain(cUd);
 
       const u = Math.max(0, parseEU(uses?.value));
       const cUtil = cUd * u;
-      if (util) util.value = '$ ' + fmtEUplain(cUtil);
+      if (util) util.value = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEUplain(cUtil);
 
       if (on) totalUD += cUtil;
     });
 
     if (byId(ids.rDep)) byId(ids.rDep).textContent = fmtEU(totalUD);
-    const leg = byId('vinil_dep'); if (leg) leg.textContent = '$ ' + fmtEUplain(totalUD);
+    const leg = byId('vinil_dep'); if (leg) leg.textContent = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEUplain(totalUD);
     return totalUD;
   };
 
@@ -16619,7 +16592,7 @@ function refreshLoader(){
     let monthly = 0;
     (ids.indFields||[]).forEach(id => monthly += parseEU(byId(id)?.value));
     const ud = monthly / units;
-    if (byId(ids.indUD)) byId(ids.indUD).textContent = '$ ' + fmtEUplain(on ? ud : 0);
+    if (byId(ids.indUD)) byId(ids.indUD).textContent = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEUplain(on ? ud : 0);
     return on ? ud : 0;
   };
 
@@ -16639,7 +16612,7 @@ function refreshLoader(){
     const rateMin = rateHr / 60;
     const perUnit = rateMin * ((setupM/units) + runM);
     if (byId(ids.moPill)) byId(ids.moPill).style.display = 'inline-flex';
-    if (byId(ids.moVal))  byId(ids.moVal).textContent = '$ ' + fmtEUplain(perUnit);
+    if (byId(ids.moVal))  byId(ids.moVal).textContent = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + fmtEUplain(perUnit);
     return perUnit;
   };
 
@@ -16737,6 +16710,7 @@ if (byId(ids.gVal)) byId(ids.gVal).textContent = fmtEU(G);
       ids.papelOn, ids.papelCant, ids.papelPrec, ids.papelQtyUse,
       ids.cintaOn, ids.cintaCant, ids.cintaPrec, ids.cintaQtyUse,
       ids.tintaOn, ids.tintaCant, ids.tintaPrec, ids.tintaQtyUse,
+      ids.pelusasOn, ids.pelusasCant, ids.pelusasPrec, ids.pelusasQtyUse,
       ids.gChk, ids.iChk, ids.gPct, ids.iPct,
       ids.moOn, ids.moSueldo, ids.moHoras, ids.moSetup, ids.moRun, ids.moUnits,
       ids.indOn, ids.indUnits, ...ids.indFields
@@ -16987,7 +16961,7 @@ if (byId(ids.gVal)) byId(ids.gVal).textContent = fmtEU(G);
     try{ if (typeof fmtUSD === 'function') return fmtUSD(n); }catch(e){}
     if (!isFinite(n)) n = 0;
     var s = n.toFixed(2).replace('.',',');
-    return '$ ' + s;
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + s;
   }
 
   function getNumericFromSpanOrInput(id){
@@ -17144,7 +17118,7 @@ if (byId(ids.gVal)) byId(ids.gVal).textContent = fmtEU(G);
   function fmtEUAny(num, prefix){
     const n = isFinite(num) ? num : 0;
     const out = n.toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const p = (prefix && String(prefix).trim()) ? (String(prefix).trim() + ' ') : '$ ';
+    const p = (prefix && String(prefix).trim()) ? (String(prefix).trim() + ' ') : (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ';
     return p + out;
   }
 
@@ -17257,7 +17231,7 @@ if (byId(ids.gVal)) byId(ids.gVal).textContent = fmtEU(G);
 (function(){
   const $ = (q,ctx=document)=>ctx.querySelector(q);
   const $$ = (q,ctx=document)=>Array.from(ctx.querySelectorAll(q));
-  function fmtEU(n){ if(isNaN(n)||n==null)n=0; const parts=Number(n).toFixed(2).split('.'); const i=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.'); return '$ ' + i + ',' + parts[1]; }
+  function fmtEU(n){ if(isNaN(n)||n==null)n=0; const parts=Number(n).toFixed(2).split('.'); const i=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.'); return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + i + ',' + parts[1]; }
   function p(txt){ if(typeof txt!=='string') return Number(txt)||0; let t=txt.replace(/[^\d,\.\-]/g,''); if(t.includes(',') && t.lastIndexOf(',')>t.lastIndexOf('.')){ t=t.replace(/\./g,'').replace(',','.'); } const v=parseFloat(t); return isNaN(v)?0:v; }
   function unit(c,pr){ const cc=p(c), pp=p(pr); return cc>0? pp/cc : 0; }
 
@@ -17335,7 +17309,7 @@ if (byId(ids.gVal)) byId(ids.gVal).textContent = fmtEU(G);
   if (!document.getElementById('view-sublimacion')) return;
 
   const EU_FMT = new Intl.NumberFormat('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
-  const fmtEU = (n)=>'$ '+EU_FMT.format(isFinite(n)?n:0);
+  const fmtEU = (n)=>(window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$')+'  '+EU_FMT.format(isFinite(n)?n:0);
   const qs=(id)=>document.getElementById(id);
   const parseNum=(v)=>{ if(typeof v==='number') return v; if(!v) return 0; v=(''+v).replace(/[^0-9.,-]/g,'').replace(/,/g,''); return parseFloat(v)||0; };
   const valNum=(id)=>parseNum(qs(id)?.value);
@@ -17412,7 +17386,7 @@ if (byId(ids.gVal)) byId(ids.gVal).textContent = fmtEU(G);
   function euro(n){
     try{ if (typeof fmtUSD === 'function') return fmtUSD(n); }catch(e){}
     let out = (n||0).toLocaleString('es-ES', {minimumFractionDigits:2, maximumFractionDigits:2});
-    if (!/^\s*\$/u.test(out)) out = '$ ' + out;
+    if (!out.includes((window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$'))) out = (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + out;
     return out;
   }
   function setTxt(id, val){
@@ -17568,7 +17542,7 @@ if (byId(ids.gVal)) byId(ids.gVal).textContent = fmtEU(G);
 (function(){
   const $ = (q,ctx=document)=>ctx.querySelector(q);
   const $$ = (q,ctx=document)=>Array.from(ctx.querySelectorAll(q));
-  function fmtEU(n){ if(isNaN(n)||n==null)n=0; const parts=Number(n).toFixed(2).split('.'); const i=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.'); return '$ ' + i + ',' + parts[1]; }
+  function fmtEU(n){ if(isNaN(n)||n==null)n=0; const parts=Number(n).toFixed(2).split('.'); const i=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,'.'); return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + i + ',' + parts[1]; }
   function p(txt){ if(typeof txt!=='string') return Number(txt)||0; let t=txt.replace(/[^\d,\.\-]/g,''); if(t.includes(',') && t.lastIndexOf(',')>t.lastIndexOf('.')){ t=t.replace(/\./g,'').replace(',','.'); } const v=parseFloat(t); return isNaN(v)?0:v; }
   function unit(c,pr){ const cc=p(c), pp=p(pr); return cc>0? pp/cc : 0; }
 
@@ -17800,7 +17774,7 @@ body.dark #view-vinil #vinil_summary .tot .result{
     }catch(e){}
     if (!isFinite(n)) n = 0;
     var s = (Math.round(n*100)/100).toFixed(2).replace('.',',');
-    return '$ ' + s;
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + s;
   }
 
   // Lee número desde span/input usando los helpers globales si existen
@@ -17966,7 +17940,7 @@ body.dark #view-vinil #vinil_summary .tot .result{
     try{ if (typeof fmtUSD === 'function') return fmtUSD(n); }catch(e){}
     if (!isFinite(n)) n = 0;
     var s = n.toFixed(2).replace('.',',');
-    return '$ ' + s;
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + s;
   }
 
   // Lee número desde span/input usando los helpers globales si existen
@@ -18119,7 +18093,7 @@ body.dark #view-vinil #vinil_summary .tot .result{
     }catch(e){}
     if (!isFinite(n)) n = 0;
     var s = n.toFixed(2).replace('.',',');
-    return '$ ' + s;
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + s;
   }
 
   // Lee número desde span/input usando los helpers globales si existen
@@ -18287,7 +18261,7 @@ body.dark #view-vinil #vinil_summary .tot .result{
     }catch(e){}
     if (!isFinite(n)) n = 0;
     var s = n.toFixed(2).replace('.',',');
-    return '$ ' + s;
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + s;
   }
 
   function getNumericFromSpanOrInput(id){
@@ -18415,7 +18389,7 @@ body.dark #view-vinil #vinil_summary .tot .result{
     }catch(e){}
     if (!isFinite(n)) n = 0;
     var s = (Math.round(n * 100) / 100).toFixed(2).replace('.', ',');
-    return '$ ' + s;
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + s;
   }
 
   function getNumericFromSpanOrInput(id){
@@ -18735,7 +18709,7 @@ body.dark .icon-copy-btn:hover{
   }
 
   function money(n){
-    return '$ ' + euro(Number.isFinite(n) ? n : 0);
+    return (window.Suite&&window.Suite.currency?window.Suite.currency.symbol:'$') + ' ' + euro(Number.isFinite(n) ? n : 0);
   }
 
   function numFromText(id){
@@ -19090,6 +19064,7 @@ body.dark #view-dtf .dtf-rot90-toggle{color:#cbd5e1}
   setTimeout(ensureAll, 600);
 })();
 </script>
+
 
 </body>
 </html>

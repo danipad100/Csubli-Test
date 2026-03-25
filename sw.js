@@ -1,4 +1,4 @@
-const VERSION = 'v38_11';
+const VERSION = 'v38_15';
 const CACHE_NAME = 'suite-csubli-' + VERSION;
 
 const URLS_TO_CACHE = [
@@ -37,7 +37,6 @@ self.addEventListener('message', event => {
 
   if (data.type === 'GET_VERSION') {
     try {
-      // responder por MessageChannel si existe
       if (event.ports && event.ports[0]) {
         event.ports[0].postMessage({ type:'VERSION', version: VERSION });
       }
