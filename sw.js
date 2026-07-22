@@ -1,4 +1,4 @@
-const VERSION = 'v38_15';
+const VERSION = 'v39_52';
 const CACHE_NAME = 'suite-csubli-' + VERSION;
 
 const URLS_TO_CACHE = [
@@ -54,7 +54,7 @@ self.addEventListener('fetch', event => {
       return fetch(request).then(resp => {
         try {
           const url = new URL(request.url);
-          if (url.origin === self.location.origin) {
+          if (url.origin === self.location.origin && resp.ok) {
             const copy = resp.clone();
             caches.open(CACHE_NAME).then(cache => cache.put(request, copy)).catch(()=>{});
           }
