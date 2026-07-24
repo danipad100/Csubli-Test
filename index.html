@@ -79,8 +79,8 @@ body.dark .pill-copy-btn:hover{background:#23283a}
 .chk-label{font-weight:700}
 .mono{font-variant-numeric:tabular-nums}
 .center-actions{display:flex;gap:12px;justify-content:center;margin-top:12px;flex-wrap:wrap}
-#bloques,#dtf_bloques{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
-#bloques>.card,#dtf_bloques>.card{grid-column:auto}
+#bloques,#dtf_bloques,#hoj_bloques{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+#bloques>.card,#dtf_bloques>.card,#hoj_bloques>.card{grid-column:auto}
 .color-preview{width:14px;height:14px;border-radius:4px;border:1px solid #e5e7eb;display:inline-block;vertical-align:middle;margin-right:6px}
 
 /* === DRAWER MENU (sidebar) === */
@@ -236,7 +236,7 @@ body.dark .dt-text-light{display:inline}
 @media(max-width:640px){
   .app{padding:10px}
   .card{padding:12px}
-  #bloques,#dtf_bloques{grid-template-columns:1fr}
+  #bloques,#dtf_bloques,#hoj_bloques{grid-template-columns:1fr}
   header h1{font-size:17px}
   .pill{font-size:11px;padding:5px 8px}
 }
@@ -271,7 +271,7 @@ body.dark .dt-text-light{display:inline}
 .fr-note{margin:12px 0 0;font-size:11px;color:var(--muted);text-align:center}
 </style>
 </head>
-<body data-app-version="V39.52">
+<body data-app-version="V39.54">
 <div class="app">
 <header class="app-header">
   <div class="menu-wrapper">
@@ -310,6 +310,7 @@ body.dark .dt-text-light{display:inline}
 </div>
 <div class="group-header" data-group="herramientas" data-open="true"><span class="group-title">Herramientas</span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
 <div class="group-body" data-group-body="herramientas">
+<div class="item" data-view="hojaetq"><svg class="ico" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect height="18" rx="2" width="14" x="5" y="3"></rect><path d="M8 7h3v3H8zM13 7h3v3h-3zM8 12h3v3H8zM13 12h3v3h-3z"></path></svg><div class="txt">Distribución en Hoja</div></div>
 <div class="item" data-view="conversor"><svg class="ico" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 13h7v7h-7zM13 4h7v7h-7zM4 13h7v7H4z"></path></svg><div class="txt">Conversor de Unidades</div></div>
 <div class="item" data-view="basica"><svg class="ico" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect height="16" rx="3" width="18" x="3" y="4"></rect><path d="M7 9h10M7 13h6"></path></svg><div class="txt">Calculadora</div></div>
 </div>
@@ -1162,6 +1163,69 @@ body.dark .dt-text-light{display:inline}
 <button class="copy-btn copy-btn-accent" id="dtf_btn_print">Exportar a PDF / Imprimir</button>
 <button class="copy-btn copy-btn-accent" id="dtf_btn_copy">Copiar</button>
 <button class="btn reset" id="dtf_btn_reset">Reset</button>
+</div>
+</div>
+</div></section>
+
+<section class="view" id="view-hojaetq"><div class="grid">
+<div class="card md-12"><h3 style="margin:0 0 6px">Distribución de Etiquetas en Hoja</h3><div class="sep"></div><p class="muted" style="margin:0">Calcula cuántas etiquetas de cada diseño caben por hoja y cuántas hojas necesitas, según el tamaño de papel, márgenes y separación.</p></div>
+
+<div class="card md-6">
+<h4 style="margin:0 0 10px">Tamaño de hoja</h4>
+<div class="row" style="gap:8px;align-items:center;flex-wrap:wrap">
+<div style="flex:1;min-width:180px"><label>Tamaño de documento</label>
+<select id="hoj_tam"><option value="carta">Carta (21,59×27,94 cm)</option><option value="a4" selected>A4 (21×29,7 cm)</option><option value="a3">A3 (29,7×42 cm)</option><option value="personalizado">Personalizado</option></select>
+</div>
+<div style="min-width:110px"><label>Ancho (<span class="ulbl" data-utl="len">cm</span>)</label><input id="hoj_hoja_w" type="text" value="21" data-utype="len" readonly></div>
+<div style="min-width:110px"><label>Alto (<span class="ulbl" data-utl="len">cm</span>)</label><input id="hoj_hoja_h" type="text" value="29.7" data-utype="len" readonly></div>
+</div><div class="sep"></div>
+
+<h4 style="margin:0 0 8px">Márgenes (<span class="ulbl" data-utl="len">cm</span>)</h4>
+<div class="row" style="gap:10px;flex-wrap:wrap">
+<div style="min-width:100px;flex:1"><label>Superior</label><input id="hoj_mar_top" type="text" value="2" data-utype="len"></div>
+<div style="min-width:100px;flex:1"><label>Inferior</label><input id="hoj_mar_bot" type="text" value="2" data-utype="len"></div>
+<div style="min-width:100px;flex:1"><label>Izquierdo</label><input id="hoj_mar_left" type="text" value="2" data-utype="len"></div>
+<div style="min-width:100px;flex:1"><label>Derecho</label><input id="hoj_mar_right" type="text" value="1,5" data-utype="len"></div>
+</div><div class="sep"></div>
+
+<div class="row" style="gap:10px;flex-wrap:wrap;align-items:flex-end">
+<div style="min-width:170px;max-width:260px"><label>Separación entre etiquetas (<span class="ulbl" data-utl="len">cm</span>)</label><input id="hoj_sep" type="text" value="0,10" data-utype="len"></div>
+</div><div class="sep"></div>
+<div class="row" style="gap:10px;flex-wrap:wrap">
+<div class="pill">Espacio disponible: <span class="result" id="hoj_espacio_disp">0 cm²</span></div>
+</div>
+</div>
+
+<div class="card md-6">
+<h4 style="margin:0 0 10px">Diseños</h4>
+<div class="row" style="justify-content:space-between;align-items:center">
+<button class="btn ok" id="hoj_add_diseno">Agregar diseño</button>
+<span class="muted">Cada diseño se ubica como bloque independiente dentro de la hoja.</span>
+</div><div class="sep"></div>
+<div class="grid" id="hoj_bloques"></div>
+</div>
+
+<div class="card md-12"><h4 style="margin:0 0 10px">Vista previa de distribución</h4>
+<div class="row" style="gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+<button class="btn neutral" id="hoj_prev_sheet" type="button">◀ Anterior</button>
+<div class="pill">Hoja <span id="hoj_sheet_num">1</span> de <span id="hoj_sheet_total">1</span></div>
+<button class="btn neutral" id="hoj_next_sheet" type="button">Siguiente ▶</button>
+</div>
+<canvas id="hoj_layout" width="600" height="750" style="max-width:100%;border-radius:12px;border:1px solid #eee"></canvas>
+<div class="muted" id="hoj_layout_info" style="margin-top:6px"></div>
+</div>
+
+<div class="card md-12">
+<div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
+<div class="pill">Total etiquetas solicitadas: <span class="result" id="hoj_total_solicitadas">0</span></div>
+<div class="pill">Total etiquetas ubicadas: <span class="result" id="hoj_total_ubicadas">0</span></div>
+<div class="pill">Hojas necesarias: <span class="result" id="hoj_hojas_necesarias">0</span></div>
+<div class="pill" id="hoj_pill_faltantes" style="display:none">Sin ubicar: <span class="result" id="hoj_faltantes">0</span></div>
+</div><div class="sep"></div>
+<div class="center-actions">
+<button class="copy-btn copy-btn-accent" id="hoj_btn_print">Exportar a PDF / Imprimir</button>
+<button class="copy-btn copy-btn-accent" id="hoj_btn_copy">Copiar</button>
+<button class="btn reset" id="hoj_btn_reset">Reset</button>
 </div>
 </div>
 </div></section>
@@ -2365,7 +2429,7 @@ body.dark .dt-text-light{display:inline}
 </div>
 </div></section>
 
-<footer class="footer">Suite creada por @subli_mada — V39.52</footer>
+<footer class="footer">Suite creada por @subli_mada — V39.54</footer>
 </div>
 <script>
 /* ═══════════════════════════════════════════════════════════
@@ -2376,7 +2440,7 @@ body.dark .dt-text-light{display:inline}
 'use strict';
 const $=id=>document.getElementById(id);
 const $$=(sel,ctx=document)=>Array.from(ctx.querySelectorAll(sel));
-const PWA_VER='v39_52';
+const PWA_VER='v39_54';
 
 /* ═══ HELPERS: number formatting (configurable decimal separator) ═══ */
 const EU_FMT=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -5029,6 +5093,256 @@ function convertMoneyValue(n,fromSym,toSym){
   if(!$('dtf_bloques').children.length)addDesign(); // module always starts with one design visible
   window.__dtfAddDesign=addDesign;
   ALL_RECALCS.push(recalcDTF);recalcDTF();
+})();
+
+/* ═══════════════════════════════════════════════════════════
+   MODULE: DISTRIBUCIÓN DE ETIQUETAS EN HOJA
+   ═══════════════════════════════════════════════════════════ */
+(function(){
+  const SHEET_SIZES={carta:[21.59,27.94],a4:[21,29.7],a3:[29.7,42]};
+  let hojDesignCount=0;
+  let currentSheetIdx=0;
+  let lastPack=null,lastGeom=null;
+
+  function hojAreaLabel(){return UNIT_SYSTEM==='imperial'?'in²':'cm²';}
+  function hojAreaNum(cm2){const v=UNIT_SYSTEM==='imperial'?cm2/6.4516:cm2;return fmtVarPlain(v,2);}
+
+  /* ---- Shelf-style multi-sheet packer: places design blocks left-to-right,
+     top-to-bottom, wrapping to a new sheet when a design no longer fits,
+     sharing leftover space on a sheet across different designs. ---- */
+  function packSheets(designs,uw,uh,sep,maxSheets){
+    const sheets=[];
+    const placedCount=designs.map(()=>0);
+    let x=0,y=0,rowH=0;
+    const HARD_CAP=500;
+    function newSheet(){
+      if(maxSheets>0&&sheets.length>=maxSheets)return false;
+      if(sheets.length>=HARD_CAP)return false;
+      sheets.push([]);x=0;y=0;rowH=0;return true;
+    }
+    outer:
+    for(let di=0;di<designs.length;di++){
+      const d=designs[di];
+      if(!(d.w>0)||!(d.h>0)||!(d.qty>0))continue;
+      if(d.w>uw+1e-9||d.h>uh+1e-9)continue; // never fits in an empty sheet, stays unplaced
+      let remaining=d.qty;
+      while(remaining>0){
+        if(sheets.length===0){if(!newSheet())break outer;}
+        if(x+d.w>uw+1e-9){x=0;y+=rowH+sep;rowH=0;}
+        if(y+d.h>uh+1e-9){if(!newSheet())break outer;}
+        const availW=uw-x,availH=uh-y;
+        const cols=Math.max(1,Math.floor((availW+sep)/(d.w+sep)));
+        const maxRows=Math.max(1,Math.floor((availH+sep)/(d.h+sep)));
+        const capacity=cols*maxRows;
+        const place=Math.min(remaining,capacity);
+        const rowsNeeded=Math.ceil(place/cols);
+        let placedHere=0;
+        for(let r=0;r<rowsNeeded&&placedHere<place;r++){
+          for(let c=0;c<cols&&placedHere<place;c++){
+            sheets[sheets.length-1].push({x:x+c*(d.w+sep),y:y+r*(d.h+sep),w:d.w,h:d.h,di});
+            placedHere++;
+          }
+        }
+        remaining-=place;
+        placedCount[di]+=place;
+        const blockW=cols*(d.w+sep)-sep;
+        const blockH=rowsNeeded*(d.h+sep)-sep;
+        x+=blockW+sep;
+        rowH=Math.max(rowH,blockH);
+      }
+    }
+    return{sheets,placedCount};
+  }
+
+  function addDesign(){
+    hojDesignCount++;
+    const id='hoj_d_'+hojDesignCount;
+    const div=document.createElement('div');div.className='card';div.id=id;
+    div.innerHTML=`<div class="row" style="justify-content:space-between;align-items:center">
+      <b>Diseño #${hojDesignCount}</b>
+    </div>
+    <div class="row" style="margin-top:6px;gap:8px;flex-wrap:wrap">
+      <div style="flex:1;min-width:100px"><label>Ancho (<span class="ulbl" data-utl="len">${unitLabelText('len')}</span>)</label><input class="hoj-dw" type="text" data-utype="len" placeholder="5"></div>
+      <div style="flex:1;min-width:100px"><label>Alto (<span class="ulbl" data-utl="len">${unitLabelText('len')}</span>)</label><input class="hoj-dh" type="text" data-utype="len" placeholder="3"></div>
+      <div style="flex:1;min-width:90px"><label>Cantidad</label><input class="hoj-dq" type="text" placeholder="50"></div>
+    </div>
+    <div class="row" style="margin-top:8px;align-items:center;gap:10px;flex-wrap:wrap">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0">
+        <input type="checkbox" class="hoj-rot"><span class="muted">Rotar 90°</span>
+      </label>
+      <button class="btn reset" data-remove="${id}" style="margin-left:auto">Eliminar</button>
+    </div>
+    <div class="row" style="margin-top:8px;gap:10px;align-items:center;flex-wrap:wrap">
+      <div class="pill">Caben por hoja: <span class="result hoj-per-sheet">0</span></div>
+      <div class="pill">Ubicadas: <span class="result hoj-ubicadas">0</span> de <span class="hoj-solicitadas">0</span></div>
+    </div>`;
+    $('hoj_bloques').appendChild(div);
+    div.addEventListener('input',recalcHoj);
+    div.querySelector('[data-remove]').addEventListener('click',()=>{
+      if($$('#hoj_bloques .card').length<=1)return; // always keep at least one design visible
+      div.remove();renumberHojDesigns();updateHojRemoveState();recalcHoj();
+    });
+    div.querySelector('.hoj-rot').addEventListener('change',()=>{
+      const wEl=div.querySelector('.hoj-dw'),hEl=div.querySelector('.hoj-dh');
+      const oldW=wEl.value,oldH=hEl.value;
+      wEl.value=oldH;hEl.value=oldW;
+      recalcHoj();
+    });
+    updateHojRemoveState();
+    recalcHoj();
+  }
+  function renumberHojDesigns(){
+    $$('#hoj_bloques .card').forEach((c,i)=>{const lbl=c.querySelector('b');if(lbl)lbl.textContent='Diseño #'+(i+1);});
+  }
+  function updateHojRemoveState(){
+    const cards=$$('#hoj_bloques .card');
+    cards.forEach(c=>{
+      const btn=c.querySelector('[data-remove]');
+      if(!btn)return;
+      const onlyOne=cards.length<=1;
+      btn.disabled=onlyOne;
+      btn.style.opacity=onlyOne?'0.5':'';
+      btn.style.cursor=onlyOne?'not-allowed':'';
+    });
+  }
+  $('hoj_add_diseno')?.addEventListener('click',addDesign);
+
+  $('hoj_tam')?.addEventListener('change',()=>{
+    const v=$('hoj_tam').value;
+    const wEl=$('hoj_hoja_w'),hEl=$('hoj_hoja_h');
+    if(v==='personalizado'){
+      wEl?.removeAttribute('readonly');hEl?.removeAttribute('readonly');
+    }else{
+      wEl?.setAttribute('readonly','readonly');hEl?.setAttribute('readonly','readonly');
+      const size=SHEET_SIZES[v];
+      if(size){writeMetric(wEl,size[0],2);writeMetric(hEl,size[1],2);}
+    }
+    recalcHoj();
+  });
+
+  function recalcHoj(){
+    const W=clamp0(readMetric($('hoj_hoja_w')))||21;
+    const H=clamp0(readMetric($('hoj_hoja_h')))||29.7;
+    const marT=clamp0(readMetric($('hoj_mar_top')));
+    const marB=clamp0(readMetric($('hoj_mar_bot')));
+    const marL=clamp0(readMetric($('hoj_mar_left')));
+    const marR=clamp0(readMetric($('hoj_mar_right')));
+    const sep=clamp0(readMetric($('hoj_sep')));
+    const uw=Math.max(0,W-marL-marR);
+    const uh=Math.max(0,H-marT-marB);
+
+    const cards=$$('#hoj_bloques .card');
+    const designs=cards.map(card=>({
+      w:clamp0(readMetric(card.querySelector('.hoj-dw'))),
+      h:clamp0(readMetric(card.querySelector('.hoj-dh'))),
+      qty:Math.max(0,Math.round(clamp0(parseEU(card.querySelector('.hoj-dq')?.value))))
+    }));
+
+    const pack=packSheets(designs,uw,uh,sep,0);
+
+    cards.forEach((card,i)=>{
+      const d=designs[i];
+      const capEl=card.querySelector('.hoj-per-sheet');
+      const ubEl=card.querySelector('.hoj-ubicadas');
+      const solEl=card.querySelector('.hoj-solicitadas');
+      let capAlone=0;
+      if(d.w>0&&d.h>0&&d.w<=uw+1e-9&&d.h<=uh+1e-9){
+        const cols=Math.max(1,Math.floor((uw+sep)/(d.w+sep)));
+        const rows=Math.max(1,Math.floor((uh+sep)/(d.h+sep)));
+        capAlone=cols*rows;
+      }
+      if(capEl)capEl.textContent=capAlone;
+      if(ubEl)ubEl.textContent=pack.placedCount[i]||0;
+      if(solEl)solEl.textContent=d.qty;
+    });
+
+    const totalSolicitadas=designs.reduce((s,d)=>s+d.qty,0);
+    const totalUbicadas=pack.placedCount.reduce((s,n)=>s+n,0);
+    const faltantes=totalSolicitadas-totalUbicadas;
+
+    $('hoj_espacio_disp').textContent=hojAreaNum(uw*uh)+' '+hojAreaLabel();
+    $('hoj_total_solicitadas').textContent=totalSolicitadas;
+    $('hoj_total_ubicadas').textContent=totalUbicadas;
+    $('hoj_hojas_necesarias').textContent=pack.sheets.length;
+    const faltPill=$('hoj_pill_faltantes');
+    if(faltPill){
+      if(faltantes>0){faltPill.style.display='';const fEl=$('hoj_faltantes');if(fEl)fEl.textContent=faltantes;}
+      else faltPill.style.display='none';
+    }
+
+    lastPack=pack;lastGeom={W,H,marL,marT,marR,marB,uw,uh};
+    if(currentSheetIdx>=pack.sheets.length)currentSheetIdx=Math.max(0,pack.sheets.length-1);
+    renderCurrentSheet();
+  }
+
+  const HOJ_CANVAS_W=600,HOJ_MAX_H=900,HOJ_MARGIN=14;
+  function renderHojPreview(){
+    const canvas=$('hoj_layout');if(!canvas||!lastPack||!lastGeom)return;
+    const ctx=canvas.getContext('2d');
+    const{W,H,marL,marT,uw,uh}=lastGeom;
+    const scale=Math.min((HOJ_CANVAS_W-HOJ_MARGIN*2)/W,(HOJ_MAX_H-HOJ_MARGIN*2)/H);
+    canvas.width=Math.round(W*scale+HOJ_MARGIN*2);
+    canvas.height=Math.round(H*scale+HOJ_MARGIN*2);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const offX=HOJ_MARGIN,offY=HOJ_MARGIN;
+    ctx.fillStyle='#f9fafb';ctx.fillRect(offX,offY,W*scale,H*scale);
+    ctx.strokeStyle='#ccc';ctx.strokeRect(offX,offY,W*scale,H*scale);
+    const mx=offX+marL*scale,my=offY+marT*scale,mw=uw*scale,mh=uh*scale;
+    ctx.save();ctx.setLineDash([5,4]);ctx.strokeStyle='#0EA99C';ctx.strokeRect(mx,my,mw,mh);ctx.restore();
+    const colors=['#E87EB0','#0EA99C','#8A3A5B','#f59e0b','#7aa2ff','#22c55e','#a855f7','#ef4444','#06b6d4','#84cc16'];
+    const items=(lastPack.sheets[currentSheetIdx]||[]);
+    items.forEach(it=>{
+      const x=mx+it.x*scale,y=my+it.y*scale;
+      ctx.fillStyle=colors[it.di%colors.length];ctx.globalAlpha=0.35;
+      ctx.fillRect(x,y,it.w*scale,it.h*scale);ctx.globalAlpha=1;
+      ctx.strokeStyle=colors[it.di%colors.length];ctx.strokeRect(x,y,it.w*scale,it.h*scale);
+    });
+    const infoEl=$('hoj_layout_info');
+    if(infoEl){
+      if(!lastPack.sheets.length)infoEl.textContent='Agrega al menos un diseño con ancho, alto y cantidad para ver la distribución.';
+      else infoEl.textContent='Hoja '+dispLenNum(W,1)+'×'+dispLenNum(H,1)+' '+unitLabelText('len')+' | Etiquetas en esta hoja: '+items.length;
+    }
+  }
+  function renderCurrentSheet(){
+    if(!lastPack)return;
+    const numEl=$('hoj_sheet_num'),totEl=$('hoj_sheet_total');
+    if(numEl)numEl.textContent=lastPack.sheets.length?(currentSheetIdx+1):0;
+    if(totEl)totEl.textContent=lastPack.sheets.length;
+    renderHojPreview();
+  }
+  $('hoj_prev_sheet')?.addEventListener('click',()=>{
+    if(currentSheetIdx>0){currentSheetIdx--;renderCurrentSheet();}
+  });
+  $('hoj_next_sheet')?.addEventListener('click',()=>{
+    if(lastPack&&currentSheetIdx<lastPack.sheets.length-1){currentSheetIdx++;renderCurrentSheet();}
+  });
+
+  const hojIds=['hoj_hoja_w','hoj_hoja_h','hoj_mar_top','hoj_mar_bot','hoj_mar_left','hoj_mar_right','hoj_sep'];
+  wireInputs(hojIds,recalcHoj);
+  $('hoj_btn_reset')?.addEventListener('click',()=>{
+    $('hoj_tam').value='a4';
+    $('hoj_hoja_w').setAttribute('readonly','readonly');$('hoj_hoja_h').setAttribute('readonly','readonly');
+    writeMetric($('hoj_hoja_w'),21,2);writeMetric($('hoj_hoja_h'),29.7,2);
+    writeMetric($('hoj_mar_top'),2,2);writeMetric($('hoj_mar_bot'),2,2);
+    writeMetric($('hoj_mar_left'),2,2);writeMetric($('hoj_mar_right'),1.5,2);
+    writeMetric($('hoj_sep'),0.10,2);
+    $('hoj_bloques').innerHTML='';hojDesignCount=0;currentSheetIdx=0;
+    addDesign(); // keep at least one design card visible after reset
+    recalcHoj();
+  });
+  $('hoj_btn_copy')?.addEventListener('click',()=>{
+    const lines=['Distribución de etiquetas en hoja',
+      'Hoja: '+($('hoj_hoja_w')?.value||'-')+'×'+($('hoj_hoja_h')?.value||'-')+' '+unitLabelText('len'),
+      'Espacio disponible: '+($('hoj_espacio_disp')?.textContent||''),
+      'Total solicitadas: '+($('hoj_total_solicitadas')?.textContent||'0'),
+      'Total ubicadas: '+($('hoj_total_ubicadas')?.textContent||'0'),
+      'Hojas necesarias: '+($('hoj_hojas_necesarias')?.textContent||'0')];
+    try{navigator.clipboard.writeText(lines.join('\n'));}catch(e){}
+  });
+  $('hoj_btn_print')?.addEventListener('click',()=>window.print());
+  if(!$('hoj_bloques').children.length)addDesign(); // module always starts with one design visible
+  window.__hojAddDesign=addDesign;
+  ALL_RECALCS.push(recalcHoj);recalcHoj();
 })();
 
 /* ═══════════════════════════════════════════════════════════
