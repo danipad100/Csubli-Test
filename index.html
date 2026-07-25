@@ -269,9 +269,13 @@ body.dark .dt-text-light{display:inline}
   color:#fff;margin-top:6px;font-family:var(--font-body);box-shadow:none}
 .fr-btn:hover{opacity:.92}
 .fr-note{margin:12px 0 0;font-size:11px;color:var(--muted);text-align:center}
+.hoj-shape-btn{width:32px;height:32px;padding:0;border-radius:8px;border:2px solid #e5e7eb;background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color .15s,background .15s}
+.hoj-shape-btn svg{width:16px;height:16px;pointer-events:none}
+.hoj-shape-btn.active{border-color:#0EA99C;background:#e6fbf8}
+.hoj-shape-btn:not(.active):hover{border-color:#c9ccd1}
 </style>
 </head>
-<body data-app-version="V39.54">
+<body data-app-version="V39.63">
 <div class="app">
 <header class="app-header">
   <div class="menu-wrapper">
@@ -1190,9 +1194,6 @@ body.dark .dt-text-light{display:inline}
 
 <div class="row" style="gap:10px;flex-wrap:wrap;align-items:flex-end">
 <div style="min-width:170px;max-width:260px"><label>Separación entre etiquetas (<span class="ulbl" data-utl="len">cm</span>)</label><input id="hoj_sep" type="text" value="0,10" data-utype="len"></div>
-</div><div class="sep"></div>
-<div class="row" style="gap:10px;flex-wrap:wrap">
-<div class="pill">Espacio disponible: <span class="result" id="hoj_espacio_disp">0 cm²</span></div>
 </div>
 </div>
 
@@ -1878,16 +1879,38 @@ body.dark .dt-text-light{display:inline}
 <label class="chk-label"><input id="sum_inc_env" type="checkbox"> Envíos</label>
 <label class="chk-label"><input id="sum_inc_pers" type="checkbox"> Producto personalizable</label>
 </div><div class="sep"></div>
+<div class="center-actions">
+<button class="btn ok" id="sum_export_cot">Exportar activados a Cotización</button>
+</div>
+<div class="sep"></div>
 <div class="grid">
-<div class="card md-3"><h4 style="margin:0 0 6px">Vinil</h4><div class="pill">Total: <span id="sum_vin">$ 0,00</span></div></div>
-<div class="card md-3"><h4 style="margin:0 0 6px">Sublimación</h4><div class="pill">Total: <span id="sum_sub">$ 0,00</span></div></div>
-<div class="card md-3"><h4 style="margin:0 0 6px">Esferas</h4><div class="pill">Total: <span id="sum_esf">$ 0,00</span></div></div>
-<div class="card md-3"><h4 style="margin:0 0 6px">DTF</h4><div class="pill">Total: <span id="sum_dtf">$ 0,00</span></div></div>
-<div class="card md-3"><h4 style="margin:0 0 6px">Papelería</h4><div class="pill">Total: <span id="sum_pap">$ 0,00</span></div></div>
-<div class="card md-3"><h4 style="margin:0 0 6px">Etiquetas</h4><div class="pill">Total: <span id="sum_eti">$ 0,00</span></div></div>
-<div class="card md-3"><h4 style="margin:0 0 6px">Empaques</h4><div class="pill">Total: <span id="sum_emp">$ 0,00</span></div></div>
-<div class="card md-3"><h4 style="margin:0 0 6px">Envíos</h4><div class="pill">Total: <span id="sum_env">$ 0,00</span></div></div>
-<div class="card md-3"><h4 style="margin:0 0 6px">Producto personalizable</h4><div class="pill">Total: <span id="sum_pers">$ 0,00</span></div></div>
+<div class="card md-3"><h4 style="margin:0 0 6px">Vinil</h4><div class="pill">Total: <span id="sum_vin">$ 0,00</span></div>
+<div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap"><input id="sum_desc_vin" type="text" placeholder="Descripción (opcional)" style="flex:1;min-width:110px"><input id="sum_qty_vin" type="number" min="1" step="1" value="1" style="width:64px"></div>
+<button type="button" class="btn" id="sum_addq_vin" style="margin-top:6px;width:100%">+ Cotización</button></div>
+<div class="card md-3"><h4 style="margin:0 0 6px">Sublimación</h4><div class="pill">Total: <span id="sum_sub">$ 0,00</span></div>
+<div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap"><input id="sum_desc_sub" type="text" placeholder="Descripción (opcional)" style="flex:1;min-width:110px"><input id="sum_qty_sub" type="number" min="1" step="1" value="1" style="width:64px"></div>
+<button type="button" class="btn" id="sum_addq_sub" style="margin-top:6px;width:100%">+ Cotización</button></div>
+<div class="card md-3"><h4 style="margin:0 0 6px">Esferas</h4><div class="pill">Total: <span id="sum_esf">$ 0,00</span></div>
+<div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap"><input id="sum_desc_esf" type="text" placeholder="Descripción (opcional)" style="flex:1;min-width:110px"><input id="sum_qty_esf" type="number" min="1" step="1" value="1" style="width:64px"></div>
+<button type="button" class="btn" id="sum_addq_esf" style="margin-top:6px;width:100%">+ Cotización</button></div>
+<div class="card md-3"><h4 style="margin:0 0 6px">DTF</h4><div class="pill">Total: <span id="sum_dtf">$ 0,00</span></div>
+<div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap"><input id="sum_desc_dtf" type="text" placeholder="Ej. 10 camisetas con DTF" style="flex:1;min-width:160px"></div>
+<button type="button" class="btn" id="sum_addq_dtf" style="margin-top:6px;width:100%">+ Cotización</button></div>
+<div class="card md-3"><h4 style="margin:0 0 6px">Papelería</h4><div class="pill">Total: <span id="sum_pap">$ 0,00</span></div>
+<div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap"><input id="sum_desc_pap" type="text" placeholder="Descripción (opcional)" style="flex:1;min-width:110px"><input id="sum_qty_pap" type="number" min="1" step="1" value="1" style="width:64px"></div>
+<button type="button" class="btn" id="sum_addq_pap" style="margin-top:6px;width:100%">+ Cotización</button></div>
+<div class="card md-3"><h4 style="margin:0 0 6px">Etiquetas</h4><div class="pill">Total: <span id="sum_eti">$ 0,00</span></div>
+<div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap"><input id="sum_desc_eti" type="text" placeholder="Descripción (opcional)" style="flex:1;min-width:110px"><input id="sum_qty_eti" type="number" min="1" step="1" value="1" style="width:64px"></div>
+<button type="button" class="btn" id="sum_addq_eti" style="margin-top:6px;width:100%">+ Cotización</button></div>
+<div class="card md-3"><h4 style="margin:0 0 6px">Empaques</h4><div class="pill">Total: <span id="sum_emp">$ 0,00</span></div>
+<div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap"><input id="sum_desc_emp" type="text" placeholder="Descripción (opcional)" style="flex:1;min-width:110px"><input id="sum_qty_emp" type="number" min="1" step="1" value="1" style="width:64px"></div>
+<button type="button" class="btn" id="sum_addq_emp" style="margin-top:6px;width:100%">+ Cotización</button></div>
+<div class="card md-3"><h4 style="margin:0 0 6px">Envíos</h4><div class="pill">Total: <span id="sum_env">$ 0,00</span></div>
+<div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap"><input id="sum_desc_env" type="text" placeholder="Ej. Delivery" style="flex:1;min-width:160px"></div>
+<button type="button" class="btn" id="sum_addq_env" style="margin-top:6px;width:100%">+ Cotización</button></div>
+<div class="card md-3"><h4 style="margin:0 0 6px">Producto personalizable</h4><div class="pill">Total: <span id="sum_pers">$ 0,00</span></div>
+<div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap"><input id="sum_desc_pers" type="text" placeholder="Descripción (opcional)" style="flex:1;min-width:110px"><input id="sum_qty_pers" type="number" min="1" step="1" value="1" style="width:64px"></div>
+<button type="button" class="btn" id="sum_addq_pers" style="margin-top:6px;width:100%">+ Cotización</button></div>
 </div><div class="sep"></div>
 <div class="tot">Total General: <span class="result" id="sum_total">$ 0,00</span></div>
 <div class="center-actions">
@@ -2429,7 +2452,7 @@ body.dark .dt-text-light{display:inline}
 </div>
 </div></section>
 
-<footer class="footer">Suite creada por @subli_mada — V39.54</footer>
+<footer class="footer">Suite creada por @subli_mada — V39.63</footer>
 </div>
 <script>
 /* ═══════════════════════════════════════════════════════════
@@ -2440,7 +2463,7 @@ body.dark .dt-text-light{display:inline}
 'use strict';
 const $=id=>document.getElementById(id);
 const $$=(sel,ctx=document)=>Array.from(ctx.querySelectorAll(sel));
-const PWA_VER='v39_54';
+const PWA_VER='v39_63';
 
 /* ═══ HELPERS: number formatting (configurable decimal separator) ═══ */
 const EU_FMT=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -4450,6 +4473,16 @@ function convertMoneyValue(n,fromSym,toSym){
     renderItems();
   });
 
+  /* Lets other modules (Resumen General) push a line into this same quote — identical
+     shape/behavior to the manual "Agregar ítem libre" flow above, just triggered from elsewhere. */
+  window.__cotAddFreeItem=function(name,cant,precioUnit){
+    const n=(name||'').trim()||'Ítem';
+    const c=Math.max(1,Math.round(clamp0(cant))||1);
+    const p=clamp0(precioUnit);
+    items.push({name:n,sku:'',icon:'generico',cant:c,precio_unit:p});
+    renderItems();
+  };
+
   itemsTable?.addEventListener('input',e=>{
     const el=e.target;const idx=parseInt(el.dataset.idx,10);if(isNaN(idx)||!items[idx])return;
     if(el.dataset.f==='cant')items[idx].cant=Math.max(1,clamp0(parseEU(el.value))||1);
@@ -4802,21 +4835,97 @@ function convertMoneyValue(n,fromSym,toSym){
    ═══════════════════════════════════════════════════════════ */
 (function(){
   let dtfDesignCount=0;
+  let lastDtfPack=null;
 
-  /* ---- Per-design cost formulas (matches modalidad packing math) ---- */
-  function colsFor(wPanel,wItem,sep){return Math.max(1,Math.floor((wPanel+sep)/(Math.max(0.01,wItem)+sep)));}
-  function costMetroUD(w,h,sep,precio){return ((h+sep)/colsFor(57,w,sep)/100)*precio;}
-  function costTramoUD(w,h,sep,precio){return Math.max(1,Math.ceil((h+sep)/colsFor(57,w,sep)/30))*precio;}
-  function costA3UD(w,h,sep,precio){
-    const c=colsFor(29.7,w,sep);
-    const f=Math.max(1,Math.floor((42+sep)/(Math.max(0.01,h)+sep)));
-    return precio/Math.max(1,c*f);
+  /* ---- Shared multi-design packer (same logic as the Hoja de Etiquetas module):
+     designs are processed tallest-first internally so shorter ones can fill
+     leftover row space, and any gap nothing could fill is reported back.
+     For "metro"/"tramo30" (rollo continuo) uh=Infinity and maxSheets=1 — there's
+     only one panel and it's as long as it needs to be. For "a3" (hoja fija)
+     uh=42 and maxSheets=0 (unlimited), same as the Hoja module. ---- */
+  function dtfPackSheets(designs,uw,uh,sep,maxSheets){
+    const sheets=[];
+    const shelvesBySheet=[];
+    const placedCount=designs.map(()=>0);
+    const HARD_CAP=500;
+    let shelves=[];
+    let nextY=0;
+    function newSheet(){
+      if(maxSheets>0&&sheets.length>=maxSheets)return false;
+      if(sheets.length>=HARD_CAP)return false;
+      sheets.push([]);shelves=[];shelvesBySheet.push(shelves);nextY=0;return true;
+    }
+    if(!newSheet())return{sheets,placedCount,gaps:[]};
+    const order=designs.map((d,i)=>i)
+      .filter(i=>designs[i].w>0&&designs[i].h>0&&designs[i].qty>0&&designs[i].w<=uw+1e-9&&designs[i].h<=uh+1e-9)
+      .sort((a,b)=>designs[b].h-designs[a].h);
+    outer:
+    for(const di of order){
+      const d=designs[di];
+      let remaining=d.qty;
+      while(remaining>0){
+        for(const shelf of shelves){
+          if(remaining<=0)break;
+          if(d.h>shelf.h+1e-9)continue;
+          const availW=uw-shelf.x;
+          const cols=Math.max(0,Math.floor((availW+sep)/(d.w+sep)));
+          if(cols<=0)continue;
+          const place=Math.min(remaining,cols);
+          for(let c=0;c<place;c++){
+            sheets[sheets.length-1].push({x:shelf.x+c*(d.w+sep),y:shelf.y,w:d.w,h:d.h,di});
+          }
+          shelf.x+=place*(d.w+sep);
+          remaining-=place;
+          placedCount[di]+=place;
+        }
+        if(remaining<=0)break;
+        if(nextY+d.h>uh+1e-9){if(!newSheet())break outer;}
+        const cols=Math.max(1,Math.floor((uw+sep)/(d.w+sep)));
+        const place=Math.min(remaining,cols);
+        for(let c=0;c<place;c++){
+          sheets[sheets.length-1].push({x:c*(d.w+sep),y:nextY,w:d.w,h:d.h,di});
+        }
+        shelves.push({y:nextY,h:d.h,x:place*(d.w+sep)});
+        remaining-=place;
+        placedCount[di]+=place;
+        nextY+=d.h+sep;
+      }
+    }
+    const GAP_MIN=0.3;
+    const gaps=shelvesBySheet.map(sheetShelves=>
+      sheetShelves.filter(sh=>uw-sh.x>GAP_MIN+1e-9).map(sh=>({x:sh.x,y:sh.y,w:uw-sh.x,h:sh.h}))
+    );
+    return{sheets,placedCount,gaps};
   }
-  function bestUD(w,h,sep,precio,modalidad,autorot){
-    const base=modalidad==='metro'?costMetroUD(w,h,sep,precio):modalidad==='tramo30'?costTramoUD(w,h,sep,precio):costA3UD(w,h,sep,precio);
-    if(!autorot)return base;
-    const rot=modalidad==='metro'?costMetroUD(h,w,sep,precio):modalidad==='tramo30'?costTramoUD(h,w,sep,precio):costA3UD(h,w,sep,precio);
-    return Math.min(base,rot);
+
+  /* ---- Builds the shared layout+cost pack from the current design cards.
+     Runs the packer once; both the per-design cost split and the preview
+     canvas read from this single result so they can never disagree. ---- */
+  function buildDtfPack(){
+    const PW=clamp0(readMetric($('dtf_panel_w')))||57;
+    const PHraw=clamp0(readMetric($('dtf_panel_h')))||100;
+    const sepCm=clamp0(readMetric($('dtf_sep')));
+    const autoRot=!!$('dtf_autorot')?.checked;
+    const mod=$('dtf_modalidad')?.value||'metro';
+    const isRoll=mod!=='a3';
+    const uw=PW,uh=isRoll?Infinity:PHraw;
+    const maxSheets=isRoll?1:0;
+    const cards=$$('#dtf_bloques .card');
+    const designs=cards.map(card=>{
+      let w=clamp0(readMetric(card.querySelector('.dtf-dw')));
+      let h=clamp0(readMetric(card.querySelector('.dtf-dh')));
+      const qty=Math.max(0,Math.round(clamp0(parseEU(card.querySelector('.dtf-dq')?.value))));
+      if(autoRot&&w>0&&h>0){
+        const normalFits=w<=uw+1e-9&&h<=uh+1e-9;
+        const rotFits=h<=uw+1e-9&&w<=uh+1e-9;
+        if(!normalFits&&rotFits){const t=w;w=h;h=t;}
+      }
+      return{w,h,qty};
+    });
+    const pack=dtfPackSheets(designs,uw,uh,sepCm,maxSheets);
+    const requiredCm=(pack.sheets[0]||[]).reduce((m,it)=>Math.max(m,it.y+it.h),0);
+    const numSheets=pack.sheets.filter(s=>s.length>0).length;
+    return{PW,PHraw,sepCm,autoRot,mod,isRoll,uw,uh,cards,designs,pack,requiredCm,numSheets};
   }
 
   function addDesign(){
@@ -4902,32 +5011,48 @@ function convertMoneyValue(n,fromSym,toSym){
   function recalcDTF(){
     const precioUnit=clamp0(parseEU($('dtf_precio_unit')?.value));
     const mod=$('dtf_modalidad')?.value||'metro';
-    const sepCm=clamp0(readMetric($('dtf_sep')));
-    const autorot=!!$('dtf_autorot')?.checked;
 
-    // Per-design cost (DTF ud / Total diseño por tarjeta)
+    // Run the shared packer once: layout and cost both read from this single result.
+    const built=buildDtfPack();
+    lastDtfPack=built;
+    const{pack,requiredCm,numSheets,designs}=built;
+
+    // Real total material cost, based on how much panel the packer actually needed —
+    // not an independent per-design estimate. This is what "va de la mano con el precio" means:
+    // a tighter pack (shorter roll / fewer sheets) directly lowers this number.
+    let totalCost=0;
+    if(precioUnit>0){
+      if(mod==='metro')totalCost=requiredCm>0?(requiredCm/100)*precioUnit:0;
+      else if(mod==='tramo30')totalCost=requiredCm>0?Math.ceil(requiredCm/30)*precioUnit:0;
+      else totalCost=numSheets>0?numSheets*precioUnit:0; // a3
+    }
+
+    // Split that total back across design cards, weighted by area×cantidad —
+    // a design that eats more panel real-estate carries more of the shared cost.
+    const weights=designs.map((d,i)=>d.w*d.h*(pack.placedCount[i]||0));
+    const sumWeights=weights.reduce((s,w)=>s+w,0);
     let directos=0,totalDesigns=0;
-    $$('#dtf_bloques .card').forEach(card=>{
-      const w=clamp0(readMetric(card.querySelector('.dtf-dw')));
-      const h=clamp0(readMetric(card.querySelector('.dtf-dh')));
-      const n=Math.max(0,Math.round(clamp0(parseEU(card.querySelector('.dtf-dq')?.value))));
+    $$('#dtf_bloques .card').forEach((card,i)=>{
+      const d=designs[i];
       const cudEl=card.querySelector('.dtf-cud'),ctotEl=card.querySelector('.dtf-ctot');
-      if(w>0&&h>0&&n>0&&precioUnit>0){
-        const cud=bestUD(w,h,sepCm,precioUnit,mod,autorot);
+      if(d.w>0&&d.h>0&&d.qty>0&&precioUnit>0&&sumWeights>0){
+        const designTotal=totalCost*(weights[i]/sumWeights);
+        const cud=designTotal/d.qty;
         if(cudEl)cudEl.textContent=fmtEU(cud);
-        if(ctotEl)ctotEl.textContent=fmtEU(cud*n);
-        directos+=cud*n;totalDesigns+=n;
+        if(ctotEl)ctotEl.textContent=fmtEU(designTotal);
+        directos+=designTotal;totalDesigns+=d.qty;
       }else{
         if(cudEl)cudEl.textContent=fmtEU(0);
         if(ctotEl)ctotEl.textContent=fmtEU(0);
+        if(d.w>0&&d.h>0&&d.qty>0)totalDesigns+=d.qty;
       }
     });
+    directos=totalCost; // authoritative figure used downstream; per-card split above is informative
 
-    // Material a solicitar (estimado, informativo)
-    const modUnitsAprox=precioUnit>0?directos/precioUnit:0;
-    const matLabel=mod==='metro'?fmtVarPlain(modUnitsAprox,2)+' metro(s) (aprox)'
-      :mod==='tramo30'?fmtVarPlain(modUnitsAprox,2)+' tramo(s) (aprox)'
-      :fmtVarPlain(modUnitsAprox,2)+' hoja(s) A3 (aprox)';
+    // Material a solicitar — ahora es el uso real calculado por el packer, no una estimación circular
+    const matLabel=mod==='metro'?fmtVarPlain(requiredCm/100,2)+' metro(s)'
+      :mod==='tramo30'?fmtVarPlain(Math.ceil(requiredCm/30),0)+' tramo(s)'
+      :fmtVarPlain(numSheets,0)+' hoja(s) A3';
     $('dtf_mat_solicitar').textContent=totalDesigns>0?matLabel:'—';
 
     // Prenda: prendas equivalentes = total diseños / diseños por prenda
@@ -4988,87 +5113,67 @@ function convertMoneyValue(n,fromSym,toSym){
   }
   // Canvas preview
   const DTF_CANVAS_W=600,DTF_MIN_CANVAS_H=350,DTF_MAX_CANVAS_H=900,DTF_MARGIN=14;
-  function computeDTFLayout(PW,sepCm,autoRot){
-    // Pure layout pass in cm units (no pixel scale yet) so we know the real required length
-    // before deciding how tall the preview canvas needs to be.
-    const items=[];let ci=0,yOff=0;
-    $$('#dtf_bloques .card').forEach(card=>{
-      const w=clamp0(readMetric(card.querySelector('.dtf-dw')));
-      const h=clamp0(readMetric(card.querySelector('.dtf-dh')));
-      const q=Math.max(1,Math.round(clamp0(parseEU(card.querySelector('.dtf-dq')?.value))));
-      if(w<=0||h<=0)return;
-      let dw=w,dh=h;
-      if(autoRot&&dw>PW&&dh<=PW){const tmp=dw;dw=dh;dh=tmp;}
-      const cols=Math.max(1,Math.floor(PW/(dw+sepCm)));
-      let placed=0,row=0;
-      while(placed<q){
-        for(let c=0;c<cols&&placed<q;c++){
-          items.push({x:c*(dw+sepCm),y:yOff+row*(dh+sepCm),w:dw,h:dh,ci});
-          placed++;
-        }
-        row++;
-      }
-      yOff+=row*(dh+sepCm);ci++;
-    });
-    return{items,yOff};
-  }
   function renderDTFPreview(){
     const canvas=$('dtf_layout'); if(!canvas)return;
     const ctx=canvas.getContext('2d');
-    const PW=clamp0(readMetric($('dtf_panel_w')))||57;
-    let PH=clamp0(readMetric($('dtf_panel_h')))||100;
-    const sepCm=clamp0(readMetric($('dtf_sep')));
-    const autoRot=$('dtf_autorot')?.checked;
-    const panelTipo=$('dtf_panel_tipo')?.value||'metro';
-    const{items,yOff}=computeDTFLayout(PW,sepCm,autoRot);
+    if(!lastDtfPack)lastDtfPack=buildDtfPack();
+    const{PW,PHraw,isRoll,pack,requiredCm,numSheets}=lastDtfPack;
+    let PH=PHraw;
 
     // Required length field: how much material (cm) the current designs actually need
     const largoEl=$('dtf_largo_requerido');
-    if(largoEl)largoEl.textContent=dispLenNum(yOff,1)+' '+unitLabelText('len');
+    if(largoEl)largoEl.textContent=dispLenNum(requiredCm,1)+' '+unitLabelText('len');
 
     // Auto-grow "Alto panel" to match what the designs actually require — DTF is sold by
     // length (metro/tramo), so the panel just needs to be as long as the print needs.
     // Hoja A3 is a fixed physical sheet size, so it's excluded from auto-growth.
-    if(yOff>PH&&panelTipo!=='a3'){
-      PH=yOff;
+    if(isRoll&&requiredCm>PH){
+      PH=requiredCm;
       const phEl=$('dtf_panel_h');
       if(phEl)writeMetric(phEl,PH,2);
     }
 
-    // The preview keeps adjusting its height once the panel (or the designs themselves)
-    // need more than 100cm, instead of squeezing everything into a fixed-size box.
-    const requiredCm=Math.max(PH,yOff,1);
+    const requiredForCanvas=Math.max(PH,requiredCm,1);
     const pxPerCm=(DTF_MIN_CANVAS_H-DTF_MARGIN*2)/100;
-    let canvasH=Math.max(DTF_MIN_CANVAS_H,Math.min(DTF_MAX_CANVAS_H,Math.round(requiredCm*pxPerCm+DTF_MARGIN*2)));
+    let canvasH=Math.max(DTF_MIN_CANVAS_H,Math.min(DTF_MAX_CANVAS_H,Math.round(requiredForCanvas*pxPerCm+DTF_MARGIN*2)));
     canvas.width=DTF_CANVAS_W;canvas.height=canvasH;
 
-    let scale=(canvasH-DTF_MARGIN*2)/requiredCm;
+    let scale=(canvasH-DTF_MARGIN*2)/requiredForCanvas;
     scale=Math.min(scale,(canvas.width-DTF_MARGIN*2)/PW);
-    const panelW=PW*scale,panelH=PH*scale;
+    const panelH=(isRoll?requiredForCanvas:PH)*scale,panelW=PW*scale;
     const offX=(canvas.width-panelW)/2,offY=DTF_MARGIN;
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.fillStyle='#f9fafb';ctx.fillRect(offX,offY,panelW,panelH);
     ctx.strokeStyle='#ccc';ctx.strokeRect(offX,offY,panelW,panelH);
     const colors=['#ff7aa2','#7aa2ff','#22c55e','#f59e0b','#a855f7','#ef4444','#06b6d4','#84cc16'];
+    const items=pack.sheets[0]||[];
     items.forEach(it=>{
       const x=offX+it.x*scale,y=offY+it.y*scale;
-      ctx.fillStyle=colors[it.ci%colors.length];ctx.globalAlpha=0.3;
+      ctx.fillStyle=colors[it.di%colors.length];ctx.globalAlpha=0.3;
       ctx.fillRect(x,y,it.w*scale,it.h*scale);ctx.globalAlpha=1;
-      ctx.strokeStyle=colors[it.ci%colors.length];ctx.strokeRect(x,y,it.w*scale,it.h*scale);
+      ctx.strokeStyle=colors[it.di%colors.length];ctx.strokeRect(x,y,it.w*scale,it.h*scale);
     });
-    const overflow=yOff>PH;
-    if(overflow){
-      // Dashed line marking where the configured panel height ends, since content keeps going past it
-      // (only reachable for Hoja A3, the one fixed-size panel type that doesn't auto-grow)
-      const lineY=offY+panelH;
-      ctx.save();ctx.setLineDash([6,4]);ctx.strokeStyle='#ef4444';
-      ctx.beginPath();ctx.moveTo(offX,lineY);ctx.lineTo(offX+panelW,lineY);ctx.stroke();
+    const gapsHere=(pack.gaps&&pack.gaps[0])||[];
+    gapsHere.forEach(g=>{
+      const x=offX+g.x*scale,y=offY+g.y*scale,w=g.w*scale,h=g.h*scale;
+      ctx.save();
+      ctx.fillStyle='#9ca3af';ctx.globalAlpha=0.18;ctx.fillRect(x,y,w,h);
+      ctx.globalAlpha=1;ctx.setLineDash([4,3]);ctx.strokeStyle='#9ca3af';ctx.strokeRect(x,y,w,h);
+      if(w>34&&h>14){
+        ctx.setLineDash([]);ctx.fillStyle='#6b7280';ctx.font='10px Inter, sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(dispLenNum(g.w,1)+'×'+dispLenNum(g.h,1),x+w/2,y+h/2);
+      }
       ctx.restore();
+    });
+    let info='Panel '+dispLenNum(PW,1)+'×'+dispLenNum(isRoll?requiredCm:PH,1)+' '+unitLabelText('len')+' | Requerido: '+dispLenNum(requiredCm,1)+' '+unitLabelText('len')+' de alto';
+    if(!isRoll&&numSheets>1)info+=' | Hojas necesarias: '+numSheets+' (vista previa muestra la hoja 1)';
+    if(gapsHere.length){
+      const biggest=gapsHere.reduce((a,b)=>(a.w*a.h>=b.w*b.h?a:b));
+      info+=' | Espacio libre sin aprovechar: '+gapsHere.length+(gapsHere.length===1?' hueco':' huecos')
+        +' (el mayor: '+dispLenNum(biggest.w,1)+'×'+dispLenNum(biggest.h,1)+' '+unitLabelText('len')+')';
     }
-    let info='Panel '+dispLenNum(PW,1)+'×'+dispLenNum(PH,1)+' '+unitLabelText('len')+' | Requerido: '+dispLenNum(yOff,1)+' '+unitLabelText('len')+' de alto';
-    if(overflow)info+=' ⚠ Excede el alto del panel por '+dispLenNum(yOff-PH,1)+' '+unitLabelText('len');
     const infoEl=$('dtf_layout_info');
-    if(infoEl){infoEl.textContent=info;infoEl.style.color=overflow?'#ef4444':'';}
+    if(infoEl){infoEl.textContent=info;infoEl.style.color='';}
   }
   $('dtf_preview_btn')?.addEventListener('click',renderDTFPreview);
   // Wire
@@ -5102,56 +5207,79 @@ function convertMoneyValue(n,fromSym,toSym){
   const SHEET_SIZES={carta:[21.59,27.94],a4:[21,29.7],a3:[29.7,42]};
   let hojDesignCount=0;
   let currentSheetIdx=0;
-  let lastPack=null,lastGeom=null;
+  let lastPack=null,lastGeom=null,lastShapes=[];
 
-  function hojAreaLabel(){return UNIT_SYSTEM==='imperial'?'in²':'cm²';}
-  function hojAreaNum(cm2){const v=UNIT_SYSTEM==='imperial'?cm2/6.4516:cm2;return fmtVarPlain(v,2);}
 
-  /* ---- Shelf-style multi-sheet packer: places design blocks left-to-right,
-     top-to-bottom, wrapping to a new sheet when a design no longer fits,
-     sharing leftover space on a sheet across different designs. ---- */
+  /* ---- Shelf-style multi-sheet packer: places designs into horizontal shelves
+     (rows). Designs are processed tallest-first internally (regardless of the
+     order shown on screen) so shorter designs — whichever position they were
+     added in — are always the ones left available to fill leftover gaps.
+     When a design's last row is left partially filled, remaining designs are
+     offered that leftover width (as long as their height fits the shelf)
+     before a brand-new shelf is opened. Any leftover width that truly can't
+     be reused (because every remaining design is physically taller than that
+     row) is reported back as a "gap" so it can be shown to the user. ---- */
   function packSheets(designs,uw,uh,sep,maxSheets){
     const sheets=[];
+    const shelvesBySheet=[]; // parallel to sheets: shelvesBySheet[i] = shelves that ended up open on sheet i
     const placedCount=designs.map(()=>0);
-    let x=0,y=0,rowH=0;
     const HARD_CAP=500;
+    let shelves=[]; // open shelves on the current sheet: {y,h,x}  (x = width already consumed, gap-inclusive)
+    let nextY=0;
     function newSheet(){
       if(maxSheets>0&&sheets.length>=maxSheets)return false;
       if(sheets.length>=HARD_CAP)return false;
-      sheets.push([]);x=0;y=0;rowH=0;return true;
+      sheets.push([]);shelves=[];shelvesBySheet.push(shelves);nextY=0;return true;
     }
+    if(!newSheet())return{sheets,placedCount,gaps:[]};
+    // process tallest designs first so shorter ones remain available to fill gaps later
+    const order=designs.map((d,i)=>i)
+      .filter(i=>designs[i].w>0&&designs[i].h>0&&designs[i].qty>0&&designs[i].w<=uw+1e-9&&designs[i].h<=uh+1e-9)
+      .sort((a,b)=>designs[b].h-designs[a].h);
     outer:
-    for(let di=0;di<designs.length;di++){
+    for(const di of order){
       const d=designs[di];
-      if(!(d.w>0)||!(d.h>0)||!(d.qty>0))continue;
-      if(d.w>uw+1e-9||d.h>uh+1e-9)continue; // never fits in an empty sheet, stays unplaced
       let remaining=d.qty;
       while(remaining>0){
-        if(sheets.length===0){if(!newSheet())break outer;}
-        if(x+d.w>uw+1e-9){x=0;y+=rowH+sep;rowH=0;}
-        if(y+d.h>uh+1e-9){if(!newSheet())break outer;}
-        const availW=uw-x,availH=uh-y;
-        const cols=Math.max(1,Math.floor((availW+sep)/(d.w+sep)));
-        const maxRows=Math.max(1,Math.floor((availH+sep)/(d.h+sep)));
-        const capacity=cols*maxRows;
-        const place=Math.min(remaining,capacity);
-        const rowsNeeded=Math.ceil(place/cols);
-        let placedHere=0;
-        for(let r=0;r<rowsNeeded&&placedHere<place;r++){
-          for(let c=0;c<cols&&placedHere<place;c++){
-            sheets[sheets.length-1].push({x:x+c*(d.w+sep),y:y+r*(d.h+sep),w:d.w,h:d.h,di});
-            placedHere++;
+        // 1) try to squeeze into leftover space of existing shelves (fills gaps left by other designs)
+        for(const shelf of shelves){
+          if(remaining<=0)break;
+          if(d.h>shelf.h+1e-9)continue; // too tall to share this shelf
+          const availW=uw-shelf.x;
+          const cols=Math.max(0,Math.floor((availW+sep)/(d.w+sep)));
+          if(cols<=0)continue;
+          const place=Math.min(remaining,cols);
+          for(let c=0;c<place;c++){
+            sheets[sheets.length-1].push({x:shelf.x+c*(d.w+sep),y:shelf.y,w:d.w,h:d.h,di});
           }
+          shelf.x+=place*(d.w+sep);
+          remaining-=place;
+          placedCount[di]+=place;
         }
+        if(remaining<=0)break;
+        // 2) no leftover space fits it: open a new shelf
+        if(nextY+d.h>uh+1e-9){if(!newSheet())break outer;}
+        const cols=Math.max(1,Math.floor((uw+sep)/(d.w+sep)));
+        const place=Math.min(remaining,cols);
+        for(let c=0;c<place;c++){
+          sheets[sheets.length-1].push({x:c*(d.w+sep),y:nextY,w:d.w,h:d.h,di});
+        }
+        shelves.push({y:nextY,h:d.h,x:place*(d.w+sep)});
         remaining-=place;
         placedCount[di]+=place;
-        const blockW=cols*(d.w+sep)-sep;
-        const blockH=rowsNeeded*(d.h+sep)-sep;
-        x+=blockW+sep;
-        rowH=Math.max(rowH,blockH);
+        nextY+=d.h+sep;
       }
     }
-    return{sheets,placedCount};
+    // whatever leftover width remains on a shelf once every design (tallest to
+    // shortest) has had a chance to use it is space nothing on the sheet was
+    // short/narrow enough to fill — report it so the UI can show it
+    const GAP_MIN=0.3; // ignore slivers under ~3mm, not realistically usable
+    const gaps=shelvesBySheet.map(sheetShelves=>
+      sheetShelves
+        .filter(sh=>uw-sh.x>GAP_MIN+1e-9)
+        .map(sh=>({x:sh.x,y:sh.y,w:uw-sh.x,h:sh.h}))
+    );
+    return{sheets,placedCount,gaps};
   }
 
   function addDesign(){
@@ -5170,6 +5298,18 @@ function convertMoneyValue(n,fromSym,toSym){
       <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:0">
         <input type="checkbox" class="hoj-rot"><span class="muted">Rotar 90°</span>
       </label>
+      <div class="hoj-shape-group" data-shape="square" style="display:flex;align-items:center;gap:6px">
+        <span class="muted">Forma:</span>
+        <button type="button" class="hoj-shape-btn active" data-shape="square" title="Cuadrado" aria-label="Cuadrado">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16"></rect></svg>
+        </button>
+        <button type="button" class="hoj-shape-btn" data-shape="rounded" title="Bordes redondeados" aria-label="Bordes redondeados">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="6"></rect></svg>
+        </button>
+        <button type="button" class="hoj-shape-btn" data-shape="circle" title="Círculo" aria-label="Círculo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"></circle></svg>
+        </button>
+      </div>
       <button class="btn reset" data-remove="${id}" style="margin-left:auto">Eliminar</button>
     </div>
     <div class="row" style="margin-top:8px;gap:10px;align-items:center;flex-wrap:wrap">
@@ -5178,9 +5318,18 @@ function convertMoneyValue(n,fromSym,toSym){
     </div>`;
     $('hoj_bloques').appendChild(div);
     div.addEventListener('input',recalcHoj);
+    div.addEventListener('change',recalcHoj);
     div.querySelector('[data-remove]').addEventListener('click',()=>{
       if($$('#hoj_bloques .card').length<=1)return; // always keep at least one design visible
       div.remove();renumberHojDesigns();updateHojRemoveState();recalcHoj();
+    });
+    div.querySelectorAll('.hoj-shape-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const group=div.querySelector('.hoj-shape-group');
+        group.dataset.shape=btn.dataset.shape;
+        div.querySelectorAll('.hoj-shape-btn').forEach(b=>b.classList.toggle('active',b===btn));
+        recalcHoj();
+      });
     });
     div.querySelector('.hoj-rot').addEventListener('change',()=>{
       const wEl=div.querySelector('.hoj-dw'),hEl=div.querySelector('.hoj-dh');
@@ -5235,10 +5384,12 @@ function convertMoneyValue(n,fromSym,toSym){
     const designs=cards.map(card=>({
       w:clamp0(readMetric(card.querySelector('.hoj-dw'))),
       h:clamp0(readMetric(card.querySelector('.hoj-dh'))),
-      qty:Math.max(0,Math.round(clamp0(parseEU(card.querySelector('.hoj-dq')?.value))))
+      qty:Math.max(0,Math.round(clamp0(parseEU(card.querySelector('.hoj-dq')?.value)))),
+      shape:card.querySelector('.hoj-shape-group')?.dataset.shape||'square' // visual only, does not affect the fitting math
     }));
 
     const pack=packSheets(designs,uw,uh,sep,0);
+    lastShapes=designs.map(d=>d.shape);
 
     cards.forEach((card,i)=>{
       const d=designs[i];
@@ -5260,7 +5411,6 @@ function convertMoneyValue(n,fromSym,toSym){
     const totalUbicadas=pack.placedCount.reduce((s,n)=>s+n,0);
     const faltantes=totalSolicitadas-totalUbicadas;
 
-    $('hoj_espacio_disp').textContent=hojAreaNum(uw*uh)+' '+hojAreaLabel();
     $('hoj_total_solicitadas').textContent=totalSolicitadas;
     $('hoj_total_ubicadas').textContent=totalUbicadas;
     $('hoj_hojas_necesarias').textContent=pack.sheets.length;
@@ -5276,6 +5426,29 @@ function convertMoneyValue(n,fromSym,toSym){
   }
 
   const HOJ_CANVAS_W=600,HOJ_MAX_H=900,HOJ_MARGIN=14;
+  function roundedRectPath(ctx,x,y,w,h,r){
+    r=Math.max(0,Math.min(r,w/2,h/2));
+    ctx.moveTo(x+r,y);
+    ctx.lineTo(x+w-r,y);
+    ctx.arcTo(x+w,y,x+w,y+r,r);
+    ctx.lineTo(x+w,y+h-r);
+    ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+    ctx.lineTo(x+r,y+h);
+    ctx.arcTo(x,y+h,x,y+h-r,r);
+    ctx.lineTo(x,y+r);
+    ctx.arcTo(x,y,x+r,y,r);
+    ctx.closePath();
+  }
+  function shapePath(ctx,shape,x,y,w,h){
+    ctx.beginPath();
+    if(shape==='circle'){
+      ctx.ellipse(x+w/2,y+h/2,Math.max(0,w/2),Math.max(0,h/2),0,0,Math.PI*2);
+    }else if(shape==='rounded'){
+      roundedRectPath(ctx,x,y,w,h,Math.min(w,h)*0.2);
+    }else{
+      ctx.rect(x,y,w,h);
+    }
+  }
   function renderHojPreview(){
     const canvas=$('hoj_layout');if(!canvas||!lastPack||!lastGeom)return;
     const ctx=canvas.getContext('2d');
@@ -5293,14 +5466,38 @@ function convertMoneyValue(n,fromSym,toSym){
     const items=(lastPack.sheets[currentSheetIdx]||[]);
     items.forEach(it=>{
       const x=mx+it.x*scale,y=my+it.y*scale;
-      ctx.fillStyle=colors[it.di%colors.length];ctx.globalAlpha=0.35;
-      ctx.fillRect(x,y,it.w*scale,it.h*scale);ctx.globalAlpha=1;
-      ctx.strokeStyle=colors[it.di%colors.length];ctx.strokeRect(x,y,it.w*scale,it.h*scale);
+      const shape=lastShapes[it.di]||'square';
+      const w=it.w*scale,h=it.h*scale;
+      const color=colors[it.di%colors.length];
+      ctx.fillStyle=color;ctx.globalAlpha=0.35;
+      shapePath(ctx,shape,x,y,w,h);ctx.fill();ctx.globalAlpha=1;
+      ctx.strokeStyle=color;
+      shapePath(ctx,shape,x,y,w,h);ctx.stroke();
+    });
+    const gapsHere=(lastPack.gaps&&lastPack.gaps[currentSheetIdx])||[];
+    gapsHere.forEach(g=>{
+      const x=mx+g.x*scale,y=my+g.y*scale,w=g.w*scale,h=g.h*scale;
+      ctx.save();
+      ctx.fillStyle='#9ca3af';ctx.globalAlpha=0.18;ctx.fillRect(x,y,w,h);
+      ctx.globalAlpha=1;ctx.setLineDash([4,3]);ctx.strokeStyle='#9ca3af';ctx.strokeRect(x,y,w,h);
+      if(w>34&&h>14){
+        ctx.setLineDash([]);ctx.fillStyle='#6b7280';ctx.font='10px Inter, sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText(dispLenNum(g.w,1)+'×'+dispLenNum(g.h,1),x+w/2,y+h/2);
+      }
+      ctx.restore();
     });
     const infoEl=$('hoj_layout_info');
     if(infoEl){
       if(!lastPack.sheets.length)infoEl.textContent='Agrega al menos un diseño con ancho, alto y cantidad para ver la distribución.';
-      else infoEl.textContent='Hoja '+dispLenNum(W,1)+'×'+dispLenNum(H,1)+' '+unitLabelText('len')+' | Etiquetas en esta hoja: '+items.length;
+      else{
+        let txt='Hoja '+dispLenNum(W,1)+'×'+dispLenNum(H,1)+' '+unitLabelText('len')+' | Etiquetas en esta hoja: '+items.length;
+        if(gapsHere.length){
+          const biggest=gapsHere.reduce((a,b)=>(a.w*a.h>=b.w*b.h?a:b));
+          txt+=' | Espacio libre sin aprovechar: '+gapsHere.length+(gapsHere.length===1?' hueco':' huecos')
+            +' (el mayor: '+dispLenNum(biggest.w,1)+'×'+dispLenNum(biggest.h,1)+' '+unitLabelText('len')+')';
+        }
+        infoEl.textContent=txt;
+      }
     }
   }
   function renderCurrentSheet(){
@@ -5333,7 +5530,6 @@ function convertMoneyValue(n,fromSym,toSym){
   $('hoj_btn_copy')?.addEventListener('click',()=>{
     const lines=['Distribución de etiquetas en hoja',
       'Hoja: '+($('hoj_hoja_w')?.value||'-')+'×'+($('hoj_hoja_h')?.value||'-')+' '+unitLabelText('len'),
-      'Espacio disponible: '+($('hoj_espacio_disp')?.textContent||''),
       'Total solicitadas: '+($('hoj_total_solicitadas')?.textContent||'0'),
       'Total ubicadas: '+($('hoj_total_ubicadas')?.textContent||'0'),
       'Hojas necesarias: '+($('hoj_hojas_necesarias')?.textContent||'0')];
@@ -5409,6 +5605,60 @@ function convertMoneyValue(n,fromSym,toSym){
     try{navigator.clipboard.writeText(lines.join('\n'));}catch(e){}
   });
   $('sum_btn_print')?.addEventListener('click',()=>window.print());
+
+  // "+ Cotización": sends this module's Precio de Venta straight into the existing
+  // Cotizaciones module as its own free item — same mechanism as typing it manually
+  // there ("Agregar ítem libre"), just pre-filled from here. Vinil/Sublimación/Esferas/
+  // Papelería/Etiquetas/Empaques/Producto personalizable are genuine per-unit prices,
+  // so their "Cantidad" multiplies normally. DTF and Envíos are already totals for the
+  // whole batch/envío, so they always go in as a single line (cant=1) — any "10
+  // camisetas" detail belongs only in the description, never in a quantity that would
+  // multiply the price again.
+  const QTY_MODULES=['vin','sub','esf','pap','eti','emp','pers'];
+  const MODULE_LABELS={vin:'Vinil',sub:'Sublimación',esf:'Esferas',dtf:'DTF',pap:'Papelería',eti:'Etiquetas',emp:'Empaques',env:'Envíos',pers:'Producto personalizable'};
+  Object.keys(SRC).forEach(k=>{
+    $('sum_addq_'+k)?.addEventListener('click',()=>{
+      const total=T(SRC[k]);
+      if(!(total>0)){alert('El total de '+MODULE_LABELS[k]+' es $ 0,00 — no hay nada que agregar.');return;}
+      const descEl=$('sum_desc_'+k);
+      const desc=(descEl?.value||'').trim()||MODULE_LABELS[k];
+      let cant=1;
+      if(QTY_MODULES.includes(k)){
+        const qtyEl=$('sum_qty_'+k);
+        cant=Math.max(1,Math.round(clamp0(parseEU(qtyEl?.value)))||1);
+      }
+      if(typeof window.__cotAddFreeItem!=='function'){alert('No se pudo conectar con el módulo de Cotizaciones.');return;}
+      window.__cotAddFreeItem(desc,cant,total);
+      if(descEl)descEl.value='';
+      if(typeof window.selectView==='function')window.selectView('cotizaciones');
+    });
+  });
+
+  // "Exportar activados a Cotización": same checkboxes that drive Total General now
+  // double as the export selection — everything ticked gets pushed as its own line.
+  $('sum_export_cot')?.addEventListener('click',()=>{
+    const checked=Object.keys(SRC).filter(k=>$('sum_inc_'+k)?.checked);
+    if(!checked.length){alert('Tildá al menos un módulo para exportar.');return;}
+    let added=0;const skipped=[];
+    checked.forEach(k=>{
+      const total=T(SRC[k]);
+      if(!(total>0)){skipped.push(MODULE_LABELS[k]);return;}
+      const descEl=$('sum_desc_'+k);
+      const desc=(descEl?.value||'').trim()||MODULE_LABELS[k];
+      let cant=1;
+      if(QTY_MODULES.includes(k)){
+        const qtyEl=$('sum_qty_'+k);
+        cant=Math.max(1,Math.round(clamp0(parseEU(qtyEl?.value)))||1);
+      }
+      if(typeof window.__cotAddFreeItem!=='function')return;
+      window.__cotAddFreeItem(desc,cant,total);
+      if(descEl)descEl.value='';
+      added++;
+    });
+    if(added>0&&typeof window.selectView==='function')window.selectView('cotizaciones');
+    if(skipped.length)alert((added>0?'Se agregaron '+added+' módulo(s) a la cotización.\n\n':'')+'Se omitieron por tener total $ 0,00: '+skipped.join(', '));
+  });
+
   update();
 })();
 
