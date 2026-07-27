@@ -275,7 +275,7 @@ body.dark .dt-text-light{display:inline}
 .hoj-shape-btn:not(.active):hover{border-color:#c9ccd1}
 </style>
 </head>
-<body data-app-version="V39.63">
+<body data-app-version="V39.71">
 <div class="app">
 <header class="app-header">
   <div class="menu-wrapper">
@@ -358,21 +358,22 @@ body.dark .dt-text-light{display:inline}
 <label style="display:inline-flex;align-items:center;gap:8px;margin:0"><input id="cd_enabled" type="checkbox"> Activar</label>
 <select id="cd_item" style="max-width:220px">
 <option value="algodon" data-ud="3.50">Camiseta de algodón</option>
-<option value="poliester" data-ud="2.50">Camiseta de poliéster</option>
+<option value="poliester" data-ud="2.80">Camiseta de poliéster</option>
 <option value="bolsa" data-ud="1.80">Bolsa ecológica</option>
 <option value="delantal" data-ud="3.00">Delantal</option>
-<option value="gorra" data-ud="2.20">Gorra</option>
-<option value="taza_blanca" data-ud="1.20">Taza blanca</option>
-<option value="taza_magica" data-ud="2.80">Taza mágica</option>
-<option value="termo" data-ud="6.50">Termo metálico</option>
+<option value="gorra" data-ud="2.50">Gorra</option>
+<option value="taza_blanca" data-ud="1.30">Taza blanca</option>
+<option value="taza_magica" data-ud="3.00">Taza mágica</option>
+<option value="termo" data-ud="8.00">Termo metálico</option>
 <option value="botella" data-ud="2.50">Botella plástica</option>
-<option value="vaso" data-ud="1.80">Vaso acrílico</option>
+<option value="vaso" data-ud="2.00">Vaso acrílico</option>
 <option value="caja_peq" data-ud="0.60">Caja cartón pequeña</option>
 <option value="caja_med" data-ud="1.00">Caja cartón mediana</option>
-<option value="llavero" data-ud="0.70">Llavero acrílico</option>
+<option value="llavero" data-ud="0.50">Llavero acrílico</option>
 <option value="portavasos" data-ud="0.90">Portavasos</option>
 <option value="otros" data-ud="0">Otros</option>
-</select></div>
+</select>
+<span id="cd_ref_note" style="font-size:11px;color:#888;margin-left:8px">Precio de referencia — ajústalo a tu proveedor</span></div>
 <div class="row" style="gap:14px;flex-wrap:wrap">
 <div style="min-width:130px;flex:1"><label>Cant.</label><input id="cd_cant" type="text" value="36"></div>
 <div style="min-width:160px;flex:1"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="cd_precio" type="text" value="90" data-money="1"></div>
@@ -806,17 +807,19 @@ body.dark .dt-text-light{display:inline}
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="esf_d_prod_on" type="checkbox"> Producto</label>
 <select id="esf_d_prod_select" style="min-width:240px">
-<option value="colores6">Esfera colores 6 cm</option>
-<option value="colores7">Esfera colores 7 cm</option>
-<option value="colores8">Esfera colores 8 cm</option>
-<option value="blanca8">Esfera blanca 8 cm</option>
-<option value="transparente8">Esfera transparente 8 cm</option>
-<option value="rellena8">Rellena (foto) 8 cm</option>
-<option value="rellena10">Rellena (foto) 10 cm</option>
-<option value="glitter8">Esfera glitter 8 cm</option>
-<option value="mate8">Esfera mate 8 cm</option>
-<option value="vidrio8">Esfera de vidrio 8 cm</option>
-</select></div>
+<option value="colores6" data-ud="1.00">Esfera colores 6 cm</option>
+<option value="colores7" data-ud="1.20">Esfera colores 7 cm</option>
+<option value="colores8" data-ud="1.40">Esfera colores 8 cm</option>
+<option value="blanca8" data-ud="1.80">Esfera blanca 8 cm</option>
+<option value="transparente8" data-ud="1.70">Esfera transparente 8 cm</option>
+<option value="rellena8" data-ud="2.80">Rellena (foto) 8 cm</option>
+<option value="rellena10" data-ud="3.50">Rellena (foto) 10 cm</option>
+<option value="glitter8" data-ud="1.60">Esfera glitter 8 cm</option>
+<option value="mate8" data-ud="1.50">Esfera mate 8 cm</option>
+<option value="vidrio8" data-ud="2.20">Esfera de vidrio 8 cm</option>
+<option value="otros" data-ud="0">Otros</option>
+</select>
+<span style="font-size:11px;color:#888;margin-left:8px">Precio de referencia — ajústalo a tu proveedor</span></div>
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="esf_d_prod_cant" type="number" min="0" step="1" value="12"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="esf_d_prod_precio" type="text" value="24,00" data-money="1"></div>
@@ -1238,7 +1241,8 @@ body.dark .dt-text-light{display:inline}
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="pap_d_s1_on" type="checkbox"> Sustrato A (cartulina/papel)</label>
-<select id="pap_d_s1_sel" style="min-width:220px"><option>Cartulina opalina</option><option>Cartulina glitter</option><option>Cartulina kraft</option><option>Papel fotográfico</option><option>Papel adhesivo</option><option>Acetato</option><option>Otro</option></select></div>
+<select id="pap_d_s1_sel" style="min-width:220px"><option data-ud="0.35">Cartulina opalina</option><option data-ud="0.60">Cartulina glitter</option><option data-ud="0.30">Cartulina kraft</option><option data-ud="0.45">Papel fotográfico</option><option data-ud="0.50">Papel adhesivo</option><option data-ud="0.55">Acetato</option><option data-ud="0">Otro</option></select>
+<span style="font-size:11px;color:#888;margin-left:8px">Precio de referencia (por hoja) — ajústalo a tu proveedor</span></div>
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="pap_d_s1_cant" type="number" min="0" step="1" value="50"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="pap_d_s1_precio" type="text" value="20,00" data-money="1"></div>
@@ -1249,7 +1253,8 @@ body.dark .dt-text-light{display:inline}
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="pap_d_s2_on" type="checkbox"> Sustrato B (cartulina/papel)</label>
-<select id="pap_d_s2_sel" style="min-width:220px"><option>Cartulina opalina</option><option>Cartulina glitter</option><option>Cartulina kraft</option><option>Papel fotográfico</option><option>Papel adhesivo</option><option>Acetato</option><option>Otro</option></select></div>
+<select id="pap_d_s2_sel" style="min-width:220px"><option data-ud="0.35">Cartulina opalina</option><option data-ud="0.60">Cartulina glitter</option><option data-ud="0.30">Cartulina kraft</option><option data-ud="0.45">Papel fotográfico</option><option data-ud="0.50">Papel adhesivo</option><option data-ud="0.55">Acetato</option><option data-ud="0">Otro</option></select>
+<span style="font-size:11px;color:#888;margin-left:8px">Precio de referencia (por hoja) — ajústalo a tu proveedor</span></div>
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="pap_d_s2_cant" type="number" min="0" step="1" placeholder="0"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="pap_d_s2_precio" type="text" placeholder="0,00" data-money="1"></div>
@@ -1260,7 +1265,8 @@ body.dark .dt-text-light{display:inline}
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="pap_d_adh1_on" type="checkbox"> Adhesivos/montaje A</label>
-<select id="pap_d_adh1_sel" style="min-width:220px"><option>Cinta doble faz</option><option>Foam 3D</option><option>Barras de silicón</option><option>Glue dots</option><option>Listón/cuerda</option><option>Otro</option></select></div>
+<select id="pap_d_adh1_sel" style="min-width:220px"><option data-ud="3.00">Cinta doble faz</option><option data-ud="4.50">Foam 3D</option><option data-ud="5.00">Barras de silicón</option><option data-ud="6.00">Glue dots</option><option data-ud="3.50">Listón/cuerda</option><option data-ud="0">Otro</option></select>
+<span style="font-size:11px;color:#888;margin-left:8px">Precio de referencia — ajústalo a tu proveedor</span></div>
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="pap_d_adh1_cant" type="number" min="0" step="1" value="1"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="pap_d_adh1_precio" type="text" value="3,00" data-money="1"></div>
@@ -1271,7 +1277,8 @@ body.dark .dt-text-light{display:inline}
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="pap_d_adh2_on" type="checkbox"> Adhesivos/montaje B</label>
-<select id="pap_d_adh2_sel" style="min-width:220px"><option>Cinta doble faz</option><option>Foam 3D</option><option>Barras de silicón</option><option>Glue dots</option><option>Listón/cuerda</option><option>Otro</option></select></div>
+<select id="pap_d_adh2_sel" style="min-width:220px"><option data-ud="3.00">Cinta doble faz</option><option data-ud="4.50">Foam 3D</option><option data-ud="5.00">Barras de silicón</option><option data-ud="6.00">Glue dots</option><option data-ud="3.50">Listón/cuerda</option><option data-ud="0">Otro</option></select>
+<span style="font-size:11px;color:#888;margin-left:8px">Precio de referencia — ajústalo a tu proveedor</span></div>
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="pap_d_adh2_cant" type="number" min="0" step="1" placeholder="0"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="pap_d_adh2_precio" type="text" placeholder="0,00" data-money="1"></div>
@@ -1461,7 +1468,8 @@ body.dark .dt-text-light{display:inline}
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="eti_d_prod_on" type="checkbox"> Sustrato</label>
-<select id="eti_d_prod_select"><option>Vinil imprimible</option><option>Papel fotográfico adhesivo</option><option>Etiqueta PVC</option><option>Etiqueta BOPP</option><option>Holográfico</option><option>Transparente</option><option>Kraft</option><option>Otros</option></select></div>
+<select id="eti_d_prod_select"><option data-ud="0.55">Vinil imprimible</option><option data-ud="0.45">Papel fotográfico adhesivo</option><option data-ud="0.70">Etiqueta PVC</option><option data-ud="0.65">Etiqueta BOPP</option><option data-ud="0.90">Holográfico</option><option data-ud="0.60">Transparente</option><option data-ud="0.35">Kraft</option><option data-ud="0">Otros</option></select>
+<span style="font-size:11px;color:#888;margin-left:8px">Precio de referencia (por hoja) — ajústalo a tu proveedor</span></div>
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="eti_d_prod_cant" type="number" min="0" step="1" value="50"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="eti_d_prod_precio" type="text" value="20" data-money="1"></div>
@@ -2338,7 +2346,9 @@ body.dark .dt-text-light{display:inline}
 <input id="cat_search" type="text" placeholder="Buscar por nombre o SKU…" style="min-width:220px;flex:1">
 <select id="cat_filter_categoria" style="min-width:180px;width:auto"><option value="">Todas las categorías</option></select>
 <button class="btn" id="cat_refresh">Actualizar</button>
+<button class="btn ok" id="cat_recompute">Recalcular pendientes</button>
 </div>
+<p class="muted" id="cat_recompute_hint" style="margin:0 0 10px">"Recalcular pendientes" vuelve a calcular el costo y precio de los productos que se ven con "—" (típico tras importar un catálogo de una versión anterior) usando sus propios datos guardados.</p>
 <div id="cat_empty" class="muted" style="display:none;padding:24px;text-align:center">Aún no has guardado productos en <b>Producto personalizable</b>.</div>
 <div id="cat_grid" class="catalog-grid"></div>
 </div>
@@ -2378,6 +2388,10 @@ body.dark .dt-text-light{display:inline}
 
 <div class="pers-group no-print">
 <div class="pers-group-title">Agregar producto del catálogo</div>
+<div class="row" style="gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+<input id="cot_pick_search" type="text" placeholder="Buscar por nombre o SKU…" style="min-width:220px;flex:1">
+<span id="cot_pick_count" class="muted" style="font-size:12px;white-space:nowrap"></span>
+</div>
 <div class="row" style="gap:8px;flex-wrap:wrap;align-items:center">
 <select id="cot_pick_product" style="min-width:240px;flex:1"><option value="">— Elegir producto —</option></select>
 <input id="cot_pick_qty" type="number" min="1" step="1" value="1" style="max-width:100px">
@@ -2452,7 +2466,7 @@ body.dark .dt-text-light{display:inline}
 </div>
 </div></section>
 
-<footer class="footer">Suite creada por @subli_mada — V39.63</footer>
+<footer class="footer">Suite creada por @subli_mada — V39.71</footer>
 </div>
 <script>
 /* ═══════════════════════════════════════════════════════════
@@ -2463,7 +2477,7 @@ body.dark .dt-text-light{display:inline}
 'use strict';
 const $=id=>document.getElementById(id);
 const $$=(sel,ctx=document)=>Array.from(ctx.querySelectorAll(sel));
-const PWA_VER='v39_63';
+const PWA_VER='v39_71';
 
 /* ═══ HELPERS: number formatting (configurable decimal separator) ═══ */
 const EU_FMT=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -3125,6 +3139,24 @@ function wireExportButton(btnId,collectFn){
     try{exportModuleToPersonalizado(collectFn());}catch(e){}
   });
 }
+/* Selector de producto con precio de referencia (data-ud en cada <option>):
+   al elegir una opción, Precio = precio_ref × Cant. actual. Si la opción no
+   tiene precio de referencia (p.ej. "Otro"/"Otros", data-ud="0"), no se toca
+   el campo y el usuario lo completa manualmente. */
+function wireRefPriceSelect(selId,cantId,precioId){
+  const sel=$(selId);if(!sel)return;
+  function sync(){
+    const opt=sel.selectedOptions&&sel.selectedOptions[0];if(!opt)return;
+    const ud=parseFloat(opt.getAttribute('data-ud'));
+    if(!ud||ud<=0)return;
+    const cant=clamp0(parseEU($(cantId)?.value));
+    if(cant<=0)return;
+    setFieldValue($(precioId),ud*cant,2);
+  }
+  sel.addEventListener('change',()=>{sync();ALL_RECALCS.forEach(fn=>{try{fn();}catch(e){}});});
+  sync();
+  ALL_RECALCS.forEach(fn=>{try{fn();}catch(e){}});
+}
 
 /* ═══════════════════════════════════════════════════════════
    INIT ALL STANDARD MODULES
@@ -3198,6 +3230,7 @@ wireExportButton('sub_export_pers',()=>Object.assign({moduleName:'Sublimación',
   $(p+'_btn_copy')?.addEventListener('click',()=>{try{navigator.clipboard.writeText('Esferas: '+($(p+'_total')?.textContent||''));}catch(e){}});
   $(p+'_btn_print')?.addEventListener('click',()=>window.print());
   ALL_RECALCS.push(recalc);recalc();
+  wireRefPriceSelect('esf_d_prod_select','esf_d_prod_cant','esf_d_prod_precio');
   wireExportButton('esf_export_pers',()=>{
     const items=collectDirectItems(['esf_d_prod','esf_d_vinil','esf_d_papel','esf_d_nieve','esf_d_extra','esf_d_silicon']);
     const cintaOn=$('esf_d_cinta_on');
@@ -3218,6 +3251,7 @@ initStdModule({
   depTime:['eti_e_imp','eti_e_plo','eti_e_pc'],
   depLife:['eti_e_cuch','eti_e_tap']
 });
+wireRefPriceSelect('eti_d_prod_select','eti_d_prod_cant','eti_d_prod_precio');
 wireExportButton('eti_export_pers',()=>Object.assign({moduleName:'Etiquetas',
   directosItems:collectDirectItems(['eti_d_prod','eti_d_adh','eti_d_liner','eti_d_tinta','eti_d_merma','eti_d_lam','eti_d_emp']),
   depreciacionItems:collectDepTimeItems(['eti_e_imp','eti_e_plo','eti_e_pc']).concat(collectDepLifeItems(['eti_e_cuch','eti_e_tap']))},gatherStdIndMoGi('eti')));
@@ -3240,6 +3274,10 @@ initStdModule({
   depTime:['pap_e_plo','pap_e_imp','pap_e_gui','pap_e_lam','pap_e_pc'],
   depLife:['pap_e_cuch','pap_e_tap']
 });
+wireRefPriceSelect('pap_d_s1_sel','pap_d_s1_cant','pap_d_s1_precio');
+wireRefPriceSelect('pap_d_s2_sel','pap_d_s2_cant','pap_d_s2_precio');
+wireRefPriceSelect('pap_d_adh1_sel','pap_d_adh1_cant','pap_d_adh1_precio');
+wireRefPriceSelect('pap_d_adh2_sel','pap_d_adh2_cant','pap_d_adh2_precio');
 wireExportButton('pap_export_pers',()=>Object.assign({moduleName:'Papelería',
   directosItems:collectDirectItems(['pap_d_s1','pap_d_s2','pap_d_adh1','pap_d_adh2','pap_d_extra','pap_d_pack']),
   depreciacionItems:collectDepTimeItems(['pap_e_plo','pap_e_imp','pap_e_gui','pap_e_lam','pap_e_pc']).concat(collectDepLifeItems(['pap_e_cuch','pap_e_tap']))},gatherStdIndMoGi('pap')));
@@ -3388,6 +3426,17 @@ wireExportButton('pap_export_pers',()=>Object.assign({moduleName:'Papelería',
     'vin_chk_g','vin_ganancia','vin_chk_i','vin_impuestos','vin_modo_ganancia',
     'vin_qty_on','vin_qty'];
   wireInputs(vinIds,recalc);
+  // Autocompletar Precio con el precio de referencia del producto elegido (Precio = ud_ref × Cant.)
+  function syncCdPrecioFromItem(){
+    const sel=$('cd_item');if(!sel)return;
+    const opt=sel.selectedOptions&&sel.selectedOptions[0];if(!opt)return;
+    if(sel.value==='otros')return; // "Otros": el usuario define el precio manualmente
+    const ud=parseFloat(opt.getAttribute('data-ud'))||0;
+    const cant=clamp0(parseEU($('cd_cant')?.value))||1;
+    setFieldValue($('cd_precio'),ud*cant,2);
+  }
+  $('cd_item')?.addEventListener('change',()=>{syncCdPrecioFromItem();recalc();});
+  syncCdPrecioFromItem();
   wireToggle('vin_ind_cfg_btn','vin_ind_cfg');wireToggle('vin_mo_cfg_btn','vin_mo_cfg');
   $('btn_reset_vinil')?.addEventListener('click',()=>{
     $$('#view-vinil input[type="checkbox"]').forEach(c=>{c.checked=false;});
@@ -3613,7 +3662,7 @@ function convertMoneyValue(n,fromSym,toSym){
   }
   window.__persConvertQtyUnits=convertPersQtyRows;
 
-  function loadAll(){try{return JSON.parse(localStorage.getItem(LS_KEY)||'[]');}catch(e){return[];}}
+  function loadAll(){try{const arr=JSON.parse(localStorage.getItem(LS_KEY)||'[]');return Array.isArray(arr)?arr.filter(p=>p&&typeof p==='object'):[];}catch(e){return[];}}
   function saveAll(arr){try{localStorage.setItem(LS_KEY,JSON.stringify(arr));}catch(e){}}
 
   /* ---- Categorías personalizadas (creadas libremente por el usuario) ---- */
@@ -3931,7 +3980,12 @@ function convertMoneyValue(n,fromSym,toSym){
     $('pers_qty_total').textContent=fmtEU(pv*qN);
 
     // Precio manual de venta / Margen real
-    const precioManual=clamp0(parseEU($('pers_precio_manual')?.value));
+    // Pre-carga este campo con el precio de venta calculado mientras esté vacío —
+    // así el catálogo nunca queda con "—" por falta de un precio guardado, y el
+    // usuario sigue pudiendo sobrescribirlo si de verdad va a vender a otro precio.
+    const pmEl=$('pers_precio_manual');
+    if(pmEl&&!pmEl.value.trim()&&pv>0)pmEl.value=fmtVarPlain(pv,2);
+    const precioManual=clamp0(parseEU(pmEl?.value));
     const margenBox=$('pers_margen_real');
     if(margenBox){
       if(precioManual<=0){
@@ -4032,6 +4086,17 @@ function convertMoneyValue(n,fromSym,toSym){
     recalc();
   }
   window.__persFillFromJSON=fillFromJSON;
+  /* Recalcula costo_total/precio_calculado/precio_manual de un producto guardado
+     (usado por el Catálogo para "reparar" productos importados de versiones
+     anteriores que no traían estos campos). Carga el producto en el propio
+     formulario de Producto Personalizable, deja que el motor de cálculo
+     corra, y devuelve el objeto reconstruido. No persiste nada por sí solo. */
+  window.__persRecomputeData=function(data){
+    fillFromJSON(data);
+    const rebuilt=currentToJSON();
+    if(data&&data.id!=null)rebuilt.id=data.id;
+    return rebuilt;
+  };
   function refreshLoader(){
     const sel=$('pers_load');const cur=sel.value;
     sel.innerHTML='<option value="">— Cargar guardado —</option>';
@@ -4121,6 +4186,7 @@ function convertMoneyValue(n,fromSym,toSym){
       arr[idx]=data;
     }else{arr.push(data);}
     saveAll(arr);refreshLoader();
+    ALL_RECALCS.forEach(fn=>{try{fn();}catch(e){}});
     alert('Guardado: '+data.name);
   });
   $('pers_load')?.addEventListener('change',()=>{
@@ -4136,6 +4202,7 @@ function convertMoneyValue(n,fromSym,toSym){
     if(!confirm('¿Borrar "'+(p.name||'')+'"?'))return;
     arr.splice(parseInt(idx,10),1);
     saveAll(arr);refreshLoader();
+    ALL_RECALCS.forEach(fn=>{try{fn();}catch(e){}});
   });
   $('pers_export_json')?.addEventListener('click',()=>{
     const data=currentToJSON();
@@ -4199,11 +4266,13 @@ function convertMoneyValue(n,fromSym,toSym){
         if(mode==='replace'){
           saveAll(incoming);refreshLoader();
           if(incoming[0])fillFromJSON(incoming[0]);
+          ALL_RECALCS.forEach(fn=>{try{fn();}catch(e){}});
           alert('Catálogo importado (Reemplazar). Productos: '+incoming.length);
         }else{
           const merged=mergeCatalog(loadAll(),incoming);
           saveAll(merged.out);refreshLoader();
           if(incoming[0])fillFromJSON(incoming[0]);
+          ALL_RECALCS.forEach(fn=>{try{fn();}catch(e){}});
           alert('Catálogo importado (Fusionar). Agregados: '+merged.added+' · Reemplazados: '+merged.replaced);
         }
       }catch(err){alert('No se pudo importar el catálogo: '+(err&&err.message?err.message:err));}
@@ -4241,7 +4310,7 @@ function convertMoneyValue(n,fromSym,toSym){
       .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
       .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
-  function loadAll(){try{return JSON.parse(localStorage.getItem(LS_KEY)||'[]');}catch(e){return[];}}
+  function loadAll(){try{const arr=JSON.parse(localStorage.getItem(LS_KEY)||'[]');return Array.isArray(arr)?arr.filter(p=>p&&typeof p==='object'):[];}catch(e){return[];}}
   function saveAll(arr){try{localStorage.setItem(LS_KEY,JSON.stringify(arr));}catch(e){}}
 
   function refreshCategoryFilter(all){
@@ -4302,6 +4371,25 @@ function convertMoneyValue(n,fromSym,toSym){
     }).join('');
   }
 
+  function needsRecompute(p){
+    return !(typeof p.costo_total==='number'&&isFinite(p.costo_total))
+      ||!(typeof p.precio_calculado==='number'&&isFinite(p.precio_calculado));
+  }
+  $('cat_recompute')?.addEventListener('click',()=>{
+    if(typeof window.__persRecomputeData!=='function'){alert('El módulo Producto personalizable no está disponible.');return;}
+    const all=loadAll();
+    const pending=all.map((p,idx)=>({p,idx})).filter(({p})=>needsRecompute(p));
+    if(!pending.length){alert('No hay productos pendientes por recalcular. Todos ya tienen costo y precio calculados.');return;}
+    if(!confirm('Se recalcularán '+pending.length+' producto(s) usando sus propios datos guardados (directos, materiales, depreciación, etc.). Esto también precargará el "Precio manual de venta" cuando esté vacío. ¿Continuar?'))return;
+    pending.forEach(({p,idx})=>{
+      try{all[idx]=window.__persRecomputeData(p);}catch(e){}
+    });
+    saveAll(all);
+    if(typeof window.__persFillFromJSON==='function')window.__persFillFromJSON({});
+    if(typeof window.__persRefreshLoader==='function')window.__persRefreshLoader();
+    ALL_RECALCS.forEach(fn=>{try{fn();}catch(e){}});
+    alert('Recalculado: '+pending.length+' producto(s).');
+  });
   grid?.addEventListener('click',e=>{
     const btn=e.target.closest('button[data-act]');if(!btn)return;
     const idx=parseInt(btn.dataset.idx,10);
@@ -4315,7 +4403,7 @@ function convertMoneyValue(n,fromSym,toSym){
       all.splice(idx,1);
       saveAll(all);
       if(typeof window.__persRefreshLoader==='function')window.__persRefreshLoader();
-      render();
+      ALL_RECALCS.forEach(fn=>{try{fn();}catch(e){}});
     }
   });
 
@@ -4343,13 +4431,14 @@ function convertMoneyValue(n,fromSym,toSym){
       .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
       .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
-  function loadProducts(){try{return JSON.parse(localStorage.getItem(LS_PRODUCTS_KEY)||'[]');}catch(e){return[];}}
+  function loadProducts(){try{const arr=JSON.parse(localStorage.getItem(LS_PRODUCTS_KEY)||'[]');return Array.isArray(arr)?arr.filter(p=>p&&typeof p==='object'):[];}catch(e){return[];}}
   function loadQuotes(){try{return JSON.parse(localStorage.getItem(LS_QUOTES_KEY)||'[]');}catch(e){return[];}}
   function saveQuotes(arr){try{localStorage.setItem(LS_QUOTES_KEY,JSON.stringify(arr));}catch(e){}}
 
   let items=[]; // {name, sku, icon, cant, precio_unit}
 
-  const pickProduct=$('cot_pick_product'),pickQty=$('cot_pick_qty'),addItemBtn=$('cot_add_item');
+  const pickSearch=$('cot_pick_search'),pickProduct=$('cot_pick_product'),
+    pickQty=$('cot_pick_qty'),addItemBtn=$('cot_add_item'),pickCount=$('cot_pick_count');
   const freeName=$('cot_free_name'),freePrice=$('cot_free_price'),freeQty=$('cot_free_qty'),addFreeBtn=$('cot_add_free');
   const itemsTable=$('cot_items_table'),itemsEmpty=$('cot_items_empty');
   const descuentoInput=$('cot_descuento');
@@ -4363,10 +4452,37 @@ function convertMoneyValue(n,fromSym,toSym){
     if(!pickProduct)return;
     const cur=pickProduct.value;
     const all=loadProducts();
+    const term=(pickSearch?.value||'').trim().toLowerCase();
+    const opts=[];
+    all.forEach((p,idx)=>{
+      try{
+        if(!p||typeof p!=='object')return;
+        if(effectivePrice(p)<=0)return; // sin precio de venta válido: no se puede cotizar
+        if(term){
+          const hay=(String(p.name||'')+' '+String(p.sku||'')).toLowerCase();
+          if(!hay.includes(term))return;
+        }
+        opts.push({p,idx});
+      }catch(e){/* producto con datos corruptos: se omite, no debe romper el resto de la lista */}
+    });
     pickProduct.innerHTML='<option value="">— Elegir producto —</option>'
-      +all.map((p,i)=>'<option value="'+i+'">'+escapeHTML(p.name||'Sin nombre')+(p.sku?' ('+escapeHTML(p.sku)+')':'')+'</option>').join('');
+      +opts.map(({p,idx})=>'<option value="'+idx+'">'+escapeHTML(p.name||'Sin nombre')+(p.sku?' ('+escapeHTML(p.sku)+')':'')+'</option>').join('');
     pickProduct.value=[...pickProduct.options].some(o=>o.value===cur)?cur:'';
+    if(pickCount){
+      const totalConPrecio=all.filter(p=>{try{return effectivePrice(p)>0;}catch(e){return false;}}).length;
+      pickCount.textContent=term?opts.length+' de '+totalConPrecio+' coinciden':(totalConPrecio?totalConPrecio+' producto(s) con precio disponible':'');
+    }
   }
+  addItemBtn?.addEventListener('click',()=>{
+    const idx=pickProduct.value;if(idx==='')return;
+    const all=loadProducts();
+    const p=all[parseInt(idx,10)];if(!p)return;
+    const cant=Math.max(1,clamp0(parseEU(pickQty.value))||1);
+    items.push({name:p.name||'Sin nombre',sku:p.sku||'',icon:p.icon||'generico',cant,precio_unit:effectivePrice(p)});
+    pickProduct.value='';pickQty.value='1';
+    renderItems();
+  });
+  pickSearch?.addEventListener('input',refreshProductPicker);
 
   function effectivePrice(p){
     const fromSym=p.currency||'$';
@@ -4452,16 +4568,6 @@ function convertMoneyValue(n,fromSym,toSym){
       }).join('');
     recalcTotals();
   }
-
-  addItemBtn?.addEventListener('click',()=>{
-    const idx=pickProduct.value;if(idx==='')return;
-    const all=loadProducts();
-    const p=all[parseInt(idx,10)];if(!p)return;
-    const cant=Math.max(1,clamp0(parseEU(pickQty.value))||1);
-    items.push({name:p.name||'Sin nombre',sku:p.sku||'',icon:p.icon||'generico',cant,precio_unit:effectivePrice(p)});
-    pickProduct.value='';pickQty.value='1';
-    renderItems();
-  });
 
   addFreeBtn?.addEventListener('click',()=>{
     const name=(freeName.value||'').trim();
@@ -4755,6 +4861,7 @@ function convertMoneyValue(n,fromSym,toSym){
     recalcTotals();
   }
   ALL_RECALCS.push(syncItemsFromDOM);
+  ALL_RECALCS.push(refreshProductPicker);
 
   // Init
   refreshProductPicker();
