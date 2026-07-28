@@ -275,7 +275,7 @@ body.dark .dt-text-light{display:inline}
 .hoj-shape-btn:not(.active):hover{border-color:#c9ccd1}
 </style>
 </head>
-<body data-app-version="V39.79">
+<body data-app-version="V39.82">
 <div class="app">
 <header class="app-header">
   <div class="menu-wrapper">
@@ -2057,22 +2057,30 @@ body.dark .dt-text-light{display:inline}
 <h4>Respaldo de datos (backup completo)</h4>
 <p style="margin:6px 0 8px">Exporta un archivo con <b>todo lo que has guardado en esta Suite</b>: catálogo de Producto personalizable, categorías creadas, cotizaciones, moneda activa, tasas de cambio, separador decimal y sistema de unidades. Úsalo para respaldar tu información o para pasarla a otro dispositivo o navegador — a diferencia de la exportación de <b>Producto personalizable</b>, que solo respalda el catálogo de productos, esto incluye <b>todos</b> los módulos y ajustes.</p>
 <div class="row" style="gap:8px;flex-wrap:wrap;align-items:center">
-<button class="btn ok" id="btn_backup_export" type="button">⬇️ Exportar todo (backup)</button>
-<button class="btn" id="btn_backup_share" type="button" style="display:none">📤 Compartir backup</button>
-<button class="btn" id="btn_backup_import" type="button">⬆️ Importar backup</button>
+<button class="btn ok" id="btn_backup_export" type="button" style="display:inline-flex;align-items:center;gap:7px"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M4 19h16"></path></svg>Exportar todo (backup)</button>
+<button class="btn" id="btn_backup_copy" type="button" style="display:none;align-items:center;gap:7px"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>Copiar backup</button>
+<button class="btn" id="btn_backup_import" type="button" style="display:inline-flex;align-items:center;gap:7px"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V9"></path><path d="M7 14l5-5 5 5"></path><path d="M4 5h16"></path></svg>Importar backup</button>
+<button class="btn" id="btn_backup_paste_toggle" type="button" style="display:inline-flex;align-items:center;gap:7px"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"></rect><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"></path><path d="M9 11h6M9 15h4"></path></svg>Pegar backup</button>
 <input type="file" id="backup_file_input" accept=".json,.txt,application/json,text/plain" style="display:none">
 </div>
-<p class="muted" style="margin:8px 0 0" id="backup_status">Importar un backup <b>reemplaza</b> toda la configuración actual — se te pedirá confirmación antes de aplicarlo. "Compartir backup" abre el menú nativo del dispositivo (WhatsApp, correo, Bluetooth, AirDrop, Drive, etc.) para enviar el archivo directamente a otro equipo — solo aparece si el navegador lo soporta.</p>
+<div id="backup_paste_wrap" style="display:none;margin-top:10px">
+<textarea id="backup_paste_area" rows="4" style="width:100%;font-family:monospace;font-size:12px" placeholder="Pegá aquí el texto del backup copiado en otro dispositivo…"></textarea>
+<div class="row" style="gap:8px;margin-top:6px">
+<button class="btn ok" id="btn_backup_paste_apply" type="button">Aplicar backup pegado</button>
+<button class="btn" id="btn_backup_paste_cancel" type="button">Cancelar</button>
+</div>
+</div>
+<p class="muted" style="margin:8px 0 0" id="backup_status">Importar un backup <b>reemplaza</b> toda la configuración actual — se te pedirá confirmación antes de aplicarlo. Para pasarlo a otro dispositivo sin cables: tocá <b>"Copiar backup"</b>, pegalo en un mensaje (WhatsApp, Notas, correo) y en el otro dispositivo pegalo con <b>"Pegar backup"</b> — o simplemente compartí el archivo exportado.</p>
 <div class="sep"></div>
 <h4>¿Tienes una sugerencia o encontraste un error?</h4>
 <p style="margin:6px 0 8px">Escríbenos directamente. Se abrirá tu app de correo con el destinatario y el asunto ya listos.</p>
-<button class="btn-cfg" id="btn_feedback" type="button">✉️ Enviar sugerencia o reportar error</button>
+<button class="btn-cfg" id="btn_feedback" type="button" style="display:inline-flex;align-items:center;gap:7px"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>Enviar sugerencia o reportar error</button>
 </div>
 
 <div class="card md-12">
 <h3 style="margin:0 0 6px">Instrucciones / Guía rápida</h3><div class="sep"></div>
 <h4>¿Qué es esta Suite?</h4>
-<p>Un conjunto de calculadoras para estimar costos y precios de venta por tipo de trabajo (Vinil, Sublimación, Esferas navideñas, DTF, Papelería, Etiquetas, Empaques, Envíos y Producto personalizable). Usa un módulo o varios a la vez y ve el total combinado en <b>Resumen General</b>. Importes en <b>formato europeo</b> (coma decimal): <code>20,00</code>.</p>
+<p>Un conjunto de calculadoras para estimar costos y precios de venta por tipo de trabajo (Vinil, Sublimación, Esferas navideñas, DTF, Papelería, Etiquetas, Empaques, Envíos y Producto personalizable). Usa un módulo o varios a la vez y ve el total combinado en <b>Resumen General</b>. También incluye herramientas complementarias: <b>Distribución de Etiquetas en Hoja</b> (acomodo físico por hoja), <b>Conversor de Unidades</b>, <b>Catálogo</b> (productos guardados) y <b>Cotizaciones</b> (armado, guardado y envío por WhatsApp). Importes en <b>formato europeo</b> (coma decimal): <code>20,00</code>.</p>
 <div class="sep"></div>
 <h4>Cómo funciona en general</h4>
 <ul style="margin:6px 0 0 18px">
@@ -2099,30 +2107,37 @@ body.dark .dt-text-light{display:inline}
 <h5>3) Esferas navideñas</h5>
 <p>Diseñado para calcular el costo de tus esferas navideñas personalizadas. Activa los insumos que uses (esfera, relleno, lazos, vinil o impresión, empaque, etc.), suma si corresponde <b>Depreciación</b> y <b>Mano de obra</b>, y usa el card de <b>Cantidad de productos</b> para ver cómo cambia el costo por unidad cuando haces tandas para la temporada.</p>
 <h5>4) DTF (terceros)</h5>
-<p>Para cuando compras DTF a terceros: registra las cantidades/precios y deja que el módulo calcule el costo por unidad. Puedes sumar <b>Costos indirectos</b> (si aplica) y luego <b>Ganancia/Impuestos</b>. Útil para integrar con otros módulos cuando el DTF es solo una parte del producto final.</p>
+<p>Para cuando compras DTF a terceros o lo produces vos mismo: elige la <b>modalidad</b> (Metro lineal, Tramo de 30 cm u Hoja A3) y agrega tus diseños con su ancho, alto y cantidad. El módulo arma automáticamente la <b>distribución de los diseños sobre el soporte</b> (metro, tramo u hoja, según elijas) y te muestra una vista previa del acomodo, cuántos soportes necesitás y el desperdicio. El costo se reparte de forma <b>proporcional por área × cantidad</b> entre los diseños que comparten un mismo soporte, así que el precio de cada uno refleja el espacio real que ocupa, no un promedio parejo. Podés sumar <b>Costos indirectos</b> y luego <b>Ganancia/Impuestos</b>. Útil para integrar con otros módulos cuando el DTF es solo una parte del producto final.</p>
 <h5>5) Papelería</h5>
 <p>Enfocado en cajitas, toppers, tarjetas, shakers, etc. Incluye <b>Sustrato A/B</b> y <b>Adhesivos/montaje A/B</b>, además de <b>Extra</b> (shaker/acetato/lentejuelas). En <b>Depreciación</b> contempla plotter, impresora, guillotina, <b>laminadora</b> y PC, además de vida útil de cuchilla/tapete. Puedes añadir <b>Costos indirectos</b> y <b>Mano de obra</b> con el botón <b>Configurar</b>. El card de <b>Cantidad de productos</b> te ayuda a ver el costo real por unidad cuando haces tandas grandes.</p>
 <h5>6) Etiquetas</h5>
-<p>Para etiquetas adhesivas (vinil imprimible, PVC, BOPP, holográfico, transparente, kraft, etc.). Activa insumos (sustrato, adhesivo, tinta, laminado, etc.), configura <b>Depreciación</b> (cuchilla/plotter/impresora) y usa <b>Costos indirectos</b> y <b>Mano de obra</b> si te aplican. Al final aplica Ganancia/Impuestos para obtener el precio de venta. También incluye card de <b>Cantidad de productos</b> para calcular tirajes.</p>
+<p>Para etiquetas adhesivas (vinil imprimible, PVC, BOPP, holográfico, transparente, kraft, etc.). Activa insumos (sustrato, adhesivo, tinta, laminado, etc.), configura <b>Depreciación</b> (cuchilla/plotter/impresora) y usa <b>Costos indirectos</b> y <b>Mano de obra</b> si te aplican. Al final aplica Ganancia/Impuestos para obtener el precio de venta. También incluye card de <b>Cantidad de productos</b> para calcular tirajes. Para saber cuántas etiquetas caben físicamente por hoja de material, usa el módulo <b>Distribución de Etiquetas en Hoja</b> (más abajo) — son complementarios: este calcula el costo, aquel calcula el acomodo físico.</p>
 <h5>7) Empaques</h5>
 <p>Para costos de cajas, bolsas, rellenos u otros materiales de empaque. Igual que los demás: activa lo que uses, prorratea cantidades, añade si corresponde <b>Costos indirectos</b> y <b>Mano de obra</b>, y luego Ganancia/Impuestos. Usa el card de <b>Cantidad de productos</b> para lotes de empaques.</p>
 <h5>8) Envíos</h5>
 <p>Registra costos de envío (tarifa base, tarifa por km/kg, embalaje, seguro/frágil, otros) y prorratéalo si es por lote. Este módulo no calcula impresión, solo logística. El resultado puede sumarse en el <b>Resumen General</b> junto a otros módulos.</p>
-<h5>9) Resumen General</h5>
-<p>Refleja el total de cada módulo. Puedes <b>incluir/omitir</b> módulos según lo que necesites cotizar. El <b>Total General</b> suma los módulos correspondientes. Ideal para cotizaciones con múltiples técnicas (ej., Empaques + Papelería + DTF).</p>
+<h5>9) Distribución de Etiquetas en Hoja</h5>
+<p>Herramienta de acomodo físico (no de costo): calcula cuántas etiquetas u otras piezas rectangulares de cada diseño caben por hoja según el <b>tamaño de papel, márgenes y separación</b> entre piezas, y cuántas hojas necesitás en total para tu tiraje. El acomodo se genera automáticamente con un algoritmo de empaquetado por estantes (prioriza primero las piezas más altas y va rellenando huecos con los siguientes diseños), y te muestra una vista previa en el lienzo con las medidas del espacio sobrante marcadas — útil para decidir si conviene ajustar el tamaño de la pieza o el orden de impresión antes de imprimir.</p>
 <h5>10) Conversor de Unidades</h5>
 <p>Herramientas rápidas para convertir longitudes, áreas, pesos, temperaturas y para pasar de píxeles a tamaño físico (y viceversa) usando DPI. Útil para verificar que tus artes tengan el tamaño y resolución adecuados.</p>
 <h5>11) Calculadora Básica</h5>
 <p>Una calculadora simple integrada para operaciones rápidas (con soporte de teclado). No afecta los cálculos de los módulos.</p>
-<h5>12) Producto personalizable</h5>
+<h5>12) Resumen General</h5>
+<p>Refleja el total de cada módulo. Tildá los que quieras <b>incluir</b> y el <b>Total General</b> los suma automáticamente — ideal para cotizaciones con múltiples técnicas (ej., Empaques + Papelería + DTF). Cada tarjeta tiene un campo de <b>descripción</b> opcional (y, según el módulo, <b>cantidad</b>) para definir cómo se va a ver esa línea si la mandás a una cotización. Usá el botón <b>"+ Cotización"</b> de cada tarjeta para enviar ese módulo puntual a <b>Cotizaciones</b>, o <b>"Exportar activados a Cotización"</b> para mandar de una sola vez todos los módulos que tengas tildados. DTF y Envíos siempre se exportan como <b>una sola línea de lote</b> (no por unidad), porque su total representa el costo de toda la tanda, no de una pieza.</p>
+<h5>13) Producto personalizable</h5>
 <p>Úsalo para cotizar cualquier producto/servicio que no encaje al 100% en los otros módulos (combos, packs, pedidos especiales, etc.).</p>
 <ul style="margin:6px 0 0 18px">
 <li><b>Ficha</b>: nombre del producto.</li>
 <li><b>Estructura</b>: arma el costo con <b>Material por área (cm²)</b>, <b>Costos directos</b>, <b>Depreciación</b>, <b>Indirectos</b>, <b>Mano de obra</b> y <b>Ganancia/Impuestos</b> (igual que en la Suite).</li>
 <li><b>Material por área (cm²)</b>: activa el checkbox. Usa <b>Configurar</b> para desplegar y agregar materiales con medidas variables (pendones, vinil impreso, laminado, etc.). El total se suma a los totales del módulo.</li>
-<li><b>Guardar / Cargar</b>: conserva tus productos para reutilizarlos.</li>
+<li><b>Precio manual de venta</b>: si lo dejás vacío, se autocompleta con el precio de venta calculado — podés sobrescribirlo si necesitás fijar un precio distinto.</li>
+<li><b>Guardar / Cargar</b>: conserva tus productos para reutilizarlos, y quedan disponibles en <b>Catálogo</b> y <b>Cotizaciones</b>.</li>
 <li><b>Exportar / Importar</b>: respalda productos y catálogos completos en JSON o CSV.</li>
 </ul>
+<h5>14) Catálogo</h5>
+<p>Muestra en tarjetas todos los productos guardados desde <b>Producto personalizable</b>, con su costo, precio de venta y ganancia ya calculados. Podés <b>buscar</b> por nombre/SKU y <b>filtrar por categoría</b>. Si importaste un catálogo de una versión anterior y ves montos con "—", usá <b>"Recalcular pendientes"</b> para que la Suite vuelva a calcular esos productos con sus propios datos guardados.</p>
+<h5>15) Cotizaciones</h5>
+<p>Arma cotizaciones formales a partir de tus productos del <b>Catálogo</b> o de <b>ítems libres</b> (no guardados). Cada cotización incluye folio, fecha, validez, datos del cliente, notas, <b>descuento (%)</b> y <b>abono</b> opcional (por porcentaje o monto fijo). Podés <b>guardar varias cotizaciones y cargarlas después</b>, <b>imprimirlas / exportarlas a PDF</b>, exportarlas en <b>JSON</b>, o enviarlas directo por <b>WhatsApp</b> con el resumen ya armado. Los productos llegan solos desde <b>Resumen General</b> (con los botones "+ Cotización" o "Exportar activados a Cotización") o desde el buscador de producto dentro de la propia cotización.</p>
 <div class="sep"></div>
 <h4>Elementos comunes y fórmulas</h4>
 <ul style="margin:6px 0 0 18px">
@@ -2176,6 +2191,7 @@ body.dark .dt-text-light{display:inline}
 <li>Usa <b>Imprimir</b> o <b>Copiar</b> para compartir cotizaciones.</li>
 <li>Para tandas/lotes, usa <b>Resumen General</b> y combina módulos según el proyecto.</li>
 <li>Revisa de vez en cuando tus costos (insumos, sueldos, alquiler, etc.) para mantener tus precios actualizados.</li>
+<li>Respalda tu información de vez en cuando desde <b>Configuración → Respaldo de datos</b>, y usa esa misma opción para pasar todo (catálogo, cotizaciones, categorías, moneda, etc.) a otro dispositivo o navegador.</li>
 </ul>
 <div class="sep"></div>
 <div class="center-actions">
@@ -2471,7 +2487,7 @@ body.dark .dt-text-light{display:inline}
 </div>
 </div></section>
 
-<footer class="footer">Suite creada por @subli_mada — V39.79</footer>
+<footer class="footer">Suite creada por @subli_mada — V39.82</footer>
 </div>
 <script>
 /* ═══════════════════════════════════════════════════════════
@@ -2482,7 +2498,7 @@ body.dark .dt-text-light{display:inline}
 'use strict';
 const $=id=>document.getElementById(id);
 const $$=(sel,ctx=document)=>Array.from(ctx.querySelectorAll(sel));
-const PWA_VER='v39_79';
+const PWA_VER='v39_82';
 
 /* ═══ HELPERS: number formatting (configurable decimal separator) ═══ */
 const EU_FMT=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -4967,7 +4983,9 @@ function convertMoneyValue(n,fromSym,toSym){
     'suite_decimal_sep','suite_first_run_done','suite_unit_system',
     'last_view','calc_history'
   ];
-  const btnExport=$('btn_backup_export'),btnShare=$('btn_backup_share'),btnImport=$('btn_backup_import'),fileInput=$('backup_file_input'),status=$('backup_status');
+  const btnExport=$('btn_backup_export'),btnCopy=$('btn_backup_copy'),btnImport=$('btn_backup_import'),fileInput=$('backup_file_input'),status=$('backup_status');
+  const btnPasteToggle=$('btn_backup_paste_toggle'),pasteWrap=$('backup_paste_wrap'),pasteArea=$('backup_paste_area'),
+        btnPasteApply=$('btn_backup_paste_apply'),btnPasteCancel=$('btn_backup_paste_cancel');
   if(!btnExport&&!btnImport)return;
 
   function readAllData(){
@@ -4979,15 +4997,18 @@ function convertMoneyValue(n,fromSym,toSym){
     return data;
   }
 
-  // Construye el mismo payload/archivo de backup para exportar (descarga) o compartir (share sheet).
-  function buildBackupFile(){
-    const payload={
+  // Construye el mismo payload de backup para exportar (descarga) o copiar (portapapeles).
+  function buildBackupPayload(){
+    return {
       app:'Suite de Calculadoras — @subli_mada',
       backup_version:1,
       app_version:document.body.getAttribute('data-app-version')||'',
       exported_at:new Date().toISOString(),
       data:readAllData()
     };
+  }
+  function buildBackupFile(){
+    const payload=buildBackupPayload();
     const filename='suite-backup-'+new Date().toISOString().slice(0,10)+'.json';
     const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
     return {blob,filename};
@@ -5003,54 +5024,41 @@ function convertMoneyValue(n,fromSym,toSym){
     if(status)status.textContent='Backup exportado el '+new Date().toLocaleString();
   });
 
-  // Compartir nativo: solo se muestra el botón si el navegador soporta compartir
-  // archivos (típico en móviles). Reusa buildBackupFile() como única fuente del backup.
-  if(btnShare){
-    let supportsFileShare=false;
-    try{
-      if(navigator.share&&navigator.canShare){
-        const testFile=new File(['{}'],'test.txt',{type:'text/plain'});
-        supportsFileShare=navigator.canShare({files:[testFile]});
-      }
-    }catch(e){supportsFileShare=false;}
-
-    if(supportsFileShare){
-      btnShare.style.display='';
-      btnShare.addEventListener('click',async()=>{
-        const {blob,filename}=buildBackupFile();
+  // Copiar al portapapeles: alternativa a compartir archivos, sin depender de la
+  // Web Share API (que en desktop suele reportar soporte pero fallar al
+  // ejecutarse). navigator.clipboard.writeText tiene soporte amplio y estable
+  // en Chrome, Edge, Safari y Firefox, en desktop y móvil por igual.
+  if(btnCopy){
+    const supportsClipboard=!!(navigator.clipboard&&navigator.clipboard.writeText);
+    if(supportsClipboard){
+      btnCopy.style.display='inline-flex';
+      btnCopy.addEventListener('click',async()=>{
         try{
-          // La Web Share API solo permite compartir ciertos tipos "seguros" de
-          // archivo (.txt, .pdf, .csv, imágenes, etc.) — .json NO está en esa
-          // lista y provoca NotAllowedError aunque canShare() haya dicho que sí.
-          // Se comparte el mismo contenido con extensión .txt para esquivar esa
-          // restricción; el archivo .json real solo se genera si hay que
-          // descargarlo (botón "Exportar todo" o el fallback de abajo).
-          const shareFilename=filename.replace(/\.json$/i,'.txt');
-          const shareBlob=new Blob([blob],{type:'text/plain'});
-          const file=new File([shareBlob],shareFilename,{type:'text/plain'});
-          await navigator.share({
-            files:[file],
-            title:'Backup Suite de Calculadoras',
-            text:'Backup de @subli_mada — '+new Date().toLocaleDateString()
-          });
-          if(status)status.textContent='Backup compartido el '+new Date().toLocaleString();
+          const payload=buildBackupPayload();
+          await navigator.clipboard.writeText(JSON.stringify(payload));
+          if(status)status.textContent='Backup copiado al portapapeles el '+new Date().toLocaleString()+'. Pegalo en un mensaje, nota o correo, y en el otro dispositivo usá "Pegar backup".';
         }catch(e){
-          if(e&&e.name==='AbortError')return; // el usuario cerró el menú de compartir
-          console.warn('navigator.share falló, se usa descarga como respaldo:',e);
-          // Fallback: si compartir falla igual (política de permisos, etc.), se
-          // descarga el .json real para que el usuario nunca se quede sin el archivo.
-          try{
-            const a=document.createElement('a');
-            a.href=URL.createObjectURL(blob);
-            a.download=filename;
-            a.click();
-            URL.revokeObjectURL(a.href);
-          }catch(e2){}
-          const reason=(e&&(e.name||e.message))?(' ('+(e.name||e.message)+')'):'';
-          if(status)status.textContent='No se pudo abrir el menú de compartir'+reason+'. Se descargó el backup — compartilo manualmente.';
+          console.warn('No se pudo copiar el backup:',e);
+          if(status)status.textContent='No se pudo copiar el backup. Usá "Exportar todo" y compartilo manualmente.';
         }
       });
     }
+  }
+
+  // Aplica un backup ya parseado (validación + confirmación + escritura en
+  // localStorage), sea que venga de un archivo importado o de texto pegado.
+  function applyBackupData(parsed,onDone){
+    const data=(parsed&&parsed.data&&typeof parsed.data==='object')?parsed.data:null;
+    if(!data){alert('El backup no tiene el formato esperado de la Suite.');onDone();return;}
+    const keysFound=Object.keys(data).filter(k=>BACKUP_KEYS.includes(k));
+    if(!keysFound.length){alert('El backup no contiene datos reconocibles de la Suite.');onDone();return;}
+    if(!confirm('Esto reemplazará TODA tu configuración actual (catálogo, cotizaciones, categorías, moneda, tasas, etc.) con la del backup. Esta acción no se puede deshacer.\n\n¿Continuar?')){
+      onDone();return;
+    }
+    keysFound.forEach(k=>{try{localStorage.setItem(k,data[k]);}catch(e){}});
+    if(status)status.textContent='Backup importado correctamente. Recargando…';
+    onDone();
+    setTimeout(()=>location.reload(),600);
   }
 
   btnImport?.addEventListener('click',()=>fileInput?.click());
@@ -5062,20 +5070,34 @@ function convertMoneyValue(n,fromSym,toSym){
       let parsed;
       try{parsed=JSON.parse(reader.result);}
       catch(e){alert('El archivo no es un backup válido (JSON inválido).');fileInput.value='';return;}
-      const data=(parsed&&parsed.data&&typeof parsed.data==='object')?parsed.data:null;
-      if(!data){alert('El archivo no tiene el formato esperado de backup de la Suite.');fileInput.value='';return;}
-      const keysFound=Object.keys(data).filter(k=>BACKUP_KEYS.includes(k));
-      if(!keysFound.length){alert('El archivo no contiene datos reconocibles de la Suite.');fileInput.value='';return;}
-      if(!confirm('Esto reemplazará TODA tu configuración actual (catálogo, cotizaciones, categorías, moneda, tasas, etc.) con la del archivo importado. Esta acción no se puede deshacer.\n\n¿Continuar?')){
-        fileInput.value='';return;
-      }
-      keysFound.forEach(k=>{try{localStorage.setItem(k,data[k]);}catch(e){}});
-      if(status)status.textContent='Backup importado correctamente. Recargando…';
-      fileInput.value='';
-      setTimeout(()=>location.reload(),600);
+      applyBackupData(parsed,()=>{fileInput.value='';});
     };
     reader.onerror=()=>{alert('No se pudo leer el archivo.');fileInput.value='';};
     reader.readAsText(file);
+  });
+
+  // Pegar backup como texto: abre un textarea donde el usuario pega el JSON
+  // copiado desde otro dispositivo con "Copiar backup", sin necesidad de archivo.
+  btnPasteToggle?.addEventListener('click',()=>{
+    if(!pasteWrap)return;
+    const show=pasteWrap.style.display==='none';
+    pasteWrap.style.display=show?'block':'none';
+    if(show)pasteArea?.focus();
+  });
+  btnPasteCancel?.addEventListener('click',()=>{
+    if(pasteArea)pasteArea.value='';
+    if(pasteWrap)pasteWrap.style.display='none';
+  });
+  btnPasteApply?.addEventListener('click',()=>{
+    const text=(pasteArea?.value||'').trim();
+    if(!text){alert('Pegá primero el texto del backup.');return;}
+    let parsed;
+    try{parsed=JSON.parse(text);}
+    catch(e){alert('El texto pegado no es un backup válido (JSON inválido).');return;}
+    applyBackupData(parsed,()=>{
+      if(pasteArea)pasteArea.value='';
+      if(pasteWrap)pasteWrap.style.display='none';
+    });
   });
 })();
 

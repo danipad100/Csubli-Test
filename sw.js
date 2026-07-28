@@ -1,4 +1,4 @@
-const VERSION = 'v39_79';
+const VERSION = 'v39_82';
 const CACHE_NAME = 'suite-csubli-' + VERSION;
 
 const URLS_TO_CACHE = [
