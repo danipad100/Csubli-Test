@@ -275,7 +275,7 @@ body.dark .dt-text-light{display:inline}
 .hoj-shape-btn:not(.active):hover{border-color:#c9ccd1}
 </style>
 </head>
-<body data-app-version="V39.77">
+<body data-app-version="V39.78">
 <div class="app">
 <header class="app-header">
   <div class="menu-wrapper">
@@ -2471,7 +2471,7 @@ body.dark .dt-text-light{display:inline}
 </div>
 </div></section>
 
-<footer class="footer">Suite creada por @subli_mada — V39.77</footer>
+<footer class="footer">Suite creada por @subli_mada — V39.78</footer>
 </div>
 <script>
 /* ═══════════════════════════════════════════════════════════
@@ -2482,7 +2482,7 @@ body.dark .dt-text-light{display:inline}
 'use strict';
 const $=id=>document.getElementById(id);
 const $$=(sel,ctx=document)=>Array.from(ctx.querySelectorAll(sel));
-const PWA_VER='v39_77';
+const PWA_VER='v39_78';
 
 /* ═══ HELPERS: number formatting (configurable decimal separator) ═══ */
 const EU_FMT=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -5017,8 +5017,8 @@ function convertMoneyValue(n,fromSym,toSym){
     if(supportsFileShare){
       btnShare.style.display='';
       btnShare.addEventListener('click',async()=>{
+        const {blob,filename}=buildBackupFile();
         try{
-          const {blob,filename}=buildBackupFile();
           const file=new File([blob],filename,{type:'application/json'});
           await navigator.share({
             files:[file],
@@ -5028,7 +5028,19 @@ function convertMoneyValue(n,fromSym,toSym){
           if(status)status.textContent='Backup compartido el '+new Date().toLocaleString();
         }catch(e){
           if(e&&e.name==='AbortError')return; // el usuario cerró el menú de compartir
-          if(status)status.textContent='No se pudo compartir el backup. Usá "Exportar todo" y compartilo manualmente.';
+          console.warn('navigator.share falló, se usa descarga como respaldo:',e);
+          // Fallback: si compartir falla (política de permisos, tipo de archivo no
+          // soportado por el sistema, etc.), se descarga igual que "Exportar todo"
+          // para que el usuario nunca se quede sin el archivo.
+          try{
+            const a=document.createElement('a');
+            a.href=URL.createObjectURL(blob);
+            a.download=filename;
+            a.click();
+            URL.revokeObjectURL(a.href);
+          }catch(e2){}
+          const reason=(e&&(e.name||e.message))?(' ('+(e.name||e.message)+')'):'';
+          if(status)status.textContent='No se pudo abrir el menú de compartir'+reason+'. Se descargó el backup — compartilo manualmente.';
         }
       });
     }
