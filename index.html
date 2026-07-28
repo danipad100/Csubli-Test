@@ -275,7 +275,7 @@ body.dark .dt-text-light{display:inline}
 .hoj-shape-btn:not(.active):hover{border-color:#c9ccd1}
 </style>
 </head>
-<body data-app-version="V39.71">
+<body data-app-version="V39.77">
 <div class="app">
 <header class="app-header">
   <div class="menu-wrapper">
@@ -377,9 +377,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row" style="gap:14px;flex-wrap:wrap">
 <div style="min-width:130px;flex:1"><label>Cant.</label><input id="cd_cant" type="text" value="36"></div>
 <div style="min-width:160px;flex:1"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="cd_precio" type="text" value="90" data-money="1"></div>
-<div style="min-width:200px;flex:1"><label>Costo Ud.</label><input id="cd_costo_ud" readonly type="text" value="$ 0,00"></div>
+<div style="min-width:200px;flex:1"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input id="cd_costo_ud" readonly type="text" value="0,00"></div>
 <div style="min-width:160px;flex:1"><label>Cantidad a utilizar</label><input id="cd_qty_use" type="number" min="0" step="1" value="1"></div>
-<div style="min-width:200px;flex:1"><label>Costo utilizado</label><input class="ud" id="cd_costo_util" readonly type="text" value="$ 0,00"></div>
+<div style="min-width:200px;flex:1"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="cd_costo_util" readonly type="text" value="0,00"></div>
 </div>
 <div class="sep"></div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
@@ -388,9 +388,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="vin_d_papel_cant" type="number" min="0" step="1" value="100"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="vin_d_papel_precio" type="text" value="10,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="vin_d_papel_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_d_papel_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="vin_d_papel_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="vin_d_papel_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_d_papel_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -398,9 +398,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="vin_d_cinta_cant" type="number" min="0" step="1" value="100"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="vin_d_cinta_precio" type="text" value="3,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="vin_d_cinta_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_d_cinta_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="vin_d_cinta_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="vin_d_cinta_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_d_cinta_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -408,9 +408,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="vin_d_tinta_cant" type="number" min="0" step="1" value="300"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="vin_d_tinta_precio" type="text" value="40,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="vin_d_tinta_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_d_tinta_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="vin_d_tinta_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="vin_d_tinta_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_d_tinta_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -418,9 +418,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="vin_d_pelusas_cant" type="number" min="0" step="1" value="50"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="vin_d_pelusas_precio" type="text" value="3,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="vin_d_pelusas_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_d_pelusas_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="vin_d_pelusas_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="vin_d_pelusas_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_d_pelusas_used" readonly type="text"></div>
 </div>
 </div>
 
@@ -431,40 +431,40 @@ body.dark .dt-text-light{display:inline}
 <input id="vin_dep_imp_on" type="checkbox"> Impresora</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="vin_dep_imp_precio" type="text" value="240" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="vin_dep_imp_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="vin_dep_imp_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_dep_imp_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_dep_imp_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="vin_dep_imp_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="vin_dep_imp_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_dep_imp_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="vin_dep_pla_on" type="checkbox"> Plancha térmica</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="vin_dep_pla_precio" type="text" value="400" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="vin_dep_pla_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="vin_dep_pla_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_dep_pla_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_dep_pla_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="vin_dep_pla_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="vin_dep_pla_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_dep_pla_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="vin_dep_pc_on" type="checkbox"> Computadora</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="vin_dep_pc_precio" type="text" value="350" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="vin_dep_pc_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="vin_dep_pc_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_dep_pc_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_dep_pc_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="vin_dep_pc_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="vin_dep_pc_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_dep_pc_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="vin_dep_plo_on" type="checkbox"> Plotter de corte</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="vin_dep_plo_precio" type="text" value="400" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="vin_dep_plo_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="vin_dep_plo_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_dep_plo_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_dep_plo_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="vin_dep_plo_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="vin_dep_plo_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_dep_plo_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -472,9 +472,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="vin_dep_cuch_precio" type="text" value="30" data-money="1"></div>
 <div style="flex:1;min-width:120px"><label>Vida útil (cortes)</label><input id="vin_dep_cuch_vida" type="number" min="1" value="500"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="vin_dep_cuch_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_dep_cuch_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="vin_dep_cuch_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="vin_dep_cuch_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_dep_cuch_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -482,9 +482,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="vin_dep_tap_precio" type="text" value="12" data-money="1"></div>
 <div style="flex:1;min-width:120px"><label>Vida útil (usos)</label><input id="vin_dep_tap_vida" type="number" min="1" value="500"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="vin_dep_tap_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_dep_tap_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="vin_dep_tap_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="vin_dep_tap_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="vin_dep_tap_used" readonly type="text"></div>
 </div>
 </div>
 
@@ -589,9 +589,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="sub_d_prod_cant" type="number" min="0" step="1" value="36"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="sub_d_prod_precio" type="text" value="60,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="sub_d_prod_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_d_prod_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="sub_d_prod_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="sub_d_prod_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_d_prod_used" readonly type="text"></div>
 </div>
 <div class="sep"></div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
@@ -600,9 +600,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="sub_d_papel_cant" type="number" min="0" step="1" value="100"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="sub_d_papel_precio" type="text" value="10,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="sub_d_papel_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_d_papel_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="sub_d_papel_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="sub_d_papel_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_d_papel_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -610,9 +610,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="sub_d_tinta_cant" type="number" min="0" step="1" value="300"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="sub_d_tinta_precio" type="text" value="40,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="sub_d_tinta_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_d_tinta_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="sub_d_tinta_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="sub_d_tinta_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_d_tinta_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -620,9 +620,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="sub_d_cinta_cant" type="number" min="0" step="1" value="100"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="sub_d_cinta_precio" type="text" value="3,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="sub_d_cinta_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_d_cinta_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="sub_d_cinta_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="sub_d_cinta_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_d_cinta_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -630,9 +630,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="sub_d_funda_cant" type="number" min="0" step="1" value="50"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="sub_d_funda_precio" type="text" value="15,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="sub_d_funda_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_d_funda_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="sub_d_funda_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="sub_d_funda_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_d_funda_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -640,9 +640,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="sub_d_pelusas_cant" type="number" min="0" step="1" value="50"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="sub_d_pelusas_precio" type="text" value="3,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="sub_d_pelusas_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_d_pelusas_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="sub_d_pelusas_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="sub_d_pelusas_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_d_pelusas_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -650,9 +650,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="sub_d_empaque_cant" type="number" min="0" step="1" value="50"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="sub_d_empaque_precio" type="text" value="5,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="sub_d_empaque_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_d_empaque_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="sub_d_empaque_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="sub_d_empaque_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_d_empaque_used" readonly type="text"></div>
 </div>
 </div>
 <div class="card md-6">
@@ -662,60 +662,60 @@ body.dark .dt-text-light{display:inline}
 <input id="sub_e_imp_on" type="checkbox"> Impresora</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="sub_e_imp_precio" type="text" value="240" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="sub_e_imp_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="sub_e_imp_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_imp_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_imp_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="sub_e_imp_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="sub_e_imp_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_imp_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="sub_e_pla_on" type="checkbox"> Plancha térmica</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="sub_e_pla_precio" type="text" value="400" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="sub_e_pla_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="sub_e_pla_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_pla_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_pla_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="sub_e_pla_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="sub_e_pla_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_pla_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="sub_e_pc_on" type="checkbox"> Computadora</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="sub_e_pc_precio" type="text" value="350" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="sub_e_pc_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="sub_e_pc_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_pc_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_pc_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="sub_e_pc_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="sub_e_pc_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_pc_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="sub_e_pre_on" type="checkbox"> Prensa para tazas</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="sub_e_pre_precio" type="text" value="180" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="sub_e_pre_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="sub_e_pre_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_pre_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_pre_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="sub_e_pre_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="sub_e_pre_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_pre_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="sub_e_res_on" type="checkbox"> Resistencia para tazas o termos</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="sub_e_res_precio" type="text" value="50" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="sub_e_res_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="sub_e_res_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_res_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_res_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="sub_e_res_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="sub_e_res_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_res_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="sub_e_hor_on" type="checkbox"> Horno de Sublimación</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="sub_e_hor_precio" type="text" value="350,00" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="sub_e_hor_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="sub_e_hor_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_hor_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_hor_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="sub_e_hor_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="sub_e_hor_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="sub_e_hor_used" readonly type="text"></div>
 </div>
 </div>
 <div class="card md-12">
@@ -823,9 +823,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="esf_d_prod_cant" type="number" min="0" step="1" value="12"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="esf_d_prod_precio" type="text" value="24,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="esf_d_prod_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_d_prod_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="esf_d_prod_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="esf_d_prod_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_d_prod_used" readonly type="text"></div>
 </div>
 <div class="sep"></div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
@@ -834,9 +834,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="esf_d_vinil_cant" type="number" min="0" step="1" value="100"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="esf_d_vinil_precio" type="text" value="8,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="esf_d_vinil_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_d_vinil_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="esf_d_vinil_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="esf_d_vinil_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_d_vinil_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -844,9 +844,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="esf_d_papel_cant" type="number" min="0" step="1" value="100"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="esf_d_papel_precio" type="text" value="10,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="esf_d_papel_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_d_papel_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="esf_d_papel_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="esf_d_papel_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_d_papel_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -854,9 +854,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="esf_d_nieve_cant" type="number" min="0" step="1" value="50"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="esf_d_nieve_precio" type="text" value="6,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="esf_d_nieve_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_d_nieve_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="esf_d_nieve_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="esf_d_nieve_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_d_nieve_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -864,9 +864,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="esf_d_extra_cant" type="number" min="0" step="1" value="100"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="esf_d_extra_precio" type="text" value="8,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="esf_d_extra_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_d_extra_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="esf_d_extra_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="esf_d_extra_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_d_extra_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -874,9 +874,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Uds por rollo</label><input id="esf_d_cinta_udxrollo" type="number" min="1" value="45"></div>
 <div style="flex:1;min-width:110px"><label>Precio rollo (<span class="cur-lbl">$</span>)</label><input id="esf_d_cinta_precio" type="text" value="3,50" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="esf_d_cinta_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_d_cinta_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cant. a utilizar</label><input id="esf_d_cinta_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo utilizado</label><input class="ud" id="esf_d_cinta_used" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_d_cinta_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -884,9 +884,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="esf_d_silicon_cant" type="number" min="0" step="1" value="50"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="esf_d_silicon_precio" type="text" value="5,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="esf_d_silicon_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_d_silicon_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="esf_d_silicon_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="esf_d_silicon_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_d_silicon_used" readonly type="text"></div>
 </div>
 </div>
 <div class="card md-6">
@@ -896,40 +896,40 @@ body.dark .dt-text-light{display:inline}
 <input id="esf_e_imp_on" type="checkbox"> Impresora</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="esf_e_imp_precio" type="text" value="240" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="esf_e_imp_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="esf_e_imp_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_imp_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_imp_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="esf_e_imp_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="esf_e_imp_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_imp_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="esf_e_pla_on" type="checkbox"> Plancha térmica</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="esf_e_pla_precio" type="text" value="400" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="esf_e_pla_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="esf_e_pla_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_pla_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_pla_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="esf_e_pla_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="esf_e_pla_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_pla_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="esf_e_pc_on" type="checkbox"> Computadora</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="esf_e_pc_precio" type="text" value="350" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="esf_e_pc_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="esf_e_pc_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_pc_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_pc_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="esf_e_pc_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="esf_e_pc_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_pc_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="esf_e_plo_on" type="checkbox"> Plotter de corte</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="esf_e_plo_precio" type="text" value="400" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="esf_e_plo_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="esf_e_plo_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_plo_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_plo_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="esf_e_plo_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="esf_e_plo_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_plo_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -937,9 +937,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="esf_e_cuch_precio" type="text" value="30" data-money="1"></div>
 <div style="flex:1;min-width:120px"><label>Vida útil (cortes)</label><input id="esf_e_cuch_vida" type="number" min="1" value="500"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="esf_e_cuch_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_cuch_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="esf_e_cuch_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="esf_e_cuch_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_cuch_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -947,19 +947,19 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="esf_e_tap_precio" type="text" value="12" data-money="1"></div>
 <div style="flex:1;min-width:120px"><label>Vida útil (usos)</label><input id="esf_e_tap_vida" type="number" min="1" value="500"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="esf_e_tap_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_tap_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="esf_e_tap_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="esf_e_tap_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_tap_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="esf_e_pist_on" type="checkbox"> Pistola de silicón</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="esf_e_pist_precio" type="text" value="18" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="esf_e_pist_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="esf_e_pist_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_pist_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_pist_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="esf_e_pist_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="esf_e_pist_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="esf_e_pist_used" readonly type="text"></div>
 </div>
 </div>
 <div class="card md-12">
@@ -1091,17 +1091,17 @@ body.dark .dt-text-light{display:inline}
 <div class="row" style="gap:14px;flex-wrap:wrap">
 <div style="min-width:130px;flex:1"><label>Cant. de prendas</label><input id="dtf_prenda_cant" type="number" min="0" step="1" placeholder="0"></div>
 <div style="min-width:160px;flex:1"><label>Precio paquete (<span class="cur-lbl">$</span>)</label><input id="dtf_prenda_precio" type="number" min="0" step="0.01" placeholder="0" data-money="1"></div>
-<div style="min-width:200px;flex:1"><label>Costo Ud. prenda</label><input id="dtf_prenda_costo_ud" readonly type="text" value="$ 0,00"></div>
+<div style="min-width:200px;flex:1"><label>Costo Ud. prenda (<span class="cur-lbl">$</span>)</label><input id="dtf_prenda_costo_ud" readonly type="text" value="0,00"></div>
 </div><div class="sep"></div>
 <h4 style="margin:0 0 10px">Depreciación — Plancha térmica</h4>
 <div class="row" style="gap:8px;align-items:center;margin:4px 0 6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px"><input id="dtf_dep_on" type="checkbox"> Plancha térmica</label></div>
 <div class="row" style="gap:14px;flex-wrap:wrap">
 <div style="min-width:160px;flex:1"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="dtf_dep_plancha_precio" type="text" value="400,00" data-money="1"></div>
-<div style="min-width:160px;flex:1"><label>costo x Mes</label><input class="ud" id="dtf_dep_plancha_mes" readonly type="text" value="$ 0,00"></div>
-<div style="min-width:160px;flex:1"><label>Costo Ud.</label><input class="ud" id="dtf_dep_plancha_ud" readonly type="text" value="$ 0,00"></div>
+<div style="min-width:160px;flex:1"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="dtf_dep_plancha_mes" readonly type="text" value="0,00"></div>
+<div style="min-width:160px;flex:1"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="dtf_dep_plancha_ud" readonly type="text" value="0,00"></div>
 <div style="min-width:160px;flex:1"><label>Cant. de usos</label><input id="dtf_plancha_use" type="number" min="0" step="1" value="1"></div>
-<div style="min-width:160px;flex:1"><label>Costo utilizado</label><input class="ud" id="dtf_plancha_used" readonly type="text" value="$ 0,00"></div>
+<div style="min-width:160px;flex:1"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="dtf_plancha_used" readonly type="text" value="0,00"></div>
 </div><div class="sep"></div>
 <h4 style="margin:0 0 10px">Extras</h4>
 <div class="row" style="gap:8px;align-items:center">
@@ -1246,9 +1246,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="pap_d_s1_cant" type="number" min="0" step="1" value="50"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="pap_d_s1_precio" type="text" value="20,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="pap_d_s1_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_d_s1_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="pap_d_s1_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="pap_d_s1_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_d_s1_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1258,9 +1258,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="pap_d_s2_cant" type="number" min="0" step="1" placeholder="0"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="pap_d_s2_precio" type="text" placeholder="0,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="pap_d_s2_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_d_s2_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="pap_d_s2_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="pap_d_s2_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_d_s2_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1270,9 +1270,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="pap_d_adh1_cant" type="number" min="0" step="1" value="1"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="pap_d_adh1_precio" type="text" value="3,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="pap_d_adh1_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_d_adh1_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="pap_d_adh1_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="pap_d_adh1_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_d_adh1_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1282,9 +1282,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="pap_d_adh2_cant" type="number" min="0" step="1" placeholder="0"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="pap_d_adh2_precio" type="text" placeholder="0,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="pap_d_adh2_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_d_adh2_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="pap_d_adh2_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="pap_d_adh2_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_d_adh2_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1292,9 +1292,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="pap_d_extra_cant" type="number" min="0" step="1" placeholder="0"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="pap_d_extra_precio" type="text" placeholder="0,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="pap_d_extra_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_d_extra_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="pap_d_extra_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="pap_d_extra_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_d_extra_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1302,9 +1302,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="pap_d_pack_cant" type="number" min="0" step="1" value="50"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="pap_d_pack_precio" type="text" value="5,00" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="pap_d_pack_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_d_pack_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="pap_d_pack_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="pap_d_pack_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_d_pack_used" readonly type="text"></div>
 </div>
 </div>
 <div class="card md-6">
@@ -1314,50 +1314,50 @@ body.dark .dt-text-light{display:inline}
 <input id="pap_e_plo_on" type="checkbox"> Plotter de corte</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="pap_e_plo_precio" type="text" value="400" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="pap_e_plo_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="pap_e_plo_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_plo_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_plo_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="pap_e_plo_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="pap_e_plo_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_plo_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="pap_e_imp_on" type="checkbox"> Impresora</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="pap_e_imp_precio" type="text" value="240" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="pap_e_imp_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="pap_e_imp_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_imp_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_imp_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="pap_e_imp_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="pap_e_imp_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_imp_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="pap_e_gui_on" type="checkbox"> Guillotina</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="pap_e_gui_precio" type="text" value="120" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="pap_e_gui_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="pap_e_gui_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_gui_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_gui_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="pap_e_gui_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="pap_e_gui_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_gui_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="pap_e_lam_on" type="checkbox"> Laminadora</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="pap_e_lam_precio" type="text" value="150" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="pap_e_lam_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="pap_e_lam_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_lam_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_lam_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="pap_e_lam_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="pap_e_lam_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_lam_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="pap_e_pc_on" type="checkbox"> Computadora</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="pap_e_pc_precio" type="text" value="350" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="pap_e_pc_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="pap_e_pc_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_pc_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_pc_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="pap_e_pc_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="pap_e_pc_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_pc_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1365,9 +1365,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="pap_e_cuch_precio" type="text" value="30" data-money="1"></div>
 <div style="flex:1;min-width:120px"><label>Vida útil (cortes)</label><input id="pap_e_cuch_vida" type="number" min="1" value="500"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="pap_e_cuch_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_cuch_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="pap_e_cuch_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="pap_e_cuch_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_cuch_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1375,9 +1375,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="pap_e_tap_precio" type="text" value="12" data-money="1"></div>
 <div style="flex:1;min-width:120px"><label>Vida útil (usos)</label><input id="pap_e_tap_vida" type="number" min="1" value="500"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="pap_e_tap_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_tap_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="pap_e_tap_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="pap_e_tap_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="pap_e_tap_used" readonly type="text"></div>
 </div>
 </div>
 <div class="card md-12">
@@ -1473,9 +1473,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="eti_d_prod_cant" type="number" min="0" step="1" value="50"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="eti_d_prod_precio" type="text" value="20" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="eti_d_prod_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_d_prod_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="eti_d_prod_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="eti_d_prod_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_d_prod_used" readonly type="text"></div>
 </div>
 <div class="sep"></div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
@@ -1484,9 +1484,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="eti_d_adh_cant" type="number" min="0" step="1" value="500"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="eti_d_adh_precio" type="text" value="15" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="eti_d_adh_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_d_adh_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="eti_d_adh_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="eti_d_adh_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_d_adh_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1494,9 +1494,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="eti_d_liner_cant" type="number" min="0" step="1" value="1000"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="eti_d_liner_precio" type="text" value="20" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="eti_d_liner_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_d_liner_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="eti_d_liner_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="eti_d_liner_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_d_liner_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1504,9 +1504,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="eti_d_tinta_cant" type="number" min="0" step="1" value="1000"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="eti_d_tinta_precio" type="text" value="30" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="eti_d_tinta_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_d_tinta_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="eti_d_tinta_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="eti_d_tinta_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_d_tinta_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1514,9 +1514,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="eti_d_merma_cant" type="number" min="0" step="1" value="500"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="eti_d_merma_precio" type="text" value="5" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="eti_d_merma_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_d_merma_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="eti_d_merma_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="eti_d_merma_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_d_merma_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1524,9 +1524,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="eti_d_lam_cant" type="number" min="0" step="1" value="20"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="eti_d_lam_precio" type="text" value="10" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="eti_d_lam_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_d_lam_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="eti_d_lam_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="eti_d_lam_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_d_lam_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1534,9 +1534,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="eti_d_emp_cant" type="number" min="0" step="1" value="200"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="eti_d_emp_precio" type="text" value="8" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="eti_d_emp_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_d_emp_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="eti_d_emp_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="eti_d_emp_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_d_emp_used" readonly type="text"></div>
 </div>
 </div>
 <div class="card md-6">
@@ -1546,30 +1546,30 @@ body.dark .dt-text-light{display:inline}
 <input id="eti_e_imp_on" type="checkbox"> Impresora de etiquetas</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="eti_e_imp_precio" type="text" value="240" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="eti_e_imp_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="eti_e_imp_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_e_imp_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_e_imp_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="eti_e_imp_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="eti_e_imp_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_e_imp_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="eti_e_plo_on" type="checkbox"> Plotter de corte</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="eti_e_plo_precio" type="text" value="400" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="eti_e_plo_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="eti_e_plo_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_e_plo_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_e_plo_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="eti_e_plo_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="eti_e_plo_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_e_plo_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
 <input id="eti_e_pc_on" type="checkbox"> Computadora</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="eti_e_pc_precio" type="text" value="350" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="eti_e_pc_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="eti_e_pc_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_e_pc_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_e_pc_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="eti_e_pc_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="eti_e_pc_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_e_pc_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1577,9 +1577,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="eti_e_cuch_precio" type="text" value="30" data-money="1"></div>
 <div style="flex:1;min-width:120px"><label>Vida útil (cortes)</label><input id="eti_e_cuch_vida" type="number" min="1" value="500"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="eti_e_cuch_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_e_cuch_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="eti_e_cuch_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="eti_e_cuch_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_e_cuch_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:10px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1587,9 +1587,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="eti_e_tap_precio" type="text" value="12" data-money="1"></div>
 <div style="flex:1;min-width:120px"><label>Vida útil (usos)</label><input id="eti_e_tap_vida" type="number" min="1" value="500"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="eti_e_tap_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_e_tap_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="eti_e_tap_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="eti_e_tap_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="eti_e_tap_used" readonly type="text"></div>
 </div>
 </div>
 <div class="card md-12">
@@ -1683,9 +1683,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="emp_caja_cant" type="number" min="0" step="1" value="50"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="emp_caja_precio" type="text" value="20" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="emp_caja_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="emp_caja_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="emp_caja_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="emp_caja_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="emp_caja_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1693,9 +1693,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="emp_bolsa_cant" type="number" min="0" step="1" value="100"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="emp_bolsa_precio" type="text" value="12" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="emp_bolsa_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="emp_bolsa_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="emp_bolsa_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="emp_bolsa_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="emp_bolsa_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1703,9 +1703,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="emp_relleno_cant" type="number" min="0" step="1" value="1"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="emp_relleno_precio" type="text" value="5" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="emp_relleno_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="emp_relleno_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="emp_relleno_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="emp_relleno_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="emp_relleno_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1713,9 +1713,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="emp_etiqueta_cant" type="number" min="0" step="1" value="100"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="emp_etiqueta_precio" type="text" value="8" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="emp_etiqueta_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="emp_etiqueta_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="emp_etiqueta_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="emp_etiqueta_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="emp_etiqueta_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1723,9 +1723,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="emp_tarjeta_cant" type="number" min="0" step="1" value="50"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="emp_tarjeta_precio" type="text" value="6" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="emp_tarjeta_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="emp_tarjeta_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="emp_tarjeta_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="emp_tarjeta_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="emp_tarjeta_used" readonly type="text"></div>
 </div>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px">
@@ -1733,9 +1733,9 @@ body.dark .dt-text-light{display:inline}
 <div class="row">
 <div style="flex:1;min-width:110px"><label>Cant.</label><input id="emp_cinta_cant" type="number" min="0" step="1" value="1"></div>
 <div style="flex:1;min-width:110px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="emp_cinta_precio" type="text" value="2" data-money="1"></div>
-<div style="flex:1;min-width:110px"><label>Costo Ud.</label><input class="ud" id="emp_cinta_ud" readonly type="text"></div>
+<div style="flex:1;min-width:110px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="emp_cinta_ud" readonly type="text"></div>
 <div style="flex:1;min-width:110px"><label>Cantidad a utilizar</label><input id="emp_cinta_use" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="emp_cinta_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="emp_cinta_used" readonly type="text"></div>
 </div>
 </div>
 <div class="card md-6">
@@ -1745,10 +1745,10 @@ body.dark .dt-text-light{display:inline}
 <input id="emp_e_imp_on" type="checkbox"> Impresora de etiquetas</label></div>
 <div class="row">
 <div style="flex:1;min-width:120px"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="emp_e_imp_precio" type="text" value="200" data-money="1"></div>
-<div style="flex:1;min-width:120px"><label>costo x Mes</label><input class="ud" id="emp_e_imp_mes" readonly type="text"></div>
-<div style="flex:1;min-width:120px"><label>Costo Ud.</label><input class="ud" id="emp_e_imp_ud" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="emp_e_imp_mes" readonly type="text"></div>
+<div style="flex:1;min-width:120px"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="emp_e_imp_ud" readonly type="text"></div>
 <div style="flex:1;min-width:120px"><label>Cant. de usos</label><input id="emp_e_imp_uses" type="number" min="0" step="1" value="1"></div>
-<div style="flex:1;min-width:130px"><label>Costo utilizado</label><input class="ud" id="emp_e_imp_used" readonly type="text"></div>
+<div style="flex:1;min-width:130px"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="emp_e_imp_used" readonly type="text"></div>
 </div>
 </div>
 <div class="card md-12">
@@ -2013,6 +2013,10 @@ body.dark .dt-text-light{display:inline}
 <details style="margin-top:10px">
 <summary style="cursor:pointer;font-weight:600;color:var(--brand)">Tasas de cambio (editable)</summary>
 <p class="muted" style="margin:8px 0">Cuántas unidades de cada moneda equivalen a 1 dólar. Son de referencia (julio 2026) — corrígelas cuando quieras; el ajuste se aplica la próxima vez que cambies de moneda, no reconvierte lo que ya está en pantalla.</p>
+<div class="row" style="gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
+<button class="btn ok" id="btn_update_rates" type="button">Actualizar tasas</button>
+<span id="rates_update_status" class="muted" style="font-size:13px"></span>
+</div>
 <div id="suite_money_rates_table" style="max-height:320px;overflow-y:auto"></div>
 </details>
 <div class="sep"></div>
@@ -2054,10 +2058,11 @@ body.dark .dt-text-light{display:inline}
 <p style="margin:6px 0 8px">Exporta un archivo con <b>todo lo que has guardado en esta Suite</b>: catálogo de Producto personalizable, categorías creadas, cotizaciones, moneda activa, tasas de cambio, separador decimal y sistema de unidades. Úsalo para respaldar tu información o para pasarla a otro dispositivo o navegador — a diferencia de la exportación de <b>Producto personalizable</b>, que solo respalda el catálogo de productos, esto incluye <b>todos</b> los módulos y ajustes.</p>
 <div class="row" style="gap:8px;flex-wrap:wrap;align-items:center">
 <button class="btn ok" id="btn_backup_export" type="button">⬇️ Exportar todo (backup)</button>
+<button class="btn" id="btn_backup_share" type="button" style="display:none">📤 Compartir backup</button>
 <button class="btn" id="btn_backup_import" type="button">⬆️ Importar backup</button>
 <input type="file" id="backup_file_input" accept=".json,application/json" style="display:none">
 </div>
-<p class="muted" style="margin:8px 0 0" id="backup_status">Importar un backup <b>reemplaza</b> toda la configuración actual — se te pedirá confirmación antes de aplicarlo.</p>
+<p class="muted" style="margin:8px 0 0" id="backup_status">Importar un backup <b>reemplaza</b> toda la configuración actual — se te pedirá confirmación antes de aplicarlo. "Compartir backup" abre el menú nativo del dispositivo (WhatsApp, correo, Bluetooth, AirDrop, Drive, etc.) para enviar el archivo directamente a otro equipo — solo aparece si el navegador lo soporta.</p>
 <div class="sep"></div>
 <h4>¿Tienes una sugerencia o encontraste un error?</h4>
 <p style="margin:6px 0 8px">Escríbenos directamente. Se abrirá tu app de correo con el destinatario y el asunto ya listos.</p>
@@ -2466,7 +2471,7 @@ body.dark .dt-text-light{display:inline}
 </div>
 </div></section>
 
-<footer class="footer">Suite creada por @subli_mada — V39.71</footer>
+<footer class="footer">Suite creada por @subli_mada — V39.77</footer>
 </div>
 <script>
 /* ═══════════════════════════════════════════════════════════
@@ -2477,7 +2482,7 @@ body.dark .dt-text-light{display:inline}
 'use strict';
 const $=id=>document.getElementById(id);
 const $$=(sel,ctx=document)=>Array.from(ctx.querySelectorAll(sel));
-const PWA_VER='v39_71';
+const PWA_VER='v39_77';
 
 /* ═══ HELPERS: number formatting (configurable decimal separator) ═══ */
 const EU_FMT=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -2506,7 +2511,12 @@ function parseEU(v){
   v=String(v).trim().replace(/\s/g,'');
   if(!v)return 0;
   v=v.replace(/[^\d,.\-]/g,'');
-  if(v.indexOf(',')>=0&&v.indexOf('.')>=0){v=v.replace(/\./g,'').replace(',','.');}
+  if(v.indexOf(',')>=0&&v.indexOf('.')>=0){
+    // Ambos separadores presentes: uno es de miles y otro decimal.
+    // Cuál es cuál depende del separador decimal configurado en la Suite.
+    if(DECIMAL_SEP===','){v=v.replace(/\./g,'').replace(',','.');}
+    else{v=v.replace(/,/g,'');}
+  }
   else if(v.indexOf(',')>=0){v=v.replace(',','.');}
   const n=parseFloat(v);return isNaN(n)?0:n;
 }
@@ -2540,6 +2550,7 @@ function fmtNumAttr(n,maxDec){
   return s;
 }
 function setFieldValue(el,n,dec){el.value=(el.type==='number')?fmtNumAttr(n,dec==null?4:dec):fmtVarPlain(n,dec==null?4:dec);}
+function setMoneyFieldValue(el,n){el.value=(el.type==='number')?fmtNumAttr(n,2):fmtPlain(n);}
 function readMetric(el){
   if(!el)return 0;
   const v=parseEU(el.value);
@@ -2659,7 +2670,7 @@ function convertMoneyContainer(container,fromSym,toSym){
   container.querySelectorAll('[data-money]').forEach(el=>{
     if(el.value===''||el.value==null)return;
     const usd=parseEU(el.value)/rFrom;
-    setFieldValue(el,usd*rTo,4);
+    setMoneyFieldValue(el,usd*rTo);
   });
 }
 function updateAllCurrencyLabels(){
@@ -2781,6 +2792,9 @@ function initCurrencyUI(){
   });
 }
 
+function fmtRateDisplay(v){
+  return (Math.round((v||1)*100)/100).toString().replace('.',DECIMAL_SEP);
+}
 function initMoneyRatesUI(){
   const wrap=$('suite_money_rates_table');
   if(!wrap)return;
@@ -2791,7 +2805,7 @@ function initMoneyRatesUI(){
     row.style.cssText='gap:10px;align-items:center;padding:5px 0;border-bottom:1px solid var(--line,#eee)';
     row.innerHTML=`<span style="flex:1;min-width:160px;font-size:13px">${c.label}</span>
       <span class="muted" style="min-width:30px">1 $ =</span>
-      <input type="text" data-rate-symbol="${c.symbol}" style="max-width:130px" value="${(MONEY_RATES[c.symbol]||1).toString().replace('.',DECIMAL_SEP)}">
+      <input type="text" data-rate-symbol="${c.symbol}" style="max-width:130px" value="${fmtRateDisplay(MONEY_RATES[c.symbol])}">
       <span class="muted" style="min-width:50px">${c.symbol}</span>`;
     wrap.appendChild(row);
   });
@@ -2801,8 +2815,72 @@ function initMoneyRatesUI(){
     const sym=inp.dataset.rateSymbol;
     const v=parseEU(inp.value);
     if(v>0){MONEY_RATES[sym]=v;saveMoneyRates();}
-    inp.value=(MONEY_RATES[sym]||1).toString().replace('.',DECIMAL_SEP);
+    inp.value=fmtRateDisplay(MONEY_RATES[sym]);
   });
+}
+
+/* ═══ ACTUALIZAR TASAS (API gratuita, sin key, fawazahmed0/exchange-api) ═══
+   Fuente: https://github.com/fawazahmed0/exchange-api — actualización diaria,
+   200+ monedas, sin límite de solicitudes, sin necesidad de API key.
+   Se usa USD como base (coincide con cómo la Suite guarda sus tasas: unidades
+   de moneda local por 1 USD). Incluye URL de respaldo (Cloudflare Pages) por
+   si el CDN principal (jsDelivr) falla. */
+const RATES_PRIMARY_URL='https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json';
+const RATES_FALLBACK_URL='https://latest.currency-api.pages.dev/v1/currencies/usd.json';
+const SYMBOL_TO_ISO={
+  '€':'eur','£':'gbp','Bs.':'ves','COP$':'cop','MX$':'mxn','AR$':'ars','CL$':'clp',
+  'S/.':'pen','R$':'brl','$U':'uyu','Bs':'bob','₲':'pyg','₡':'crc','RD$':'dop',
+  'CA$':'cad','CU$':'cup','J$':'jmd','G':'htg','TT$':'ttd','B$':'bsd','Bds$':'bbd',
+  'GY$':'gyd','Q':'gtq','L':'hnl','C$':'nio','B/.':'pab','Sr$':'srd'
+};
+async function fetchAndUpdateRates(){
+  const btn=$('btn_update_rates'),status=$('rates_update_status');
+  if(btn)btn.disabled=true;
+  if(status)status.textContent='Actualizando…';
+  let data=null,usedFallback=false;
+  try{
+    const r=await fetch(RATES_PRIMARY_URL);
+    if(!r.ok)throw new Error('primary failed');
+    data=await r.json();
+  }catch(e){
+    try{
+      const r2=await fetch(RATES_FALLBACK_URL);
+      if(!r2.ok)throw new Error('fallback failed');
+      data=await r2.json();
+      usedFallback=true;
+    }catch(e2){data=null;}
+  }
+  if(!data||!data.usd){
+    if(status)status.textContent='No se pudo conectar. Revisa tu conexión a internet e inténtalo de nuevo.';
+    if(btn)btn.disabled=false;
+    return;
+  }
+  const rates=data.usd;
+  let updated=0,missing=[];
+  Object.keys(SYMBOL_TO_ISO).forEach(sym=>{
+    const iso=SYMBOL_TO_ISO[sym];
+    const v=rates[iso];
+    if(typeof v==='number'&&isFinite(v)&&v>0){MONEY_RATES[sym]=v;updated++;}
+    else missing.push(sym);
+  });
+  saveMoneyRates();
+  initMoneyRatesUI();
+  try{localStorage.setItem('suite_money_rates_updated',data.date||new Date().toISOString().slice(0,10));}catch(e){}
+  if(status){
+    let msg='Tasas actualizadas ('+updated+'/'+Object.keys(SYMBOL_TO_ISO).length+') — fecha: '+(data.date||'?');
+    if(usedFallback)msg+=' (vía respaldo)';
+    if(missing.length)msg+=' — sin datos para: '+missing.join(', ');
+    status.textContent=msg;
+  }
+  if(btn)btn.disabled=false;
+}
+function initRatesUpdateUI(){
+  const btn=$('btn_update_rates'),status=$('rates_update_status');
+  if(!btn)return;
+  btn.addEventListener('click',fetchAndUpdateRates);
+  let lastUpdate=null;
+  try{lastUpdate=localStorage.getItem('suite_money_rates_updated');}catch(e){}
+  if(status&&lastUpdate)status.textContent='Última actualización: '+lastUpdate;
 }
 
 function initDecimalUI(){
@@ -2844,10 +2922,10 @@ function calcDirectRow(prefix){
   const use=$(prefix+'_use'),used=$(prefix+'_used');
   if(!cant||!precio)return 0;
   const uc=unitCost(prefix+'_cant',prefix+'_precio');
-  if(ud)ud.value=fmtEU(uc);
+  if(ud)ud.value=fmtPlain(uc);
   const qty=clamp0(parseEU(use?.value));
   const util=uc*qty;
-  if(used)used.value=fmtEU(util);
+  if(used)used.value=fmtPlain(util);
   return on?util:0;
 }
 
@@ -2856,11 +2934,11 @@ function calcDepTime(prefix,unitsPerMonth=100){
   const on=$(prefix+'_on')?.checked;
   const P=clamp0(parseEU($(prefix+'_precio')?.value));
   const mes=P/24;const ud=unitsPerMonth>0?mes/unitsPerMonth:0;
-  if($(prefix+'_mes'))$(prefix+'_mes').value=fmtEU(mes);
-  if($(prefix+'_ud'))$(prefix+'_ud').value=fmtEU(ud);
+  if($(prefix+'_mes'))$(prefix+'_mes').value=fmtPlain(mes);
+  if($(prefix+'_ud'))$(prefix+'_ud').value=fmtPlain(ud);
   const uses=clamp0(parseEU($(prefix+'_uses')?.value));
   const util=ud*uses;
-  if($(prefix+'_used'))$(prefix+'_used').value=fmtEU(util);
+  if($(prefix+'_used'))$(prefix+'_used').value=fmtPlain(util);
   return on?util:0;
 }
 
@@ -2870,10 +2948,10 @@ function calcDepLife(prefix){
   const P=clamp0(parseEU($(prefix+'_precio')?.value));
   const vida=Math.max(1,clamp0(parseEU($(prefix+'_vida')?.value)));
   const ud=P/vida;
-  if($(prefix+'_ud'))$(prefix+'_ud').value=fmtEU(ud);
+  if($(prefix+'_ud'))$(prefix+'_ud').value=fmtPlain(ud);
   const uses=clamp0(parseEU($(prefix+'_uses')?.value));
   const util=ud*uses;
-  if($(prefix+'_used'))$(prefix+'_used').value=fmtEU(util);
+  if($(prefix+'_used'))$(prefix+'_used').value=fmtPlain(util);
   return on?util:0;
 }
 
@@ -3151,7 +3229,7 @@ function wireRefPriceSelect(selId,cantId,precioId){
     if(!ud||ud<=0)return;
     const cant=clamp0(parseEU($(cantId)?.value));
     if(cant<=0)return;
-    setFieldValue($(precioId),ud*cant,2);
+    setMoneyFieldValue($(precioId),ud*cant);
   }
   sel.addEventListener('change',()=>{sync();ALL_RECALCS.forEach(fn=>{try{fn();}catch(e){}});});
   sync();
@@ -3313,6 +3391,9 @@ wireExportButton('pap_export_pers',()=>Object.assign({moduleName:'Papelería',
       <div style="min-width:90px;flex:1"><label>Alto (<span class="ulbl" data-utl="len">${unitLabelText('len')}</span>)</label><input type="text" class="vin-alto" data-utype="len" placeholder="0"></div>
       <div style="min-width:90px;flex:1"><label>Ancho (<span class="ulbl" data-utl="len">${unitLabelText('len')}</span>)</label><input type="text" class="vin-ancho" data-utype="len" placeholder="0"></div>
     </div>
+    <div class="row" style="margin-top:8px">
+      <div style="min-width:90px;flex:1"><label>Ancho de rollo de este color (<span class="ulbl" data-utl="len">${unitLabelText('len')}</span>) <span class="muted" style="font-weight:400">— opcional, si está vacío usa el ancho estándar</span></label><input type="text" class="vin-ancho-rollo" data-utype="len" placeholder="Auto"></div>
+    </div>
     <div class="row" style="margin-top:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
       <div style="font-weight:600" class="vin-costo">Costo: $ 0,00</div>
       <button class="copy-btn" data-copy="${id}">Copiar</button>
@@ -3355,7 +3436,9 @@ wireExportButton('pap_export_pers',()=>Object.assign({moduleName:'Papelería',
       const precio=clamp0(readMetric(card.querySelector('.vin-precio')));
       const alto=clamp0(readMetric(card.querySelector('.vin-alto')));
       const ancho=clamp0(readMetric(card.querySelector('.vin-ancho')));
-      const base=std*100;
+      const anchoRolloCard=clamp0(readMetric(card.querySelector('.vin-ancho-rollo')));
+      const stdCard=anchoRolloCard>0?anchoRolloCard:std;
+      const base=stdCard*100;
       const precioCm2=base>0?precio/base:0;
       const costo=precioCm2*alto*ancho;
       const costoEl=card.querySelector('.vin-costo');
@@ -3366,16 +3449,16 @@ wireExportButton('pap_export_pers',()=>Object.assign({moduleName:'Papelería',
     let directos=0;
     if($('cd_enabled')?.checked){
       const cd_ud=unitCost('cd_cant','cd_precio');
-      $('cd_costo_ud').value=fmtEU(cd_ud);
+      $('cd_costo_ud').value=fmtPlain(cd_ud);
       const cd_qty=clamp0(parseEU($('cd_qty_use')?.value));
       const cd_util=cd_ud*cd_qty;
-      $('cd_costo_util').value=fmtEU(cd_util);
+      $('cd_costo_util').value=fmtPlain(cd_util);
       directos+=cd_util;
     }else{
       const cd_ud=unitCost('cd_cant','cd_precio');
-      $('cd_costo_ud').value=fmtEU(cd_ud);
+      $('cd_costo_ud').value=fmtPlain(cd_ud);
       const cd_qty=clamp0(parseEU($('cd_qty_use')?.value));
-      $('cd_costo_util').value=fmtEU(cd_ud*cd_qty);
+      $('cd_costo_util').value=fmtPlain(cd_ud*cd_qty);
     }
     ['vin_d_papel','vin_d_cinta','vin_d_tinta','vin_d_pelusas'].forEach(row=>{directos+=calcDirectRow(row);});
     // Depreciation
@@ -3433,7 +3516,7 @@ wireExportButton('pap_export_pers',()=>Object.assign({moduleName:'Papelería',
     if(sel.value==='otros')return; // "Otros": el usuario define el precio manualmente
     const ud=parseFloat(opt.getAttribute('data-ud'))||0;
     const cant=clamp0(parseEU($('cd_cant')?.value))||1;
-    setFieldValue($('cd_precio'),ud*cant,2);
+    setMoneyFieldValue($('cd_precio'),ud*cant);
   }
   $('cd_item')?.addEventListener('change',()=>{syncCdPrecioFromItem();recalc();});
   syncCdPrecioFromItem();
@@ -3470,7 +3553,9 @@ wireExportButton('pap_export_pers',()=>Object.assign({moduleName:'Papelería',
       const on=card.querySelector('.vin-color-on');
       if(!on||!on.checked)return;
       const precioCanon=clamp0(readMetric(card.querySelector('.vin-precio')));
-      const precioCm2Canon=baseCanon>0?precioCanon/baseCanon:0;
+      const anchoRolloCardCanon=clamp0(readMetric(card.querySelector('.vin-ancho-rollo')));
+      const baseCard=anchoRolloCardCanon>0?anchoRolloCardCanon*100:baseCanon;
+      const precioCm2Canon=baseCard>0?precioCanon/baseCard:0;
       const precioCm2Disp=(UNIT_SYSTEM==='imperial'&&priceType)?priceType.toI(precioCm2Canon):precioCm2Canon;
       const sel=card.querySelector('.vin-color-sel');
       const nombre=sel?('Vinil '+sel.value):'Vinil color';
@@ -3763,10 +3848,10 @@ function convertMoneyValue(n,fromSym,toSym){
       <div style="min-width:90px;flex:1"><label>Cant.</label><input type="text" class="pers-dir-cant" value="${escapeHTML(data.cant||'1')}"></div>
       <div class="pers-dir-cant-unit-wrap" style="min-width:90px;flex:1;display:none"><label>Unidad</label><select class="pers-dir-cant-unit"></select></div>
       <div style="min-width:120px;flex:1"><label>Precio (<span class="cur-lbl">$</span>)</label><input type="text" class="pers-dir-precio" data-money="1" value="${escapeHTML(data.precio||'')}" placeholder="0,00"></div>
-      <div style="min-width:140px;flex:1"><label>Costo Ud.<span class="pers-dir-ud-lbl"></span></label><input type="text" class="ud pers-dir-ud" value="$ 0,00" readonly></div>
+      <div style="min-width:140px;flex:1"><label>Costo Ud.<span class="pers-dir-ud-lbl"></span> (<span class="cur-lbl">$</span>)</label><input type="text" class="ud pers-dir-ud" value="0,00" readonly></div>
       <div style="min-width:130px;flex:1"><label>Cant. a utilizar</label><input type="text" class="pers-dir-utilcant" value="${escapeHTML(data.utilcant||'1')}"></div>
       <div class="pers-dir-util-unit-wrap" style="min-width:90px;flex:1;display:none"><label>Unidad</label><select class="pers-dir-util-unit"></select></div>
-      <div style="min-width:150px;flex:1"><label>Costo utilizado</label><input type="text" class="ud pers-dir-used" value="$ 0,00" readonly></div>
+      <div style="min-width:150px;flex:1"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input type="text" class="ud pers-dir-used" value="0,00" readonly></div>
       <div><button class="copy-btn" type="button">Eliminar</button></div>`;
     q('.pers-dir-tipo',row).addEventListener('change',()=>{refreshQtyRowUnits(row);recalc();});
     refreshQtyRowUnits(row,data.cantUnit,data.utilUnit);
@@ -3789,9 +3874,9 @@ function convertMoneyValue(n,fromSym,toSym){
         <div style="min-width:70px"><label>Meses</label><input type="text" class="pers-dep-meses" value="${escapeHTML(data.meses||'24')}"></div>
         <div style="min-width:90px"><label>Cap./mes</label><input type="text" class="pers-dep-capacidad" value="${escapeHTML(data.capacidad||'100')}"></div>
       </div>
-      <div style="min-width:120px;flex:1"><label>Costo Ud.</label><input type="text" class="ud pers-dep-ud" value="$ 0,00" readonly></div>
+      <div style="min-width:120px;flex:1"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input type="text" class="ud pers-dep-ud" value="0,00" readonly></div>
       <div style="min-width:110px;flex:1"><label>Cant. de usos</label><input type="text" class="pers-dep-usos" value="${escapeHTML(data.usos||'1')}"></div>
-      <div style="min-width:140px;flex:1"><label>Costo utilizado</label><input type="text" class="ud pers-dep-used" value="$ 0,00" readonly></div>
+      <div style="min-width:140px;flex:1"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input type="text" class="ud pers-dep-used" value="0,00" readonly></div>
       <div><button class="copy-btn" type="button">Eliminar</button></div>`;
     const modoSel=q('.pers-dep-modo',row),vidaWrap=q('.pers-dep-vida-wrap',row),capWrap=q('.pers-dep-cap-wrap',row);
     modoSel.addEventListener('change',()=>{
@@ -3879,9 +3964,9 @@ function convertMoneyValue(n,fromSym,toSym){
         util=util*(opts[uIdx]||opts[0]).f;
       }
       const ud=cant>0?precio/cant:0;
-      q('.pers-dir-ud',r).value=fmtEU(ud);
+      q('.pers-dir-ud',r).value=fmtPlain(ud);
       const used=ud*util;
-      q('.pers-dir-used',r).value=fmtEU(used);
+      q('.pers-dir-used',r).value=fmtPlain(used);
       dirTotal+=used;
     });
     // Area materials
@@ -3923,10 +4008,10 @@ function convertMoneyValue(n,fromSym,toSym){
         const cap=Math.max(1,clamp0(parseEU(q('.pers-dep-capacidad',r)?.value)));
         ud=(precio/meses)/cap;
       }
-      q('.pers-dep-ud',r).value=fmtEU(ud);
+      q('.pers-dep-ud',r).value=fmtPlain(ud);
       const usos=clamp0(parseEU(q('.pers-dep-usos',r)?.value||'1'));
       const used=ud*usos;
-      q('.pers-dep-used',r).value=fmtEU(used);
+      q('.pers-dep-used',r).value=fmtPlain(used);
       depTotal+=used;
     });
     // Indirectos
@@ -4878,11 +4963,11 @@ function convertMoneyValue(n,fromSym,toSym){
 (function(){
   const BACKUP_KEYS=[
     'Suite.pers.products','Suite.pers.categories','Suite.pers.quotes',
-    'suite_money_rates','suite_currency_symbol','suite_dark',
+    'suite_money_rates','suite_money_rates_updated','suite_currency_symbol','suite_dark',
     'suite_decimal_sep','suite_first_run_done','suite_unit_system',
     'last_view','calc_history'
   ];
-  const btnExport=$('btn_backup_export'),btnImport=$('btn_backup_import'),fileInput=$('backup_file_input'),status=$('backup_status');
+  const btnExport=$('btn_backup_export'),btnShare=$('btn_backup_share'),btnImport=$('btn_backup_import'),fileInput=$('backup_file_input'),status=$('backup_status');
   if(!btnExport&&!btnImport)return;
 
   function readAllData(){
@@ -4894,7 +4979,8 @@ function convertMoneyValue(n,fromSym,toSym){
     return data;
   }
 
-  btnExport?.addEventListener('click',()=>{
+  // Construye el mismo payload/archivo de backup para exportar (descarga) o compartir (share sheet).
+  function buildBackupFile(){
     const payload={
       app:'Suite de Calculadoras — @subli_mada',
       backup_version:1,
@@ -4902,14 +4988,51 @@ function convertMoneyValue(n,fromSym,toSym){
       exported_at:new Date().toISOString(),
       data:readAllData()
     };
+    const filename='suite-backup-'+new Date().toISOString().slice(0,10)+'.json';
     const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+    return {blob,filename};
+  }
+
+  btnExport?.addEventListener('click',()=>{
+    const {blob,filename}=buildBackupFile();
     const a=document.createElement('a');
     a.href=URL.createObjectURL(blob);
-    a.download='suite-backup-'+new Date().toISOString().slice(0,10)+'.json';
+    a.download=filename;
     a.click();
     URL.revokeObjectURL(a.href);
     if(status)status.textContent='Backup exportado el '+new Date().toLocaleString();
   });
+
+  // Compartir nativo: solo se muestra el botón si el navegador soporta compartir
+  // archivos (típico en móviles). Reusa buildBackupFile() como única fuente del backup.
+  if(btnShare){
+    let supportsFileShare=false;
+    try{
+      if(navigator.share&&navigator.canShare){
+        const testFile=new File(['{}'],'test.json',{type:'application/json'});
+        supportsFileShare=navigator.canShare({files:[testFile]});
+      }
+    }catch(e){supportsFileShare=false;}
+
+    if(supportsFileShare){
+      btnShare.style.display='';
+      btnShare.addEventListener('click',async()=>{
+        try{
+          const {blob,filename}=buildBackupFile();
+          const file=new File([blob],filename,{type:'application/json'});
+          await navigator.share({
+            files:[file],
+            title:'Backup Suite de Calculadoras',
+            text:'Backup de @subli_mada — '+new Date().toLocaleDateString()
+          });
+          if(status)status.textContent='Backup compartido el '+new Date().toLocaleString();
+        }catch(e){
+          if(e&&e.name==='AbortError')return; // el usuario cerró el menú de compartir
+          if(status)status.textContent='No se pudo compartir el backup. Usá "Exportar todo" y compartilo manualmente.';
+        }
+      });
+    }
+  }
 
   btnImport?.addEventListener('click',()=>fileInput?.click());
   fileInput?.addEventListener('change',()=>{
@@ -5167,7 +5290,7 @@ function convertMoneyValue(n,fromSym,toSym){
     const prendaCant=clamp0(parseEU($('dtf_prenda_cant')?.value));
     const prendaPrecio=clamp0(parseEU($('dtf_prenda_precio')?.value));
     const prendaUd=prendaCant>0?prendaPrecio/prendaCant:0;
-    $('dtf_prenda_costo_ud').value=fmtEU(prendaUd);
+    $('dtf_prenda_costo_ud').value=fmtPlain(prendaUd);
     const disPorPrenda=Math.max(1,clamp0(parseEU($('dtf_prenda_disenos')?.value)));
     const camisetas=prendaOn?(totalDesigns/disPorPrenda):0;
     const prendasEq=totalDesigns/disPorPrenda;
@@ -5956,13 +6079,13 @@ $('btn_factory_reset')?.addEventListener('click',()=>{
   $$('.view input[type="number"]').forEach(i=>{
     if(!i.id||i.readOnly)return;
     if(i.dataset.utype)writeMetric(i,parseEU(i.defaultValue||'0'),4);
-    else if(i.dataset.money)setFieldValue(i,parseEU(i.defaultValue||'0')*moneyRate(_curSym),4);
+    else if(i.dataset.money)setMoneyFieldValue(i,parseEU(i.defaultValue||'0')*moneyRate(_curSym));
     else i.value=i.defaultValue||0;
   });
   $$('.view input[type="text"]').forEach(i=>{
     if(!i.id||i.readOnly)return;
     if(i.dataset.utype)writeMetric(i,parseEU(i.defaultValue||'0'),4);
-    else if(i.dataset.money)setFieldValue(i,parseEU(i.defaultValue||'0')*moneyRate(_curSym),4);
+    else if(i.dataset.money)setMoneyFieldValue(i,parseEU(i.defaultValue||'0')*moneyRate(_curSym));
     else i.value=i.defaultValue||'';
   });
   $('bloques').innerHTML='';$('dtf_bloques').innerHTML='';
@@ -6140,7 +6263,7 @@ function initFeedbackUI(){
 /* ═══════════════════════════════════════════════════════════
    INIT
    ═══════════════════════════════════════════════════════════ */
-initNav();initDark();initHeaderCompact();initCurrencyUI();initDecimalUI();initUnitSystemUI();
+initNav();initDark();initHeaderCompact();initCurrencyUI();initRatesUpdateUI();initDecimalUI();initUnitSystemUI();
 addPillCopyButtons();
 wireInputCopyButtons();
 initFeedbackUI();
