@@ -275,7 +275,7 @@ body.dark .dt-text-light{display:inline}
 .hoj-shape-btn:not(.active):hover{border-color:#c9ccd1}
 </style>
 </head>
-<body data-app-version="V39.78">
+<body data-app-version="V39.79">
 <div class="app">
 <header class="app-header">
   <div class="menu-wrapper">
@@ -2060,7 +2060,7 @@ body.dark .dt-text-light{display:inline}
 <button class="btn ok" id="btn_backup_export" type="button">⬇️ Exportar todo (backup)</button>
 <button class="btn" id="btn_backup_share" type="button" style="display:none">📤 Compartir backup</button>
 <button class="btn" id="btn_backup_import" type="button">⬆️ Importar backup</button>
-<input type="file" id="backup_file_input" accept=".json,application/json" style="display:none">
+<input type="file" id="backup_file_input" accept=".json,.txt,application/json,text/plain" style="display:none">
 </div>
 <p class="muted" style="margin:8px 0 0" id="backup_status">Importar un backup <b>reemplaza</b> toda la configuración actual — se te pedirá confirmación antes de aplicarlo. "Compartir backup" abre el menú nativo del dispositivo (WhatsApp, correo, Bluetooth, AirDrop, Drive, etc.) para enviar el archivo directamente a otro equipo — solo aparece si el navegador lo soporta.</p>
 <div class="sep"></div>
@@ -2471,7 +2471,7 @@ body.dark .dt-text-light{display:inline}
 </div>
 </div></section>
 
-<footer class="footer">Suite creada por @subli_mada — V39.78</footer>
+<footer class="footer">Suite creada por @subli_mada — V39.79</footer>
 </div>
 <script>
 /* ═══════════════════════════════════════════════════════════
@@ -2482,7 +2482,7 @@ body.dark .dt-text-light{display:inline}
 'use strict';
 const $=id=>document.getElementById(id);
 const $$=(sel,ctx=document)=>Array.from(ctx.querySelectorAll(sel));
-const PWA_VER='v39_78';
+const PWA_VER='v39_79';
 
 /* ═══ HELPERS: number formatting (configurable decimal separator) ═══ */
 const EU_FMT=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -5009,7 +5009,7 @@ function convertMoneyValue(n,fromSym,toSym){
     let supportsFileShare=false;
     try{
       if(navigator.share&&navigator.canShare){
-        const testFile=new File(['{}'],'test.json',{type:'application/json'});
+        const testFile=new File(['{}'],'test.txt',{type:'text/plain'});
         supportsFileShare=navigator.canShare({files:[testFile]});
       }
     }catch(e){supportsFileShare=false;}
@@ -5019,7 +5019,15 @@ function convertMoneyValue(n,fromSym,toSym){
       btnShare.addEventListener('click',async()=>{
         const {blob,filename}=buildBackupFile();
         try{
-          const file=new File([blob],filename,{type:'application/json'});
+          // La Web Share API solo permite compartir ciertos tipos "seguros" de
+          // archivo (.txt, .pdf, .csv, imágenes, etc.) — .json NO está en esa
+          // lista y provoca NotAllowedError aunque canShare() haya dicho que sí.
+          // Se comparte el mismo contenido con extensión .txt para esquivar esa
+          // restricción; el archivo .json real solo se genera si hay que
+          // descargarlo (botón "Exportar todo" o el fallback de abajo).
+          const shareFilename=filename.replace(/\.json$/i,'.txt');
+          const shareBlob=new Blob([blob],{type:'text/plain'});
+          const file=new File([shareBlob],shareFilename,{type:'text/plain'});
           await navigator.share({
             files:[file],
             title:'Backup Suite de Calculadoras',
@@ -5029,9 +5037,8 @@ function convertMoneyValue(n,fromSym,toSym){
         }catch(e){
           if(e&&e.name==='AbortError')return; // el usuario cerró el menú de compartir
           console.warn('navigator.share falló, se usa descarga como respaldo:',e);
-          // Fallback: si compartir falla (política de permisos, tipo de archivo no
-          // soportado por el sistema, etc.), se descarga igual que "Exportar todo"
-          // para que el usuario nunca se quede sin el archivo.
+          // Fallback: si compartir falla igual (política de permisos, etc.), se
+          // descarga el .json real para que el usuario nunca se quede sin el archivo.
           try{
             const a=document.createElement('a');
             a.href=URL.createObjectURL(blob);
