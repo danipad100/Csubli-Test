@@ -275,7 +275,7 @@ body.dark .dt-text-light{display:inline}
 .hoj-shape-btn:not(.active):hover{border-color:#c9ccd1}
 </style>
 </head>
-<body data-app-version="V39.82">
+<body data-app-version="V39.87">
 <div class="app">
 <header class="app-header">
   <div class="menu-wrapper">
@@ -1049,7 +1049,7 @@ body.dark .dt-text-light{display:inline}
 <h4 style="margin:0 0 10px">Costos directos del servicio</h4>
 <div class="row" style="gap:8px;align-items:center;margin-top:6px">
 <div style="flex:1;min-width:180px"><label>Modalidad</label>
-<select id="dtf_modalidad"><option data-price="15" value="metro">Metro lineal (57 cm)</option><option data-price="7.5" value="tramo30">Tramo 30 cm (57 cm)</option><option data-price="5" value="a3">Hoja A3</option></select>
+<select id="dtf_modalidad"><option data-price="15" value="metro">Metro lineal (57 cm)</option><option data-price="7.5" value="tramo30">Tramo 30 cm (57 cm)</option><option data-price="5" value="a3">Hoja A3</option><option value="personalizado">Personalizado</option></select>
 </div>
 <div style="flex:1;min-width:160px"><label>Precio por unidad (<span class="cur-lbl">$</span>)</label><input id="dtf_precio_unit" type="number" min="0" step="0.01" value="15" data-money="1"></div>
 <div style="flex:1;min-width:160px"><label><input id="dtf_resp_min" type="checkbox"> Respetar mínimo de compra</label></div>
@@ -1057,7 +1057,10 @@ body.dark .dt-text-light{display:inline}
 <h4 style="margin:0 0 8px">Medida requerida</h4>
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
 <div class="pill">Largo requerido: <span class="result" id="dtf_largo_requerido">0 cm</span></div>
-<span class="muted">Se calcula automáticamente según los diseños agregados, el ancho del panel y la separación.</span>
+<div style="min-width:200px"><label>Largo requerido manual (<span class="ulbl" data-utl="len">cm</span>)</label><input id="dtf_largo_manual" type="number" min="0" step="0.1" data-utype="len" placeholder="Opcional"></div>
+</div>
+<div class="row" style="margin-top:4px">
+<span class="muted" id="dtf_largo_manual_hint">Se calcula automáticamente según los diseños agregados, el ancho del panel y la separación. Si tu proveedor solo imprime en incrementos fijos (ej. cada 10 cm), escribí acá el largo que realmente vas a comprar — ajusta el costo total y el de cada diseño.</span>
 </div>
 <div class="sep"></div>
 <h4 style="margin:0 0 8px">Múltiples diseños</h4>
@@ -1074,10 +1077,18 @@ body.dark .dt-text-light{display:inline}
 <div style="min-width:120px"><label>Ancho panel (<span class="ulbl" data-utl="len">cm</span>)</label><input id="dtf_panel_w" type="number" min="5" step="0.1" value="57" data-utype="len"></div>
 <div style="min-width:120px"><label>Alto panel (<span class="ulbl" data-utl="len">cm</span>)</label><input id="dtf_panel_h" type="number" min="5" step="0.1" value="100" data-utype="len"></div>
 <div style="min-width:160px"><label><input id="dtf_autorot" type="checkbox"> Auto-rotación 90°</label></div>
-<button class="btn neutral" id="dtf_preview_btn">Generar vista previa</button>
 </div><div class="sep"></div>
-<div class="card md-12"><h4 style="margin:0 0 10px">Vista previa de distribución</h4>
-<canvas id="dtf_layout" width="600" height="350" style="max-width:100%;border-radius:12px;border:1px solid #eee"></canvas>
+<div class="card md-12">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px">
+<h4 style="margin:0">Vista previa de distribución</h4>
+<div style="display:flex;align-items:center;gap:6px">
+<button type="button" class="pill-copy-btn" id="dtf_zoom_out" title="Alejar vista previa" aria-label="Alejar vista previa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg></button>
+<button type="button" class="pill-copy-btn" id="dtf_zoom_in" title="Acercar vista previa" aria-label="Acercar vista previa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg></button>
+</div>
+</div>
+<div id="dtf_layout_wrap" style="overflow:auto;border-radius:12px">
+<canvas id="dtf_layout" width="600" height="350" style="max-width:100%;display:block;border-radius:12px;border:1px solid #eee"></canvas>
+</div>
 <div class="muted" id="dtf_layout_info" style="margin-top:6px"></div>
 </div>
 </div>
@@ -2487,7 +2498,7 @@ body.dark .dt-text-light{display:inline}
 </div>
 </div></section>
 
-<footer class="footer">Suite creada por @subli_mada — V39.82</footer>
+<footer class="footer">Suite creada por @subli_mada — V39.87</footer>
 </div>
 <script>
 /* ═══════════════════════════════════════════════════════════
@@ -2498,7 +2509,7 @@ body.dark .dt-text-light{display:inline}
 'use strict';
 const $=id=>document.getElementById(id);
 const $$=(sel,ctx=document)=>Array.from(ctx.querySelectorAll(sel));
-const PWA_VER='v39_82';
+const PWA_VER='v39_87';
 
 /* ═══ HELPERS: number formatting (configurable decimal separator) ═══ */
 const EU_FMT=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -5108,64 +5119,111 @@ function convertMoneyValue(n,fromSym,toSym){
   let dtfDesignCount=0;
   let lastDtfPack=null;
 
-  /* ---- Shared multi-design packer (same logic as the Hoja de Etiquetas module):
-     designs are processed tallest-first internally so shorter ones can fill
-     leftover row space, and any gap nothing could fill is reported back.
+  /* ---- Skyline ("Tetris") packer: tracks a height profile (one segment per
+     occupied column-run) across the panel width, like a Tetris board. Each
+     placement candidate — every remaining design, in its allowed orientations,
+     at every existing skyline segment's x — is scored by how low it would land
+     (the height directly beneath its footprint), and the lowest-landing option
+     wins. This lets short pieces sit right next to tall ones and lets later
+     pieces fill in above a short piece once its column is no longer the
+     tallest, instead of being confined to uniform-height rows.
      For "metro"/"tramo30" (rollo continuo) uh=Infinity and maxSheets=1 — there's
      only one panel and it's as long as it needs to be. For "a3" (hoja fija)
-     uh=42 and maxSheets=0 (unlimited), same as the Hoja module. ---- */
+     uh=42 and maxSheets=0 (unlimited). ---- */
   function dtfPackSheets(designs,uw,uh,sep,maxSheets){
     const sheets=[];
-    const shelvesBySheet=[];
+    const skylinesBySheet=[];
     const placedCount=designs.map(()=>0);
     const HARD_CAP=500;
-    let shelves=[];
-    let nextY=0;
+    let skylineRef=null;
     function newSheet(){
       if(maxSheets>0&&sheets.length>=maxSheets)return false;
       if(sheets.length>=HARD_CAP)return false;
-      sheets.push([]);shelves=[];shelvesBySheet.push(shelves);nextY=0;return true;
+      sheets.push([]);
+      skylineRef={arr:[{x:0,width:uw,y:0}]};
+      skylinesBySheet.push(skylineRef);
+      return true;
     }
     if(!newSheet())return{sheets,placedCount,gaps:[]};
-    const order=designs.map((d,i)=>i)
-      .filter(i=>designs[i].w>0&&designs[i].h>0&&designs[i].qty>0&&designs[i].w<=uw+1e-9&&designs[i].h<=uh+1e-9)
-      .sort((a,b)=>designs[b].h-designs[a].h);
-    outer:
-    for(const di of order){
-      const d=designs[di];
-      let remaining=d.qty;
-      while(remaining>0){
-        for(const shelf of shelves){
-          if(remaining<=0)break;
-          if(d.h>shelf.h+1e-9)continue;
-          const availW=uw-shelf.x;
-          const cols=Math.max(0,Math.floor((availW+sep)/(d.w+sep)));
-          if(cols<=0)continue;
-          const place=Math.min(remaining,cols);
-          for(let c=0;c<place;c++){
-            sheets[sheets.length-1].push({x:shelf.x+c*(d.w+sep),y:shelf.y,w:d.w,h:d.h,di});
-          }
-          shelf.x+=place*(d.w+sep);
-          remaining-=place;
-          placedCount[di]+=place;
-        }
-        if(remaining<=0)break;
-        if(nextY+d.h>uh+1e-9){if(!newSheet())break outer;}
-        const cols=Math.max(1,Math.floor((uw+sep)/(d.w+sep)));
-        const place=Math.min(remaining,cols);
-        for(let c=0;c<place;c++){
-          sheets[sheets.length-1].push({x:c*(d.w+sep),y:nextY,w:d.w,h:d.h,di});
-        }
-        shelves.push({y:nextY,h:d.h,x:place*(d.w+sep)});
-        remaining-=place;
-        placedCount[di]+=place;
-        nextY+=d.h+sep;
+
+    // Each design keeps its own fixed w×h — orientation is still decided once,
+    // upfront, by the existing autorotate toggle in buildDtfPack (a design that
+    // doesn't fit normally gets pre-swapped there before reaching the packer).
+    const items=designs.map((d,i)=>({
+      di:i,
+      variants:(d.w>0&&d.h>0&&d.w<=uw+1e-9&&d.h<=uh+1e-9)?[{w:d.w,h:d.h}]:[],
+      qty:Math.max(0,d.qty)
+    })).filter(it=>it.qty>0&&it.variants.length>0);
+
+    function heightUnderSpan(x,w){
+      let y=0;
+      for(const seg of skylineRef.arr){
+        if(seg.x+seg.width<=x+1e-9)continue;
+        if(seg.x>=x+w-1e-9)break;
+        y=Math.max(y,seg.y);
       }
+      return y;
     }
+    function updateSkyline(x,w,newY){
+      const out=[];let i=0;
+      const arr=skylineRef.arr;
+      for(;i<arr.length&&arr[i].x+arr[i].width<=x+1e-9;i++)out.push(arr[i]);
+      out.push({x,width:w,y:newY});
+      const cx=x+w;
+      for(;i<arr.length;i++){
+        const seg=arr[i];
+        if(seg.x+seg.width<=cx+1e-9)continue;
+        if(seg.x<cx-1e-9)out.push({x:cx,width:seg.x+seg.width-cx,y:seg.y});
+        else out.push(seg);
+      }
+      const merged=[];
+      for(const seg of out){
+        if(merged.length&&Math.abs(merged[merged.length-1].y-seg.y)<1e-9)merged[merged.length-1].width+=seg.width;
+        else merged.push({x:seg.x,width:seg.width,y:seg.y});
+      }
+      skylineRef.arr=merged;
+    }
+
+    let guard=0;const GUARD_MAX=200000;
+    outer:
+    while(items.some(it=>it.qty>0)){
+      if(++guard>GUARD_MAX)break;
+      let best=null;
+      for(const seg of skylineRef.arr){
+        const x=seg.x;
+        for(const it of items){
+          if(it.qty<=0)continue;
+          for(const v of it.variants){
+            if(x+v.w>uw+1e-9)continue; // the piece itself must fit within the real panel width
+            // Look under the piece's footprint PLUS its trailing separation buffer,
+            // so nothing else lands closer than `sep` to it on either side.
+            const y=heightUnderSpan(x,v.w+sep);
+            if(y+v.h>uh+1e-9)continue; // the piece itself must fit within the real panel height
+            if(!best||y<best.y-1e-9||(Math.abs(y-best.y)<1e-9&&x<best.x-1e-9)){
+              best={di:it.di,x,y,w:v.w,h:v.h,it};
+            }
+          }
+        }
+      }
+      if(!best){
+        if(!newSheet())break outer;
+        continue;
+      }
+      sheets[sheets.length-1].push({x:best.x,y:best.y,w:best.w,h:best.h,di:best.di});
+      // Reserve w+sep / h+sep in the skyline (kerf/cutting margin) even though the
+      // drawn item and its cost only ever use the real w×h above.
+      updateSkyline(best.x,best.w+sep,best.y+best.h+sep);
+      best.it.qty--;
+      placedCount[best.di]++;
+    }
+
     const GAP_MIN=0.3;
-    const gaps=shelvesBySheet.map(sheetShelves=>
-      sheetShelves.filter(sh=>uw-sh.x>GAP_MIN+1e-9).map(sh=>({x:sh.x,y:sh.y,w:uw-sh.x,h:sh.h}))
-    );
+    const gaps=skylinesBySheet.map((sk,idx)=>{
+      const sheetItems=sheets[idx]||[];
+      const cutoff=(uh===Infinity)?sheetItems.reduce((m,it)=>Math.max(m,it.y+it.h),0):uh;
+      return sk.arr.filter(seg=>cutoff-seg.y>GAP_MIN+1e-9)
+        .map(seg=>({x:seg.x,y:seg.y,w:seg.width,h:cutoff-seg.y}));
+    });
     return{sheets,placedCount,gaps};
   }
 
@@ -5178,7 +5236,7 @@ function convertMoneyValue(n,fromSym,toSym){
     const sepCm=clamp0(readMetric($('dtf_sep')));
     const autoRot=!!$('dtf_autorot')?.checked;
     const mod=$('dtf_modalidad')?.value||'metro';
-    const isRoll=mod!=='a3';
+    const isRoll=(mod==='metro'||mod==='tramo30');
     const uw=PW,uh=isRoll?Infinity:PHraw;
     const maxSheets=isRoll?1:0;
     const cards=$$('#dtf_bloques .card');
@@ -5269,6 +5327,14 @@ function convertMoneyValue(n,fromSym,toSym){
     const sel=$('dtf_modalidad');
     const opt=sel.options[sel.selectedIndex];
     $('dtf_precio_unit').value=opt.dataset.price||0;
+    // Keep "Tipo de panel" in sync with the modality — both selects share
+    // the same three values (metro/tramo30/a3), so switching modalidad
+    // updates the panel preset (and its w/h) instead of leaving them stale.
+    const pt=$('dtf_panel_tipo');
+    if(pt&&(sel.value==='metro'||sel.value==='tramo30'||sel.value==='a3'||sel.value==='personalizado')&&pt.value!==sel.value){
+      pt.value=sel.value;
+      pt.dispatchEvent(new Event('change',{bubbles:true}));
+    }
     recalcDTF();
   });
   $('dtf_panel_tipo')?.addEventListener('change',()=>{
@@ -5288,14 +5354,36 @@ function convertMoneyValue(n,fromSym,toSym){
     lastDtfPack=built;
     const{pack,requiredCm,numSheets,designs}=built;
 
-    // Real total material cost, based on how much panel the packer actually needed —
-    // not an independent per-design estimate. This is what "va de la mano con el precio" means:
-    // a tighter pack (shorter roll / fewer sheets) directly lowers this number.
+    // "Largo requerido manual": lets the user round up to whatever fixed
+    // increment their supplier actually sells/prints in (e.g. only every
+    // 10 cm). It never shrinks the canvas/pack below what the designs truly
+    // need — a manual value under the real requirement is ignored (and
+    // flagged) — but a value at or above it becomes what cost & "material a
+    // solicitar" are based on, so buying the rounded-up amount is reflected
+    // in every design's individual cost too.
+    const largoManualEl=$('dtf_largo_manual');
+    const largoManualRaw=clamp0(readMetric(largoManualEl));
+    const manualValid=largoManualRaw>0&&largoManualRaw+1e-6>=requiredCm;
+    const requiredCmForCost=manualValid?largoManualRaw:requiredCm;
+    if(largoManualEl){
+      if(largoManualRaw>0&&!manualValid){
+        largoManualEl.style.borderColor='var(--danger,#e11d48)';
+        largoManualEl.title='Debe ser mayor o igual al largo requerido ('+dispLenNum(requiredCm,1)+' '+unitLabelText('len')+'); se usó el valor calculado en su lugar.';
+      }else{
+        largoManualEl.style.borderColor='';
+        largoManualEl.title='';
+      }
+    }
+
+    // Real total material cost, based on how much panel the packer actually needed
+    // (or the manual override above, if set) — not an independent per-design estimate.
+    // This is what "va de la mano con el precio" means: a tighter pack (shorter roll /
+    // fewer sheets) directly lowers this number.
     let totalCost=0;
     if(precioUnit>0){
-      if(mod==='metro')totalCost=requiredCm>0?(requiredCm/100)*precioUnit:0;
-      else if(mod==='tramo30')totalCost=requiredCm>0?Math.ceil(requiredCm/30)*precioUnit:0;
-      else totalCost=numSheets>0?numSheets*precioUnit:0; // a3
+      if(mod==='metro')totalCost=requiredCmForCost>0?(requiredCmForCost/100)*precioUnit:0;
+      else if(mod==='tramo30')totalCost=requiredCmForCost>0?Math.ceil(requiredCmForCost/30)*precioUnit:0;
+      else totalCost=numSheets>0?numSheets*precioUnit:0; // a3 / personalizado — sold by sheet, not length
     }
 
     // Split that total back across design cards, weighted by area×cantidad —
@@ -5320,10 +5408,12 @@ function convertMoneyValue(n,fromSym,toSym){
     });
     directos=totalCost; // authoritative figure used downstream; per-card split above is informative
 
-    // Material a solicitar — ahora es el uso real calculado por el packer, no una estimación circular
-    const matLabel=mod==='metro'?fmtVarPlain(requiredCm/100,2)+' metro(s)'
-      :mod==='tramo30'?fmtVarPlain(Math.ceil(requiredCm/30),0)+' tramo(s)'
-      :fmtVarPlain(numSheets,0)+' hoja(s) A3';
+    // Material a solicitar — usa el largo/hojas que realmente definen el costo
+    // (el override manual, si es válido, o si no el calculado por el packer).
+    const matLabel=mod==='metro'?fmtVarPlain(requiredCmForCost/100,2)+' metro(s)'
+      :mod==='tramo30'?fmtVarPlain(Math.ceil(requiredCmForCost/30),0)+' tramo(s)'
+      :mod==='a3'?fmtVarPlain(numSheets,0)+' hoja(s) A3'
+      :fmtVarPlain(numSheets,0)+' hoja(s)';
     $('dtf_mat_solicitar').textContent=totalDesigns>0?matLabel:'—';
 
     // Prenda: prendas equivalentes = total diseños / diseños por prenda
@@ -5384,12 +5474,15 @@ function convertMoneyValue(n,fromSym,toSym){
   }
   // Canvas preview
   const DTF_CANVAS_W=600,DTF_MIN_CANVAS_H=350,DTF_MAX_CANVAS_H=900,DTF_MARGIN=14;
+  let dtfZoom=1; // 1 = normal, >1 = zoomed in (redraws at higher native res, not a blurry CSS stretch)
   function renderDTFPreview(){
     const canvas=$('dtf_layout'); if(!canvas)return;
     const ctx=canvas.getContext('2d');
     if(!lastDtfPack)lastDtfPack=buildDtfPack();
     const{PW,PHraw,isRoll,pack,requiredCm,numSheets}=lastDtfPack;
     let PH=PHraw;
+    const Z=dtfZoom;
+    const CANVAS_W=DTF_CANVAS_W*Z,MIN_CANVAS_H=DTF_MIN_CANVAS_H*Z,MAX_CANVAS_H=DTF_MAX_CANVAS_H*Z,MARGIN=DTF_MARGIN*Z;
 
     // Required length field: how much material (cm) the current designs actually need
     const largoEl=$('dtf_largo_requerido');
@@ -5405,14 +5498,23 @@ function convertMoneyValue(n,fromSym,toSym){
     }
 
     const requiredForCanvas=Math.max(PH,requiredCm,1);
-    const pxPerCm=(DTF_MIN_CANVAS_H-DTF_MARGIN*2)/100;
-    let canvasH=Math.max(DTF_MIN_CANVAS_H,Math.min(DTF_MAX_CANVAS_H,Math.round(requiredForCanvas*pxPerCm+DTF_MARGIN*2)));
-    canvas.width=DTF_CANVAS_W;canvas.height=canvasH;
+    const pxPerCm=(MIN_CANVAS_H-MARGIN*2)/100;
+    let canvasH=Math.max(MIN_CANVAS_H,Math.min(MAX_CANVAS_H,Math.round(requiredForCanvas*pxPerCm+MARGIN*2)));
+    canvas.width=CANVAS_W;canvas.height=canvasH;
+    const wrap=$('dtf_layout_wrap');
+    if(Z>1+1e-6){
+      canvas.style.maxWidth='none';
+      if(wrap)wrap.style.maxHeight='520px';
+    }else{
+      canvas.style.maxWidth='100%';
+      if(wrap)wrap.style.maxHeight='';
+    }
+    if(typeof updateDtfZoomUI==='function')updateDtfZoomUI();
 
-    let scale=(canvasH-DTF_MARGIN*2)/requiredForCanvas;
-    scale=Math.min(scale,(canvas.width-DTF_MARGIN*2)/PW);
+    let scale=(canvasH-MARGIN*2)/requiredForCanvas;
+    scale=Math.min(scale,(canvas.width-MARGIN*2)/PW);
     const panelH=(isRoll?requiredForCanvas:PH)*scale,panelW=PW*scale;
-    const offX=(canvas.width-panelW)/2,offY=DTF_MARGIN;
+    const offX=(canvas.width-panelW)/2,offY=MARGIN;
     ctx.clearRect(0,0,canvas.width,canvas.height);
     ctx.fillStyle='#f9fafb';ctx.fillRect(offX,offY,panelW,panelH);
     ctx.strokeStyle='#ccc';ctx.strokeRect(offX,offY,panelW,panelH);
@@ -5446,10 +5548,34 @@ function convertMoneyValue(n,fromSym,toSym){
     const infoEl=$('dtf_layout_info');
     if(infoEl){infoEl.textContent=info;infoEl.style.color='';}
   }
-  $('dtf_preview_btn')?.addEventListener('click',renderDTFPreview);
+  // Preview now auto-refreshes via recalcDTF() on every relevant input —
+  // no manual "Generar vista previa" trigger needed.
+  const DTF_ZOOM_MIN=1,DTF_ZOOM_MAX=2.2,DTF_ZOOM_STEP=0.2;
+  function updateDtfZoomUI(){
+    const zin=$('dtf_zoom_in'),zout=$('dtf_zoom_out');
+    if(zout){
+      zout.disabled=dtfZoom<=DTF_ZOOM_MIN+1e-6;
+      zout.style.opacity=zout.disabled?'0.4':'';
+      zout.style.cursor=zout.disabled?'not-allowed':'';
+    }
+    if(zin){
+      zin.disabled=dtfZoom>=DTF_ZOOM_MAX-1e-6;
+      zin.style.opacity=zin.disabled?'0.4':'';
+      zin.style.cursor=zin.disabled?'not-allowed':'';
+    }
+  }
+  $('dtf_zoom_in')?.addEventListener('click',()=>{
+    dtfZoom=Math.min(DTF_ZOOM_MAX,Math.round((dtfZoom+DTF_ZOOM_STEP)*100)/100);
+    renderDTFPreview();
+  });
+  $('dtf_zoom_out')?.addEventListener('click',()=>{
+    dtfZoom=Math.max(DTF_ZOOM_MIN,Math.round((dtfZoom-DTF_ZOOM_STEP)*100)/100);
+    renderDTFPreview();
+  });
+  updateDtfZoomUI();
   // Wire
   const dtfIds=['dtf_modalidad','dtf_precio_unit','dtf_resp_min',
-    'dtf_sep','dtf_panel_tipo','dtf_panel_w','dtf_panel_h','dtf_autorot',
+    'dtf_sep','dtf_panel_tipo','dtf_panel_w','dtf_panel_h','dtf_autorot','dtf_largo_manual',
     'dtf_prenda_on','dtf_prenda_tipo','dtf_prenda_disenos','dtf_prenda_cant','dtf_prenda_precio',
     'dtf_dep_on','dtf_dep_plancha_precio','dtf_plancha_use',
     'dtf_extra_envio','dtf_extra_diseno','dtf_extra_plancha','dtf_extra_otros',
