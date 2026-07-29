@@ -275,7 +275,7 @@ body.dark .dt-text-light{display:inline}
 .hoj-shape-btn:not(.active):hover{border-color:#c9ccd1}
 </style>
 </head>
-<body data-app-version="V39.87">
+<body data-app-version="V39.90">
 <div class="app">
 <header class="app-header">
   <div class="menu-wrapper">
@@ -1052,12 +1052,13 @@ body.dark .dt-text-light{display:inline}
 <select id="dtf_modalidad"><option data-price="15" value="metro">Metro lineal (57 cm)</option><option data-price="7.5" value="tramo30">Tramo 30 cm (57 cm)</option><option data-price="5" value="a3">Hoja A3</option><option value="personalizado">Personalizado</option></select>
 </div>
 <div style="flex:1;min-width:160px"><label>Precio por unidad (<span class="cur-lbl">$</span>)</label><input id="dtf_precio_unit" type="number" min="0" step="0.01" value="15" data-money="1"></div>
-<div style="flex:1;min-width:160px"><label><input id="dtf_resp_min" type="checkbox"> Respetar mínimo de compra</label></div>
 </div><div class="sep"></div>
 <h4 style="margin:0 0 8px">Medida requerida</h4>
-<div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
-<div class="pill">Largo requerido: <span class="result" id="dtf_largo_requerido">0 cm</span></div>
-<div style="min-width:200px"><label>Largo requerido manual (<span class="ulbl" data-utl="len">cm</span>)</label><input id="dtf_largo_manual" type="number" min="0" step="0.1" data-utype="len" placeholder="Opcional"></div>
+<div class="row" style="gap:10px;align-items:flex-end;flex-wrap:wrap">
+<div><label style="visibility:hidden">Largo requerido</label><div class="pill">Largo requerido: <span class="result" id="dtf_largo_requerido">0 cm</span></div></div>
+<div style="min-width:200px"><label>Largo requerido manual (<span class="ulbl" data-utl="len">cm</span>)</label><input id="dtf_largo_manual" type="number" min="0" step="0.1" data-utype="len" placeholder="Opcional">
+<div id="dtf_largo_manual_warn" style="display:none;align-items:center;gap:5px;margin-top:5px;font-size:12px;color:var(--danger);font-weight:600"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"></path><path d="M12 17h.01"></path><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path></svg><span>Menor al largo requerido — se usa el valor calculado</span></div>
+</div>
 </div>
 <div class="row" style="margin-top:4px">
 <span class="muted" id="dtf_largo_manual_hint">Se calcula automáticamente según los diseños agregados, el ancho del panel y la separación. Si tu proveedor solo imprime en incrementos fijos (ej. cada 10 cm), escribí acá el largo que realmente vas a comprar — ajusta el costo total y el de cada diseño.</span>
@@ -1104,7 +1105,7 @@ body.dark .dt-text-light{display:inline}
 <div style="min-width:160px;flex:1"><label>Precio paquete (<span class="cur-lbl">$</span>)</label><input id="dtf_prenda_precio" type="number" min="0" step="0.01" placeholder="0" data-money="1"></div>
 <div style="min-width:200px;flex:1"><label>Costo Ud. prenda (<span class="cur-lbl">$</span>)</label><input id="dtf_prenda_costo_ud" readonly type="text" value="0,00"></div>
 </div><div class="sep"></div>
-<h4 style="margin:0 0 10px">Depreciación — Plancha térmica</h4>
+<h4 style="margin:0 0 10px">Depreciación de equipos</h4>
 <div class="row" style="gap:8px;align-items:center;margin:4px 0 6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px"><input id="dtf_dep_on" type="checkbox"> Plancha térmica</label></div>
 <div class="row" style="gap:14px;flex-wrap:wrap">
@@ -1113,12 +1114,20 @@ body.dark .dt-text-light{display:inline}
 <div style="min-width:160px;flex:1"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="dtf_dep_plancha_ud" readonly type="text" value="0,00"></div>
 <div style="min-width:160px;flex:1"><label>Cant. de usos</label><input id="dtf_plancha_use" type="number" min="0" step="1" value="1"></div>
 <div style="min-width:160px;flex:1"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="dtf_plancha_used" readonly type="text" value="0,00"></div>
+</div>
+<div class="row" style="gap:8px;align-items:center;margin:14px 0 6px">
+<label class="chk-label" style="display:flex;align-items:center;gap:8px"><input id="dtf_dep_pc_on" type="checkbox"> Computadora</label></div>
+<div class="row" style="gap:14px;flex-wrap:wrap">
+<div style="min-width:160px;flex:1"><label>Precio (<span class="cur-lbl">$</span>)</label><input id="dtf_dep_pc_precio" type="text" value="350,00" data-money="1"></div>
+<div style="min-width:160px;flex:1"><label>costo x Mes (<span class="cur-lbl">$</span>)</label><input class="ud" id="dtf_dep_pc_mes" readonly type="text" value="0,00"></div>
+<div style="min-width:160px;flex:1"><label>Costo Ud. (<span class="cur-lbl">$</span>)</label><input class="ud" id="dtf_dep_pc_ud" readonly type="text" value="0,00"></div>
+<div style="min-width:160px;flex:1"><label>Cant. de usos</label><input id="dtf_dep_pc_uses" type="number" min="0" step="1" value="1"></div>
+<div style="min-width:160px;flex:1"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="dtf_dep_pc_used" readonly type="text" value="0,00"></div>
 </div><div class="sep"></div>
 <h4 style="margin:0 0 10px">Extras</h4>
 <div class="row" style="gap:8px;align-items:center">
 <div style="flex:1;min-width:160px"><label>Envío del proveedor (<span class="cur-lbl">$</span>)</label><input id="dtf_extra_envio" type="number" min="0" step="0.01" placeholder="0" data-money="1"></div>
 <div style="flex:1;min-width:160px"><label>Diseño / retoques (<span class="cur-lbl">$</span>)</label><input id="dtf_extra_diseno" type="number" min="0" step="0.01" placeholder="0" data-money="1"></div>
-<div style="flex:1;min-width:160px"><label>Plancha térmica (<span class="cur-lbl">$</span>)</label><input id="dtf_extra_plancha" type="number" min="0" step="0.01" placeholder="0" data-money="1"></div>
 </div>
 <div class="row" style="margin-top:8px"><div style="flex:1;min-width:160px"><label>Otros (<span class="cur-lbl">$</span>)</label><input id="dtf_extra_otros" type="number" min="0" step="0.01" placeholder="0" data-money="1"></div></div>
 </div>
@@ -1139,7 +1148,7 @@ body.dark .dt-text-light{display:inline}
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap">
 <div class="pill">Cant. diseños: <span class="result" id="dtf_unidades">0</span></div>
 <div class="pill">Cant. camisetas: <span class="result" id="dtf_camisetas">0</span></div>
-<div class="pill">Total directos: <span class="result" id="dtf_total_directos">$ 0,00</span></div>
+<div class="pill">Costo DTF total: <span class="result" id="dtf_total_directos">$ 0,00</span></div>
 <div class="pill">Costo Prendas: <span class="result" id="dtf_total_prenda">$ 0,00</span></div>
 <div class="pill">Dep. plancha: <span class="result" id="dtf_total_dep">$ 0,00</span></div>
 <div class="pill">Extras: <span class="result" id="dtf_total_extras">$ 0,00</span></div>
@@ -2498,7 +2507,7 @@ body.dark .dt-text-light{display:inline}
 </div>
 </div></section>
 
-<footer class="footer">Suite creada por @subli_mada — V39.87</footer>
+<footer class="footer">Suite creada por @subli_mada — V39.90</footer>
 </div>
 <script>
 /* ═══════════════════════════════════════════════════════════
@@ -2509,7 +2518,7 @@ body.dark .dt-text-light{display:inline}
 'use strict';
 const $=id=>document.getElementById(id);
 const $$=(sel,ctx=document)=>Array.from(ctx.querySelectorAll(sel));
-const PWA_VER='v39_87';
+const PWA_VER='v39_90';
 
 /* ═══ HELPERS: number formatting (configurable decimal separator) ═══ */
 const EU_FMT=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -5362,11 +5371,13 @@ function convertMoneyValue(n,fromSym,toSym){
     // solicitar" are based on, so buying the rounded-up amount is reflected
     // in every design's individual cost too.
     const largoManualEl=$('dtf_largo_manual');
+    const largoManualWarn=$('dtf_largo_manual_warn');
     const largoManualRaw=clamp0(readMetric(largoManualEl));
     const manualValid=largoManualRaw>0&&largoManualRaw+1e-6>=requiredCm;
     const requiredCmForCost=manualValid?largoManualRaw:requiredCm;
+    const manualInvalid=largoManualRaw>0&&!manualValid;
     if(largoManualEl){
-      if(largoManualRaw>0&&!manualValid){
+      if(manualInvalid){
         largoManualEl.style.borderColor='var(--danger,#e11d48)';
         largoManualEl.title='Debe ser mayor o igual al largo requerido ('+dispLenNum(requiredCm,1)+' '+unitLabelText('len')+'); se usó el valor calculado en su lugar.';
       }else{
@@ -5374,6 +5385,7 @@ function convertMoneyValue(n,fromSym,toSym){
         largoManualEl.title='';
       }
     }
+    if(largoManualWarn)largoManualWarn.style.display=manualInvalid?'flex':'none';
 
     // Real total material cost, based on how much panel the packer actually needed
     // (or the manual override above, if set) — not an independent per-design estimate.
@@ -5438,8 +5450,19 @@ function convertMoneyValue(n,fromSym,toSym){
       $('dtf_plancha_used').value=fmtEU(util);
       depTotal=util;
     }
+    // Dep computadora — misma fórmula (P/24 meses ÷ 100 usos/mes × cant. de usos) que Vinil
+    {
+      const P=clamp0(parseEU($('dtf_dep_pc_precio')?.value));
+      const mes=P/24;const ud=mes/100;
+      $('dtf_dep_pc_mes').value=fmtEU(mes);
+      $('dtf_dep_pc_ud').value=fmtEU(ud);
+      const uses=$('dtf_dep_pc_on')?.checked?clamp0(parseEU($('dtf_dep_pc_uses')?.value)):0;
+      const util=ud*uses;
+      $('dtf_dep_pc_used').value=fmtEU(util);
+      depTotal+=util;
+    }
     // Extras
-    const extras=['dtf_extra_envio','dtf_extra_diseno','dtf_extra_plancha','dtf_extra_otros']
+    const extras=['dtf_extra_envio','dtf_extra_diseno','dtf_extra_otros']
       .reduce((s,id)=>s+clamp0(parseEU($(id)?.value)),0);
     // Indirectos
     const ind=calcIndirectos('dtf');
@@ -5468,7 +5491,7 @@ function convertMoneyValue(n,fromSym,toSym){
     $('dtf_impuestos_val').textContent=fmtEU(I);
     $('dtf_total').textContent=fmtEU(total);
     // Per-unit metrics
-    $('dtf_costo_ud_dtf').textContent=fmtEU(totalDesigns>0?directos/totalDesigns:0);
+    $('dtf_costo_ud_dtf').textContent=fmtEU(camisetas>0?directos/camisetas:0);
     $('dtf_costo_por_camiseta').textContent=fmtEU(camisetas>0?total/camisetas:0);
     renderDTFPreview();
   }
@@ -5564,21 +5587,34 @@ function convertMoneyValue(n,fromSym,toSym){
       zin.style.cursor=zin.disabled?'not-allowed':'';
     }
   }
-  $('dtf_zoom_in')?.addEventListener('click',()=>{
-    dtfZoom=Math.min(DTF_ZOOM_MAX,Math.round((dtfZoom+DTF_ZOOM_STEP)*100)/100);
+  function setDtfZoom(newZoom){
+    const canvas=$('dtf_layout'),wrap=$('dtf_layout_wrap');
+    let fracX=0.5,fracY=0.5;
+    if(canvas&&wrap&&canvas.offsetWidth>0&&canvas.offsetHeight>0){
+      fracX=(wrap.scrollLeft+wrap.clientWidth/2)/canvas.offsetWidth;
+      fracY=(wrap.scrollTop+wrap.clientHeight/2)/canvas.offsetHeight;
+    }
+    dtfZoom=newZoom;
     renderDTFPreview();
+    if(canvas&&wrap){
+      wrap.scrollLeft=Math.max(0,fracX*canvas.offsetWidth-wrap.clientWidth/2);
+      wrap.scrollTop=Math.max(0,fracY*canvas.offsetHeight-wrap.clientHeight/2);
+    }
+  }
+  $('dtf_zoom_in')?.addEventListener('click',()=>{
+    setDtfZoom(Math.min(DTF_ZOOM_MAX,Math.round((dtfZoom+DTF_ZOOM_STEP)*100)/100));
   });
   $('dtf_zoom_out')?.addEventListener('click',()=>{
-    dtfZoom=Math.max(DTF_ZOOM_MIN,Math.round((dtfZoom-DTF_ZOOM_STEP)*100)/100);
-    renderDTFPreview();
+    setDtfZoom(Math.max(DTF_ZOOM_MIN,Math.round((dtfZoom-DTF_ZOOM_STEP)*100)/100));
   });
   updateDtfZoomUI();
   // Wire
-  const dtfIds=['dtf_modalidad','dtf_precio_unit','dtf_resp_min',
+  const dtfIds=['dtf_modalidad','dtf_precio_unit',
     'dtf_sep','dtf_panel_tipo','dtf_panel_w','dtf_panel_h','dtf_autorot','dtf_largo_manual',
     'dtf_prenda_on','dtf_prenda_tipo','dtf_prenda_disenos','dtf_prenda_cant','dtf_prenda_precio',
     'dtf_dep_on','dtf_dep_plancha_precio','dtf_plancha_use',
-    'dtf_extra_envio','dtf_extra_diseno','dtf_extra_plancha','dtf_extra_otros',
+    'dtf_dep_pc_on','dtf_dep_pc_precio','dtf_dep_pc_uses',
+    'dtf_extra_envio','dtf_extra_diseno','dtf_extra_otros',
     'dtf_ind_on','dtf_ind_units','dtf_ind_alquiler','dtf_ind_internet','dtf_ind_suscripciones','dtf_ind_transporte','dtf_ind_electricidad','dtf_ind_publicidad','dtf_ind_otros',
     'dtf_mo_on','dtf_mo_sueldo','dtf_mo_horas','dtf_mo_setup','dtf_mo_run','dtf_mo_units',
     'dtf_chk_g','dtf_ganancia','dtf_chk_i','dtf_impuestos','dtf_modo_ganancia'];
