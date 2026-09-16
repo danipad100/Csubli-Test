@@ -210,7 +210,9 @@ body.dark nav button.active{background:#e5e7eb;color:#0f1115}
 body.dark .ud{background:#4A2A3B !important;color:#fff;border-left:3px dashed #7A4A5F !important}
 body.dark .btn.neutral{background:#1b2030;color:#e5e7eb;border-color:#2a3147}
 body.dark .sep{background:#23283a}
-html[data-theme="dark"]{background:var(--bg)!important}
+body.dark input[type="checkbox"],body.dark input[type="radio"]{accent-color:var(--brand);color-scheme:dark}
+html[data-theme="dark"]{background:var(--bg)!important;color-scheme:dark}
+html[data-theme="light"]{color-scheme:light}
 
 /* === DARK TOGGLE PILL === */
 .dark-toggle-pill{display:inline-flex;align-items:center;gap:6px;cursor:pointer;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.22);transition:background .2s ease}
@@ -275,7 +277,7 @@ body.dark .dt-text-light{display:inline}
 .hoj-shape-btn:not(.active):hover{border-color:#c9ccd1}
 </style>
 </head>
-<body data-app-version="V39.90">
+<body data-app-version="V39.97">
 <div class="app">
 <header class="app-header">
   <div class="menu-wrapper">
@@ -1229,14 +1231,28 @@ body.dark .dt-text-light{display:inline}
 <div class="grid" id="hoj_bloques"></div>
 </div>
 
-<div class="card md-12"><h4 style="margin:0 0 10px">Vista previa de distribución</h4>
+<div class="card md-12">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px">
+<h4 style="margin:0">Vista previa de distribución</h4>
+<div style="display:flex;align-items:center;gap:6px">
+<button type="button" class="pill-copy-btn" id="hoj_zoom_out" title="Alejar vista previa" aria-label="Alejar vista previa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg></button>
+<button type="button" class="pill-copy-btn" id="hoj_zoom_in" title="Acercar vista previa" aria-label="Acercar vista previa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg></button>
+</div>
+</div>
 <div class="row" style="gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:8px">
 <button class="btn neutral" id="hoj_prev_sheet" type="button">◀ Anterior</button>
 <div class="pill">Hoja <span id="hoj_sheet_num">1</span> de <span id="hoj_sheet_total">1</span></div>
 <button class="btn neutral" id="hoj_next_sheet" type="button">Siguiente ▶</button>
 </div>
-<canvas id="hoj_layout" width="600" height="750" style="max-width:100%;border-radius:12px;border:1px solid #eee"></canvas>
+<div id="hoj_layout_wrap" style="overflow:auto;border-radius:12px">
+<canvas id="hoj_layout" width="600" height="750" style="max-width:100%;display:block;border-radius:12px;border:1px solid #eee"></canvas>
+</div>
 <div class="muted" id="hoj_layout_info" style="margin-top:6px"></div>
+<div class="row" style="gap:10px;align-items:center;flex-wrap:wrap;margin-top:10px">
+<button class="btn ok" id="hoj_export_svg" type="button">Exportar SVG (esta hoja)</button>
+<button class="btn" id="hoj_export_svg_all" type="button" style="display:none">Exportar SVG (todas las hojas)</button>
+</div>
+<div class="muted" style="margin-top:4px;font-size:12px">Archivo vectorial a escala real (1 unidad = 1 cm), listo para importar en Silhouette Studio o Cricut Design Space como líneas de corte.</div>
 </div>
 
 <div class="card md-12">
@@ -2410,6 +2426,7 @@ body.dark .dt-text-light{display:inline}
 <button class="btn neutral" id="cot_delete">Borrar</button>
 <button class="btn" id="cot_export_json">Exportar JSON</button>
 <button class="btn" id="cot_print">Imprimir / PDF</button>
+<button class="btn reset" id="cot_btn_reset">Reset</button>
 </div>
 </div>
 
@@ -2501,13 +2518,13 @@ body.dark .dt-text-light{display:inline}
 </div>
 <div id="cp_abono_block" class="cot-print-abono"></div>
 <div id="cp_notas_block" class="cot-print-notas"></div>
-<div class="cot-print-footer">Suite creada por @subli_mada</div>
+<div class="cot-print-footer">Suite de calculadoras creada por Sublimada</div>
 </div>
 
 </div>
 </div></section>
 
-<footer class="footer">Suite creada por @subli_mada — V39.90</footer>
+<footer class="footer">Suite creada por @subli_mada — V39.97</footer>
 </div>
 <script>
 /* ═══════════════════════════════════════════════════════════
@@ -2518,7 +2535,7 @@ body.dark .dt-text-light{display:inline}
 'use strict';
 const $=id=>document.getElementById(id);
 const $$=(sel,ctx=document)=>Array.from(ctx.querySelectorAll(sel));
-const PWA_VER='v39_90';
+const PWA_VER='v39_97';
 
 /* ═══ HELPERS: number formatting (configurable decimal separator) ═══ */
 const EU_FMT=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -4950,18 +4967,55 @@ function convertMoneyValue(n,fromSym,toSym){
 
   $('cot_print')?.addEventListener('click',()=>{
     buildPrintView();
-    document.body.classList.add('cot-printing');
-    const all=$$('.view'),was=all.map(v=>v.classList.contains('active'));
-    all.forEach(v=>v.classList.remove('active'));view.classList.add('active');
-    setTimeout(()=>window.print(),30);
-    setTimeout(()=>{
-      all.forEach((v,i)=>{if(was[i])v.classList.add('active');});
-      document.body.classList.remove('cot-printing');
-    },1000);
+    const printHTML=$('cot_print_view')?.innerHTML||'';
+    const printCSS=`
+      *{box-sizing:border-box}
+      html,body{margin:0;padding:24px;background:#fff;color:#221F1A;
+        font-family:'Inter',system-ui,-apple-system,sans-serif;line-height:1.4}
+      .cot-print-header{display:flex;flex-wrap:wrap;gap:24px;padding-bottom:14px;margin-bottom:18px;border-bottom:1px solid #eee}
+      .cot-print-header>div{flex:1;min-width:140px}
+      .cot-print-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#7A756B;margin-bottom:4px}
+      .cot-print-value{font-size:15px;font-weight:600;color:#221F1A}
+      .cot-print-sub{font-size:13px;color:#7A756B;margin-top:2px}
+      .cot-print-table{width:100%;border-collapse:collapse;margin-bottom:18px}
+      .cot-print-table th{text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#7A756B;padding-bottom:10px;border-bottom:2px solid #eee}
+      .cot-print-table th:not(:first-child),.cot-print-table td:not(:first-child){text-align:right}
+      .cot-print-table td{padding:12px 0;border-bottom:1px solid #f2f2f2;vertical-align:top;font-size:14px}
+      .cot-print-prod-name{font-weight:600}
+      .cot-print-prod-sku{font-size:12px;color:#7A756B;font-weight:400;margin-top:2px}
+      .cot-print-totals{display:flex;flex-direction:column;align-items:flex-end;gap:4px;margin-top:6px}
+      .cot-print-row{display:flex;justify-content:space-between;gap:24px;font-size:13px;color:#7A756B;min-width:220px}
+      .cot-print-total-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#7A756B;margin-top:10px}
+      .cot-print-total-value{font-size:34px;font-weight:800;color:#221F1A}
+      .cot-print-abono{margin-top:18px;padding-top:14px;border-top:1px solid #eee}
+      .cot-print-abono-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:14px}
+      .cot-print-abono-row .lbl{color:#8A3A5B;font-weight:700}
+      .cot-print-abono-row .val{font-weight:700}
+      .cot-print-notas{margin-top:16px;font-size:13px;color:#7A756B;white-space:pre-wrap}
+      .cot-print-footer{margin-top:28px;text-align:center;font-size:11px;color:#7A756B}
+      @page{margin:14mm}
+    `;
+    const w=window.open('','_blank','width=800,height=900');
+    if(!w){alert('Habilita las ventanas emergentes en tu navegador para poder imprimir la cotización.');return;}
+    w.document.open();
+    w.document.write('<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Cotización</title><style>'+printCSS+'</style></head><body>'+printHTML+'</body></html>');
+    w.document.close();
+    const doPrint=()=>{
+      try{w.focus();w.print();}catch(e){}
+    };
+    if(w.document.readyState==='complete')setTimeout(doPrint,50);
+    else w.onload=()=>setTimeout(doPrint,50);
+    w.onafterprint=()=>{try{w.close();}catch(e){}};
   });
   $('cot_new')?.addEventListener('click',()=>{
     if(items.length||(clienteNombre&&clienteNombre.value)){
       if(!confirm('¿Descartar la cotización actual y crear una nueva?'))return;
+    }
+    newQuote();
+  });
+  $('cot_btn_reset')?.addEventListener('click',()=>{
+    if(items.length||(clienteNombre&&clienteNombre.value)){
+      if(!confirm('¿Restablecer este módulo? Se perderán los cambios no guardados de la cotización actual (las cotizaciones ya guardadas no se ven afectadas).'))return;
     }
     newQuote();
   });
@@ -5640,7 +5694,7 @@ function convertMoneyValue(n,fromSym,toSym){
   const SHEET_SIZES={carta:[21.59,27.94],a4:[21,29.7],a3:[29.7,42]};
   let hojDesignCount=0;
   let currentSheetIdx=0;
-  let lastPack=null,lastGeom=null,lastShapes=[];
+  let lastPack=null,lastGeom=null,lastShapes=[],lastRadii=[];
 
 
   /* ---- Shelf-style multi-sheet packer: places designs into horizontal shelves
@@ -5654,63 +5708,97 @@ function convertMoneyValue(n,fromSym,toSym){
      row) is reported back as a "gap" so it can be shown to the user. ---- */
   function packSheets(designs,uw,uh,sep,maxSheets){
     const sheets=[];
-    const shelvesBySheet=[]; // parallel to sheets: shelvesBySheet[i] = shelves that ended up open on sheet i
+    const skylinesBySheet=[];
     const placedCount=designs.map(()=>0);
     const HARD_CAP=500;
-    let shelves=[]; // open shelves on the current sheet: {y,h,x}  (x = width already consumed, gap-inclusive)
-    let nextY=0;
+    let skylineRef=null;
     function newSheet(){
       if(maxSheets>0&&sheets.length>=maxSheets)return false;
       if(sheets.length>=HARD_CAP)return false;
-      sheets.push([]);shelves=[];shelvesBySheet.push(shelves);nextY=0;return true;
+      sheets.push([]);
+      skylineRef={arr:[{x:0,width:uw,y:0}]};
+      skylinesBySheet.push(skylineRef);
+      return true;
     }
     if(!newSheet())return{sheets,placedCount,gaps:[]};
-    // process tallest designs first so shorter ones remain available to fill gaps later
-    const order=designs.map((d,i)=>i)
-      .filter(i=>designs[i].w>0&&designs[i].h>0&&designs[i].qty>0&&designs[i].w<=uw+1e-9&&designs[i].h<=uh+1e-9)
-      .sort((a,b)=>designs[b].h-designs[a].h);
-    outer:
-    for(const di of order){
-      const d=designs[di];
-      let remaining=d.qty;
-      while(remaining>0){
-        // 1) try to squeeze into leftover space of existing shelves (fills gaps left by other designs)
-        for(const shelf of shelves){
-          if(remaining<=0)break;
-          if(d.h>shelf.h+1e-9)continue; // too tall to share this shelf
-          const availW=uw-shelf.x;
-          const cols=Math.max(0,Math.floor((availW+sep)/(d.w+sep)));
-          if(cols<=0)continue;
-          const place=Math.min(remaining,cols);
-          for(let c=0;c<place;c++){
-            sheets[sheets.length-1].push({x:shelf.x+c*(d.w+sep),y:shelf.y,w:d.w,h:d.h,di});
-          }
-          shelf.x+=place*(d.w+sep);
-          remaining-=place;
-          placedCount[di]+=place;
-        }
-        if(remaining<=0)break;
-        // 2) no leftover space fits it: open a new shelf
-        if(nextY+d.h>uh+1e-9){if(!newSheet())break outer;}
-        const cols=Math.max(1,Math.floor((uw+sep)/(d.w+sep)));
-        const place=Math.min(remaining,cols);
-        for(let c=0;c<place;c++){
-          sheets[sheets.length-1].push({x:c*(d.w+sep),y:nextY,w:d.w,h:d.h,di});
-        }
-        shelves.push({y:nextY,h:d.h,x:place*(d.w+sep)});
-        remaining-=place;
-        placedCount[di]+=place;
-        nextY+=d.h+sep;
+
+    // Same skyline best-fit packer used by the DTF module (dtfPackSheets),
+    // ported here so both modules share one packing strategy. Each design
+    // keeps its own fixed w×h — orientation is decided upfront by the
+    // "Rotar 90°" checkbox on each design card (swaps w/h at input time),
+    // the same approach the DTF module uses for its autorotate toggle.
+    const items=designs.map((d,i)=>({
+      di:i,
+      variants:(d.w>0&&d.h>0&&d.w<=uw+1e-9&&d.h<=uh+1e-9)?[{w:d.w,h:d.h}]:[],
+      qty:Math.max(0,d.qty)
+    })).filter(it=>it.qty>0&&it.variants.length>0);
+
+    function heightUnderSpan(x,w){
+      let y=0;
+      for(const seg of skylineRef.arr){
+        if(seg.x+seg.width<=x+1e-9)continue;
+        if(seg.x>=x+w-1e-9)break;
+        y=Math.max(y,seg.y);
       }
+      return y;
     }
-    // whatever leftover width remains on a shelf once every design (tallest to
-    // shortest) has had a chance to use it is space nothing on the sheet was
-    // short/narrow enough to fill — report it so the UI can show it
+    function updateSkyline(x,w,newY){
+      const out=[];let i=0;
+      const arr=skylineRef.arr;
+      for(;i<arr.length&&arr[i].x+arr[i].width<=x+1e-9;i++)out.push(arr[i]);
+      out.push({x,width:w,y:newY});
+      const cx=x+w;
+      for(;i<arr.length;i++){
+        const seg=arr[i];
+        if(seg.x+seg.width<=cx+1e-9)continue;
+        if(seg.x<cx-1e-9)out.push({x:cx,width:seg.x+seg.width-cx,y:seg.y});
+        else out.push(seg);
+      }
+      const merged=[];
+      for(const seg of out){
+        if(merged.length&&Math.abs(merged[merged.length-1].y-seg.y)<1e-9)merged[merged.length-1].width+=seg.width;
+        else merged.push({x:seg.x,width:seg.width,y:seg.y});
+      }
+      skylineRef.arr=merged;
+    }
+
+    let guard=0;const GUARD_MAX=200000;
+    outer:
+    while(items.some(it=>it.qty>0)){
+      if(++guard>GUARD_MAX)break;
+      let best=null;
+      for(const seg of skylineRef.arr){
+        const x=seg.x;
+        for(const it of items){
+          if(it.qty<=0)continue;
+          for(const v of it.variants){
+            if(x+v.w>uw+1e-9)continue; // the piece itself must fit within the real sheet width
+            // Look under the piece's footprint PLUS its trailing separation buffer,
+            // so nothing else lands closer than `sep` to it on either side.
+            const y=heightUnderSpan(x,v.w+sep);
+            if(y+v.h>uh+1e-9)continue; // the piece itself must fit within the real sheet height
+            if(!best||y<best.y-1e-9||(Math.abs(y-best.y)<1e-9&&x<best.x-1e-9)){
+              best={di:it.di,x,y,w:v.w,h:v.h,it};
+            }
+          }
+        }
+      }
+      if(!best){
+        if(!newSheet())break outer;
+        continue;
+      }
+      sheets[sheets.length-1].push({x:best.x,y:best.y,w:best.w,h:best.h,di:best.di});
+      // Reserve w+sep / h+sep in the skyline (kerf/cutting margin) even though the
+      // drawn item and its gap accounting only ever use the real w×h above.
+      updateSkyline(best.x,best.w+sep,best.y+best.h+sep);
+      best.it.qty--;
+      placedCount[best.di]++;
+    }
+
     const GAP_MIN=0.3; // ignore slivers under ~3mm, not realistically usable
-    const gaps=shelvesBySheet.map(sheetShelves=>
-      sheetShelves
-        .filter(sh=>uw-sh.x>GAP_MIN+1e-9)
-        .map(sh=>({x:sh.x,y:sh.y,w:uw-sh.x,h:sh.h}))
+    const gaps=skylinesBySheet.map((sk,idx)=>
+      sk.arr.filter(seg=>uh-seg.y>GAP_MIN+1e-9)
+        .map(seg=>({x:seg.x,y:seg.y,w:seg.width,h:uh-seg.y}))
     );
     return{sheets,placedCount,gaps};
   }
@@ -5745,6 +5833,11 @@ function convertMoneyValue(n,fromSym,toSym){
       </div>
       <button class="btn reset" data-remove="${id}" style="margin-left:auto">Eliminar</button>
     </div>
+    <div class="row hoj-radius-row" style="margin-top:8px;gap:10px;align-items:center;flex-wrap:wrap;display:none">
+      <label style="min-width:110px;margin:0" class="muted">Redondez esquina</label>
+      <input class="hoj-radius" type="range" min="0" max="50" step="1" value="20" style="flex:1;min-width:140px">
+      <span class="muted hoj-radius-val" style="min-width:34px;text-align:right">20%</span>
+    </div>
     <div class="row" style="margin-top:8px;gap:10px;align-items:center;flex-wrap:wrap">
       <div class="pill">Caben por hoja: <span class="result hoj-per-sheet">0</span></div>
       <div class="pill">Ubicadas: <span class="result hoj-ubicadas">0</span> de <span class="hoj-solicitadas">0</span></div>
@@ -5761,8 +5854,16 @@ function convertMoneyValue(n,fromSym,toSym){
         const group=div.querySelector('.hoj-shape-group');
         group.dataset.shape=btn.dataset.shape;
         div.querySelectorAll('.hoj-shape-btn').forEach(b=>b.classList.toggle('active',b===btn));
+        const radiusRow=div.querySelector('.hoj-radius-row');
+        if(radiusRow)radiusRow.style.display=btn.dataset.shape==='rounded'?'':'none';
         recalcHoj();
       });
+    });
+    div.querySelector('.hoj-radius').addEventListener('input',()=>{
+      const val=div.querySelector('.hoj-radius').value;
+      const lbl=div.querySelector('.hoj-radius-val');
+      if(lbl)lbl.textContent=val+'%';
+      recalcHoj();
     });
     div.querySelector('.hoj-rot').addEventListener('change',()=>{
       const wEl=div.querySelector('.hoj-dw'),hEl=div.querySelector('.hoj-dh');
@@ -5818,11 +5919,13 @@ function convertMoneyValue(n,fromSym,toSym){
       w:clamp0(readMetric(card.querySelector('.hoj-dw'))),
       h:clamp0(readMetric(card.querySelector('.hoj-dh'))),
       qty:Math.max(0,Math.round(clamp0(parseEU(card.querySelector('.hoj-dq')?.value)))),
-      shape:card.querySelector('.hoj-shape-group')?.dataset.shape||'square' // visual only, does not affect the fitting math
+      shape:card.querySelector('.hoj-shape-group')?.dataset.shape||'square', // visual only, does not affect the fitting math
+      radiusPct:Math.max(0,Math.min(50,parseFloat(card.querySelector('.hoj-radius')?.value)||0)) // visual only, corner roundness %
     }));
 
     const pack=packSheets(designs,uw,uh,sep,0);
     lastShapes=designs.map(d=>d.shape);
+    lastRadii=designs.map(d=>d.radiusPct);
 
     cards.forEach((card,i)=>{
       const d=designs[i];
@@ -5872,25 +5975,39 @@ function convertMoneyValue(n,fromSym,toSym){
     ctx.arcTo(x,y,x+r,y,r);
     ctx.closePath();
   }
-  function shapePath(ctx,shape,x,y,w,h){
+  function shapePath(ctx,shape,x,y,w,h,radiusPct){
     ctx.beginPath();
     if(shape==='circle'){
       ctx.ellipse(x+w/2,y+h/2,Math.max(0,w/2),Math.max(0,h/2),0,0,Math.PI*2);
     }else if(shape==='rounded'){
-      roundedRectPath(ctx,x,y,w,h,Math.min(w,h)*0.2);
+      const pct=(typeof radiusPct==='number'?radiusPct:20)/100;
+      roundedRectPath(ctx,x,y,w,h,Math.min(w,h)*pct);
     }else{
       ctx.rect(x,y,w,h);
     }
   }
+  let hojZoom=1; // 1 = normal, >1 = zoomed in (redraws at higher native res, not a blurry CSS stretch)
+  const HOJ_ZOOM_MIN=1,HOJ_ZOOM_MAX=2.2,HOJ_ZOOM_STEP=0.2;
   function renderHojPreview(){
     const canvas=$('hoj_layout');if(!canvas||!lastPack||!lastGeom)return;
     const ctx=canvas.getContext('2d');
     const{W,H,marL,marT,uw,uh}=lastGeom;
-    const scale=Math.min((HOJ_CANVAS_W-HOJ_MARGIN*2)/W,(HOJ_MAX_H-HOJ_MARGIN*2)/H);
-    canvas.width=Math.round(W*scale+HOJ_MARGIN*2);
-    canvas.height=Math.round(H*scale+HOJ_MARGIN*2);
+    const Z=hojZoom;
+    const CANVAS_W=HOJ_CANVAS_W*Z,MAX_H=HOJ_MAX_H*Z,MARGIN=HOJ_MARGIN*Z;
+    const scale=Math.min((CANVAS_W-MARGIN*2)/W,(MAX_H-MARGIN*2)/H);
+    canvas.width=Math.round(W*scale+MARGIN*2);
+    canvas.height=Math.round(H*scale+MARGIN*2);
+    const wrap=$('hoj_layout_wrap');
+    if(Z>1+1e-6){
+      canvas.style.maxWidth='none';
+      if(wrap)wrap.style.maxHeight='520px';
+    }else{
+      canvas.style.maxWidth='100%';
+      if(wrap)wrap.style.maxHeight='';
+    }
+    if(typeof updateHojZoomUI==='function')updateHojZoomUI();
     ctx.clearRect(0,0,canvas.width,canvas.height);
-    const offX=HOJ_MARGIN,offY=HOJ_MARGIN;
+    const offX=MARGIN,offY=MARGIN;
     ctx.fillStyle='#f9fafb';ctx.fillRect(offX,offY,W*scale,H*scale);
     ctx.strokeStyle='#ccc';ctx.strokeRect(offX,offY,W*scale,H*scale);
     const mx=offX+marL*scale,my=offY+marT*scale,mw=uw*scale,mh=uh*scale;
@@ -5900,12 +6017,13 @@ function convertMoneyValue(n,fromSym,toSym){
     items.forEach(it=>{
       const x=mx+it.x*scale,y=my+it.y*scale;
       const shape=lastShapes[it.di]||'square';
+      const radius=lastRadii[it.di];
       const w=it.w*scale,h=it.h*scale;
       const color=colors[it.di%colors.length];
       ctx.fillStyle=color;ctx.globalAlpha=0.35;
-      shapePath(ctx,shape,x,y,w,h);ctx.fill();ctx.globalAlpha=1;
+      shapePath(ctx,shape,x,y,w,h,radius);ctx.fill();ctx.globalAlpha=1;
       ctx.strokeStyle=color;
-      shapePath(ctx,shape,x,y,w,h);ctx.stroke();
+      shapePath(ctx,shape,x,y,w,h,radius);ctx.stroke();
     });
     const gapsHere=(lastPack.gaps&&lastPack.gaps[currentSheetIdx])||[];
     gapsHere.forEach(g=>{
@@ -5933,11 +6051,47 @@ function convertMoneyValue(n,fromSym,toSym){
       }
     }
   }
+  function updateHojZoomUI(){
+    const zin=$('hoj_zoom_in'),zout=$('hoj_zoom_out');
+    if(zout){
+      zout.disabled=hojZoom<=HOJ_ZOOM_MIN+1e-6;
+      zout.style.opacity=zout.disabled?'0.4':'';
+      zout.style.cursor=zout.disabled?'not-allowed':'';
+    }
+    if(zin){
+      zin.disabled=hojZoom>=HOJ_ZOOM_MAX-1e-6;
+      zin.style.opacity=zin.disabled?'0.4':'';
+      zin.style.cursor=zin.disabled?'not-allowed':'';
+    }
+  }
+  function setHojZoom(newZoom){
+    const canvas=$('hoj_layout'),wrap=$('hoj_layout_wrap');
+    let fracX=0.5,fracY=0.5;
+    if(canvas&&wrap&&canvas.offsetWidth>0&&canvas.offsetHeight>0){
+      fracX=(wrap.scrollLeft+wrap.clientWidth/2)/canvas.offsetWidth;
+      fracY=(wrap.scrollTop+wrap.clientHeight/2)/canvas.offsetHeight;
+    }
+    hojZoom=newZoom;
+    renderHojPreview();
+    if(canvas&&wrap){
+      wrap.scrollLeft=Math.max(0,fracX*canvas.offsetWidth-wrap.clientWidth/2);
+      wrap.scrollTop=Math.max(0,fracY*canvas.offsetHeight-wrap.clientHeight/2);
+    }
+  }
+  $('hoj_zoom_in')?.addEventListener('click',()=>{
+    setHojZoom(Math.min(HOJ_ZOOM_MAX,Math.round((hojZoom+HOJ_ZOOM_STEP)*100)/100));
+  });
+  $('hoj_zoom_out')?.addEventListener('click',()=>{
+    setHojZoom(Math.max(HOJ_ZOOM_MIN,Math.round((hojZoom-HOJ_ZOOM_STEP)*100)/100));
+  });
+  updateHojZoomUI();
   function renderCurrentSheet(){
     if(!lastPack)return;
     const numEl=$('hoj_sheet_num'),totEl=$('hoj_sheet_total');
     if(numEl)numEl.textContent=lastPack.sheets.length?(currentSheetIdx+1):0;
     if(totEl)totEl.textContent=lastPack.sheets.length;
+    const allBtn=$('hoj_export_svg_all');
+    if(allBtn)allBtn.style.display=lastPack.sheets.length>1?'inline-block':'none';
     renderHojPreview();
   }
   $('hoj_prev_sheet')?.addEventListener('click',()=>{
@@ -5945,6 +6099,60 @@ function convertMoneyValue(n,fromSym,toSym){
   });
   $('hoj_next_sheet')?.addEventListener('click',()=>{
     if(lastPack&&currentSheetIdx<lastPack.sheets.length-1){currentSheetIdx++;renderCurrentSheet();}
+  });
+
+  /* ---- SVG export: cut-ready vector file, one sheet per file.
+     1 SVG user-unit = 1 cm (matches the app's internal canonical unit), so
+     the file opens at true physical scale in Silhouette Studio / Cricut
+     Design Space. Only the actual piece outlines are included — no margin
+     guides, gap shading or labels — so nothing extra gets treated as a cut
+     line. ---- */
+  function hojSheetSVG(sheetIdx){
+    if(!lastPack||!lastGeom)return null;
+    const{W,H,marL,marT}=lastGeom;
+    const items=lastPack.sheets[sheetIdx]||[];
+    const n=(v)=>(Math.round(v*1000)/1000);
+    let paths='';
+    items.forEach(it=>{
+      const shape=lastShapes[it.di]||'square';
+      const x=n(marL+it.x),y=n(marT+it.y),w=n(it.w),h=n(it.h);
+      if(shape==='circle'){
+        paths+=`<ellipse cx="${n(x+w/2)}" cy="${n(y+h/2)}" rx="${n(w/2)}" ry="${n(h/2)}" fill="none" stroke="#000000" stroke-width="0.01"/>\n`;
+      }else if(shape==='rounded'){
+        const pct=(typeof lastRadii[it.di]==='number'?lastRadii[it.di]:20)/100;
+        const r=n(Math.min(w,h)*pct);
+        paths+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" ry="${r}" fill="none" stroke="#000000" stroke-width="0.01"/>\n`;
+      }else{
+        paths+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="#000000" stroke-width="0.01"/>\n`;
+      }
+    });
+    return `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${n(W)}cm" height="${n(H)}cm" viewBox="0 0 ${n(W)} ${n(H)}">\n${paths}</svg>\n`;
+  }
+  function downloadTextFile(filename,text,mime){
+    const blob=new Blob([text],{type:mime||'application/octet-stream'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download=filename;
+    document.body.appendChild(a);a.click();document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }
+  $('hoj_export_svg')?.addEventListener('click',()=>{
+    if(!lastPack||!lastPack.sheets.length){alert('Agrega al menos un diseño con ancho, alto y cantidad antes de exportar.');return;}
+    const svg=hojSheetSVG(currentSheetIdx);
+    if(!svg)return;
+    const total=lastPack.sheets.length;
+    const name=total>1?`distribucion_hoja_${currentSheetIdx+1}_de_${total}.svg`:'distribucion_hoja.svg';
+    downloadTextFile(name,svg,'image/svg+xml');
+  });
+  $('hoj_export_svg_all')?.addEventListener('click',()=>{
+    if(!lastPack||!lastPack.sheets.length)return;
+    const total=lastPack.sheets.length;
+    lastPack.sheets.forEach((_,i)=>{
+      setTimeout(()=>{
+        const svg=hojSheetSVG(i);
+        if(svg)downloadTextFile(`distribucion_hoja_${i+1}_de_${total}.svg`,svg,'image/svg+xml');
+      },i*250);
+    });
   });
 
   const hojIds=['hoj_hoja_w','hoj_hoja_h','hoj_mar_top','hoj_mar_bot','hoj_mar_left','hoj_mar_right','hoj_sep'];
@@ -6304,7 +6512,30 @@ $('btn_factory_reset')?.addEventListener('click',()=>{
    ═══════════════════════════════════════════════════════════ */
 (function(){
   if(!('serviceWorker' in navigator))return;
+
+  // --- Recovery link: ?reset_pwa=1 forces a full unregister + cache wipe.
+  // Use this to unstick a device stuck on an old cached version — it does
+  // NOT touch localStorage (catálogo, cotizaciones, ajustes siguen intactos).
+  try{
+    const qp=new URLSearchParams(location.search);
+    if(qp.get('reset_pwa')==='1'){
+      (async()=>{
+        try{
+          const regs=await navigator.serviceWorker.getRegistrations();
+          await Promise.all(regs.map(r=>r.unregister()));
+          const keys=await caches.keys();
+          await Promise.all(keys.map(k=>caches.delete(k)));
+        }catch(e){}
+        qp.delete('reset_pwa');
+        const clean=location.pathname+(qp.toString()?('?'+qp.toString()):'')+location.hash;
+        location.replace(clean);
+      })();
+      return;
+    }
+  }catch(e){}
+
   let newWorker=null;
+
   navigator.serviceWorker.register('./sw.js').then(reg=>{
     // Get active version
     if(reg.active){
@@ -6330,6 +6561,7 @@ $('btn_factory_reset')?.addEventListener('click',()=>{
       });
     });
   }).catch(()=>{});
+
   $('btn_pwa_check')?.addEventListener('click',()=>{
     $('pwa_status').textContent='Buscando…';
     navigator.serviceWorker.getRegistration().then(reg=>{
@@ -6338,8 +6570,14 @@ $('btn_factory_reset')?.addEventListener('click',()=>{
     });
   });
   $('btn_pwa_apply')?.addEventListener('click',()=>{
+    const reload=()=>window.location.reload();
+    if(navigator.serviceWorker.controller){
+      navigator.serviceWorker.addEventListener('controllerchange',reload,{once:true});
+    }
     if(newWorker)newWorker.postMessage({type:'SKIP_WAITING'});
-    window.location.reload();
+    else reload();
+    // Fallback in case controllerchange never fires (e.g. no active controller yet)
+    setTimeout(reload,1200);
   });
 })();
 
