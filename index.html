@@ -894,7 +894,7 @@ body.dark .xp-tbl th{border-top:0}
 @media(prefers-reduced-motion:reduce){.xp-seg button:active{transform:none}.xp-bar i{transition:none}}
 </style>
 </head>
-<body data-app-version="V40.26">
+<body data-app-version="V40.27">
 <div class="app">
 <header class="app-header">
   <div class="menu-wrapper">
@@ -2760,7 +2760,7 @@ body.dark .xp-tbl th{border-top:0}
 <button class="btn neutral" id="calc-sign">±</button><button class="btn neutral" data-k="0">0</button><button class="btn neutral" data-k=".">.</button><button class="btn ok" data-k="+">+</button>
 <button class="btn neutral" id="calc-sqrt">√</button><button class="btn neutral" id="calc-pct">%</button><button class="btn ok" id="calc-eq" style="grid-column:span 2">=</button>
 </div>
-<div class="muted" style="margin-top:8px">Teclado: números, + − × ÷, ( ), Enter, Backspace.</div>
+<div class="muted" style="margin-top:8px">Teclado: números, + − × ÷, %, ( ), Enter, Backspace.</div>
 </div></div></div>
 <div class="card md-8 acc acc-ind pers-acc" id="calc_hist_card">
 <h4 class="acc-h"><span class="acc-t">Historial</span></h4>
@@ -3173,7 +3173,7 @@ body.dark .xp-tbl th{border-top:0}
 </div>
 </div></section>
 
-<footer class="footer">Suite creada por @subli_mada — V40.26</footer>
+<footer class="footer">Suite creada por @subli_mada — V40.27</footer>
 </div>
 <script>
 /* ═══════════════════════════════════════════════════════════
@@ -3184,7 +3184,7 @@ body.dark .xp-tbl th{border-top:0}
 'use strict';
 const $=id=>document.getElementById(id);
 const $$=(sel,ctx=document)=>Array.from(ctx.querySelectorAll(sel));
-const PWA_VER='v40_26';
+const PWA_VER='v40_27';
 
 /* ═══ HELPERS: number formatting (configurable decimal separator) ═══ */
 const EU_FMT=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -7799,16 +7799,57 @@ function convertMoneyValue(n,fromSym,toSym){
   }
   function toDisplay(dotStr){return DECIMAL_SEP===','?dotStr.replace('.',','):dotStr;}
 
-  function press(k){expr+=k;disp.value=expr;}
+  function press(k){
+    if(k==='%'){if(!/[0-9.)]$/.test(expr))return;}              /* el % va después de un número */
+    else if(expr.slice(-1)==='%'&&/[0-9.(]/.test(k))return;     /* después de % solo sigue un operador */
+    expr+=k;disp.value=expr;
+  }
   function clear(){expr='';disp.value='';}
   function backspace(){expr=expr.slice(0,-1);disp.value=expr;}
 
-  function evalRaw(e){
+  /* Evalúa una cuenta sin %. Los ceros a la izquierda se quitan (10-05 daba Error en modo estricto). */
+  function evalPlain(e){
     if(!e||!e.trim())return null;
     try{
-      const v=Function('"use strict";return('+e+')')();
+      const v=Function('"use strict";return('+e.replace(/(^|[^0-9.])0+(?=\d)/g,'$1')+')')();
       return (typeof v==='number'&&isFinite(v))?v:null;
     }catch(err){return null;}
+  }
+  /* % como en las calculadoras del celular:
+     100 − 10% = 90 (el % se toma del número que está a la izquierda) · 200 × 10% = 20 · 50% = 0,5 */
+  function resolvePct(e){
+    let guard=0;
+    while(e.indexOf('%')>=0){
+      if(++guard>50)return null;
+      const i=e.indexOf('%');
+      let st;
+      if(e[i-1]===')'){
+        let d=0;st=-1;
+        for(let k=i-1;k>=0;k--){if(e[k]===')')d++;else if(e[k]==='('){d--;if(d===0){st=k;break;}}}
+        if(st<0)return null;
+      }else{
+        const m=/(\d+\.?\d*|\.\d+)$/.exec(e.slice(0,i));
+        if(!m)return null;
+        st=i-m[1].length;
+      }
+      const operand=e.slice(st,i),left=e.slice(0,st);
+      let amount='('+operand+'/100)';
+      if(/[+\-]$/.test(left)){
+        const before=left.slice(0,-1);
+        if(before&&!/[+\-*/(]$/.test(before)){
+          const base=evalPlain(before);
+          if(base==null)return null;
+          amount='('+base+'*'+operand+'/100)';
+        }
+      }
+      e=left+amount+e.slice(i+1);
+    }
+    return e;
+  }
+  function evalRaw(e){
+    if(!e||!e.trim())return null;
+    const r=resolvePct(e);
+    return r==null?null:evalPlain(r);
   }
 
   function renderHistory(){
@@ -7871,7 +7912,7 @@ function convertMoneyValue(n,fromSym,toSym){
   $('calc-eq')?.addEventListener('click',evalExpr);
   $('calc-sign')?.addEventListener('click',()=>applyUnary(v=>v*-1));
   $('calc-sqrt')?.addEventListener('click',()=>applyUnary(v=>Math.sqrt(v)));
-  $('calc-pct')?.addEventListener('click',()=>applyUnary(v=>v/100));
+  $('calc-pct')?.addEventListener('click',()=>press('%'));
   $('calc-clear-history')?.addEventListener('click',()=>{
     history=[];try{localStorage.removeItem('calc_history');}catch(e){}
     renderHistory();
@@ -7882,7 +7923,8 @@ function convertMoneyValue(n,fromSym,toSym){
     if(e.key==='Enter'){e.preventDefault();evalExpr();}
     else if(e.key==='Backspace'){e.preventDefault();backspace();}
     else if(e.key==='Escape'){e.preventDefault();clear();}
-    else if(e.key==='%'){e.preventDefault();applyUnary(v=>v/100);}
+    else if(e.key==='%'){e.preventDefault();press('%');}
+    else if(e.key===','){e.preventDefault();press('.');}
     else if(isValidExprChar(e.key))press(e.key);
   });
 
