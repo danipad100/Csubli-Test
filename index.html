@@ -838,6 +838,102 @@ body.dark .pers-final .copy-btn-accent{background:rgba(255,255,255,.12)}
 <style id="xp-css">
 /* V40.26 — Precio de Venta Express */
 .xp-hid{display:none!important}
+/* V40.29 — Costos de materiales */
+.cm-tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,auto);gap:8px}
+.cm-tools input,.cm-tools select{width:100%;min-width:0;box-sizing:border-box}
+@media(max-width:520px){.cm-tools{grid-template-columns:1fr}}
+.cm-btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.cm-btns .btn{display:inline-flex;align-items:center;gap:7px;border-radius:22px;min-height:44px;padding:0 16px}
+.cm-btns .btn:not(.ok){background:var(--sv-neutral);color:var(--sv-neutral-ink)}
+.cm-count{font-size:12px;margin:10px 2px 0}
+.cm-count:empty{display:none}
+.cm-list{display:flex;flex-direction:column;gap:8px;margin:8px}
+.cm-item{display:flex;align-items:center;gap:12px;background:var(--acc-item);border-radius:15px;padding:12px;min-width:0}
+.cm-ico{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cm-t-material .cm-ico,.sv-hi.cm-hi-material{background:var(--dir-bg);color:var(--dir-ink)}
+.cm-t-area .cm-ico,.sv-hi.cm-hi-area{background:var(--ind-bg);color:var(--ind-ink)}
+.cm-t-equipo .cm-ico,.sv-hi.cm-hi-equipo{background:var(--dep-bg);color:var(--dep-ink)}
+.cm-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.cm-name{display:flex;align-items:center;gap:6px 8px;flex-wrap:wrap;min-width:0}
+.cm-nm{font-weight:700;font-family:var(--font-display);letter-spacing:-.012em;overflow-wrap:anywhere;min-width:0;color:var(--ink)}
+.cm-chip{font-size:11px;font-weight:600;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.cm-t-material .cm-chip{background:var(--dir-bg);color:var(--dir-ink)}
+.cm-t-area .cm-chip{background:var(--ind-bg);color:var(--ind-ink)}
+.cm-t-equipo .cm-chip{background:var(--dep-bg);color:var(--dep-ink)}
+.cm-det,.cm-meta,.cm-warn-t{display:block}
+.cm-det{font-size:13px;color:var(--ink);overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.cm-det b{font-weight:700;color:var(--num,var(--ink));white-space:nowrap}
+.cm-meta{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.cm-acts{display:flex;gap:6px;flex-shrink:0;align-items:center}
+.cm-edit{border-radius:22px;min-height:40px;padding:0 14px;background:var(--sv-neutral);color:var(--sv-neutral-ink)}
+.cm-del{width:40px;height:40px;min-height:0;padding:0;border:none;border-radius:22px;background:transparent;color:var(--sv-danger);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.cm-del:hover{background:var(--imp-bg)}
+@media(max-width:480px){.cm-item{flex-wrap:wrap}.cm-acts{flex-basis:100%;justify-content:flex-end}}
+.cm-empty{text-align:center;padding:22px 12px;color:var(--muted)}
+.cm-empty-ico{width:52px;height:52px;border-radius:18px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;background:var(--dir-bg);color:var(--dir-ink)}
+.cm-empty-t{font-weight:700;color:var(--ink);font-family:var(--font-display);margin-bottom:4px}
+.cm-empty p{margin:0 auto;max-width:420px;font-size:13px;line-height:1.45}
+/* hoja crear/editar */
+.cm-sheet .sv-box select,.cm-sheet .sv-box textarea{height:48px;border:1.5px solid var(--fld-hi-bd);border-radius:12px;padding:0 12px;font-size:16px;color:var(--ink);background:var(--fld-bg);box-sizing:border-box;width:100%;font-family:var(--font-body)}
+.cm-sheet .sv-box textarea{height:auto;min-height:64px;padding:10px 12px;resize:vertical}
+.cm-sheet .sv-box select:disabled{opacity:.65}
+.cm-form>label:not(:first-child){margin-top:6px}
+.cm-form>div:not(.cm-g2):not([hidden]){display:flex;flex-direction:column;gap:6px}
+.cm-g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cm-g2>div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.cm-qty{display:flex;gap:6px;min-width:0}
+.cm-qty input{flex:1;min-width:0}
+.cm-sheet .cm-qty select{width:auto;flex:0 0 auto;min-width:68px;padding:0 8px}
+.cm-sheet [hidden]{display:none!important}
+.cm-prev{background:var(--mint-bg);color:var(--mint-ink);border-radius:22px;padding:12px 14px;font-size:14px;flex-shrink:0}
+.cm-prev b{font-weight:700}
+/* hoja traer de mis productos */
+.cm-imp-note{font-size:12.5px;color:var(--muted);margin:0;line-height:1.45}
+.cm-imp-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:13px;font-weight:600}
+.cm-imp-mk{display:flex;gap:6px}
+.cm-imp-mk .btn{border-radius:22px;min-height:36px;padding:0 12px;background:var(--sv-neutral);color:var(--sv-neutral-ink)}
+.cm-imp-list{display:flex;flex-direction:column;gap:6px}
+.cm-imp-it{display:flex;gap:10px;align-items:flex-start;background:var(--card);border-radius:16px;padding:12px;cursor:pointer}
+.cm-imp-it input{margin-top:2px;flex-shrink:0}
+.cm-warn-t{font-size:12px;color:var(--ext-ink);background:var(--ext-bg);border-radius:10px;padding:6px 8px;margin-top:4px;line-height:1.4}
+/* sugerencias en Producto personalizable */
+.cm-sug{position:fixed;z-index:1045;background:var(--card);border:1px solid var(--fld-bd);border-radius:16px;box-shadow:0 12px 30px rgba(42,36,48,.18);padding:6px;max-height:min(320px,50vh);overflow:auto;box-sizing:border-box}
+.cm-sug[hidden]{display:none!important}
+.cm-sug-it{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:8px 10px;border-radius:12px;cursor:pointer;font-size:14px;color:var(--ink);min-height:42px;box-sizing:border-box}
+.cm-sug-it:hover,.cm-sug-it.on{background:var(--dir-bg);color:var(--dir-ink)}
+.cm-sug-n{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cm-sug-p{font-size:12px;color:var(--muted);flex-shrink:0;font-variant-numeric:tabular-nums}
+.cm-sug-new{justify-content:flex-start;gap:8px;border-top:1px solid var(--fld-ro-bd);border-radius:0 0 12px 12px;margin-top:4px;color:var(--mint-ink)}
+.cm-sug-new:first-child{border-top:0;margin-top:0;border-radius:12px}
+.cm-sug-new svg{flex-shrink:0}
+/* V40.30 — botón «Mi lista» en filas fijas, selector y grupos de «Traer» */
+.cm-fixbtn{position:relative;margin-left:auto;display:inline-flex;align-items:center;gap:6px;height:32px;min-height:0;max-width:190px;padding:0 12px;border:none;border-radius:22px;background:var(--acc-pill);color:var(--acc-ink,var(--ink));font:600 12px/1 var(--font-body);cursor:pointer;flex-shrink:0;touch-action:manipulation}
+.cm-fixbtn::after{content:'';position:absolute;inset:-6px}
+.cm-fixbtn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.cm-fixbtn svg{flex-shrink:0}
+.cm-fixbtn.on{background:var(--mint-bg);color:var(--mint-ink)}
+.cm-fixbtn:active{transform:scale(.96)}
+.xl-row>.cm-aviso,.acc-concept>.cm-aviso{margin-top:8px}
+.cm-pick-q{height:48px;border:1.5px solid var(--fld-hi-bd);border-radius:12px;padding:0 14px;font-size:16px;color:var(--ink);background:var(--fld-bg);box-sizing:border-box;width:100%;font-family:var(--font-body);flex-shrink:0}
+.cm-pick-it{display:flex;width:100%;text-align:left;gap:10px;align-items:center;background:var(--card);border:none;border-radius:16px;padding:12px;cursor:pointer;color:var(--ink);font:inherit;box-sizing:border-box}
+.cm-pick-it.sel{box-shadow:0 0 0 2px var(--mint-ink) inset}
+.cm-pick-it:active{transform:scale(.99)}
+.cm-pick-cur{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;background:var(--mint-bg);color:var(--mint-ink);border-radius:18px;padding:10px 12px;font-size:13px}
+.cm-pick-cur .btn{border-radius:22px;min-height:36px;padding:0 12px;background:rgba(255,255,255,.7);color:var(--mint-ink)}
+body.dark .cm-pick-cur .btn{background:rgba(255,255,255,.12)}
+.cm-imp-h{font-family:var(--font-display);font-weight:650;font-size:13.5px;letter-spacing:-.012em;margin:6px 2px 0;color:var(--ink)}
+.cm-imp-h:first-child{margin-top:0}
+/* aviso de cambio de precio en una línea */
+.cm-aviso{flex:0 0 100%;display:flex;align-items:center;gap:8px 10px;flex-wrap:wrap;background:var(--ext-bg);color:var(--ext-ink);border-radius:14px;padding:10px 12px;font-size:13px;line-height:1.4;box-sizing:border-box;min-width:0}
+.cm-aviso[hidden]{display:none!important}
+.cm-aviso svg{flex-shrink:0}
+.cm-aviso-t{flex:1;min-width:180px}
+.cm-aviso-b{display:flex;gap:6px;flex-wrap:wrap}
+.cm-aviso .btn{border-radius:22px;min-height:38px;padding:0 14px}
+.cm-aviso .btn:not(.ok){background:rgba(255,255,255,.7);color:var(--ext-ink)}
+body.dark .cm-aviso .btn:not(.ok){background:rgba(255,255,255,.12)}
+/* V40.29 — Express en dos columnas en pantallas grandes; en celular el orden no cambia (Guardado al final) */
+@media(max-width:899px){#view-express .gi-side{display:contents}#view-express #xp_hero{order:1}#view-express .gi-side>.sv-a{order:3}}
 .xp-fld{position:relative}
 .xp-fld>span{position:absolute;left:12px;bottom:11px;color:var(--muted);font-weight:600;pointer-events:none}
 .xp-fld input{padding-left:var(--xp-pl,28px);font-size:18px;font-weight:600;text-align:left;font-variant-numeric:tabular-nums;min-height:44px;box-sizing:border-box}
@@ -894,7 +990,7 @@ body.dark .xp-tbl th{border-top:0}
 @media(prefers-reduced-motion:reduce){.xp-seg button:active{transform:none}.xp-bar i{transition:none}}
 </style>
 </head>
-<body data-app-version="V40.27">
+<body data-app-version="V40.30">
 <div class="app">
 <header class="app-header">
   <div class="menu-wrapper">
@@ -919,7 +1015,7 @@ body.dark .xp-tbl th{border-top:0}
 <aside class="drawer" id="drawer" aria-hidden="true" aria-label="Navegación principal">
 <header><div class="brand-name">Menú</div></header>
 <nav class="menu" id="menu">
-<div class="group-header" data-group="costos" data-open="false"><span class="group-title">Cálculo de costos</span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
+<div class="group-header" data-group="costos" data-open="true"><span class="group-title">Cálculo de costos</span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
 <div class="group-body" data-group-body="costos">
 <div class="item" data-view="vinil"><svg class="ico" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="9" cy="12" r="3"></circle><path d="M2 12h5M12 12h10"></path></svg><div class="txt">Costo de Vinil</div></div>
 <div class="item" data-view="sublimacion"><svg class="ico" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 7h16M7 7v10a3 3 0 0 0 3 3h4a3 3 0 0 0 3-3V7"></path></svg><div class="txt">Costos Sublimación</div></div>
@@ -930,6 +1026,7 @@ body.dark .xp-tbl th{border-top:0}
 <div class="item" data-view="empaques"><svg class="ico" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-6 9 6-9 6-9-6z"></path><path d="M21 9v6l-9 6-9-6V9"></path></svg><div class="txt">Costos de Empaques</div></div>
 <div class="item" data-view="envios"><svg class="ico" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7h13v10H3zM16 10h4l1 3v4h-5z"></path><circle cx="7.5" cy="17" r="1.5"></circle><circle cx="18.5" cy="17" r="1.5"></circle></svg><div class="txt">Costos de Envíos</div></div>
 <div class="item" data-view="express"><svg class="ico" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L3 13V4h9l8.6 8.6a2 2 0 0 1 0 2.8z"></path><circle cx="7.5" cy="8.5" r="1.3"></circle></svg><div class="txt">Precio de Venta Express</div></div>
+<div class="item" data-view="costos"><svg class="ico" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"></path><path d="M3.3 7L12 12l8.7-5"></path><path d="M12 22V12"></path></svg><div class="txt">Costos de materiales</div></div>
 </div>
 <div class="group-header" data-group="herramientas" data-open="true"><span class="group-title">Herramientas</span><svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>
 <div class="group-body" data-group-body="herramientas">
@@ -2564,6 +2661,7 @@ body.dark .xp-tbl th{border-top:0}
 <div class="card md-12"><h3 style="margin:0 0 6px">Precio de Venta Express</h3><div class="sep"></div>
 <p class="muted" style="margin:6px 0 0">Escribe lo que te costó el producto y en cuánto lo vendes: te digo cuánto ganas.</p></div>
 
+<div class="gi-layout"><div class="gi-left">
 <div class="card md-6 acc acc-dir" id="xp_card_datos">
 <h4 class="acc-h"><span class="acc-t">Datos del producto</span></h4>
 <div class="acc-body"><div class="acc-item">
@@ -2587,6 +2685,14 @@ body.dark .xp-tbl th{border-top:0}
 <p class="xp-help" id="xp_help">Markup: cuánto ganas comparado con lo que te costó.</p>
 </div></div></div>
 
+<div class="card md-12 acc acc-gan gi-after" id="xp_card_sug">
+<h4 class="acc-h"><span class="acc-t">¿A cuánto vender para ganar más?</span></h4>
+<div class="acc-body"><div class="acc-item">
+<p class="muted" style="margin:0 0 10px;font-size:12.5px">Según el costo que escribiste.</p>
+<table class="xp-tbl"><thead><tr><th>Ganancia deseada</th><th>Precio de venta</th></tr></thead><tbody id="xp_rows"></tbody></table>
+</div></div></div>
+</div>
+<div class="gi-side" id="xp_side">
 <div class="card md-12 gi-final xp-hero" id="xp_hero">
 <button type="button" class="gi-tg" id="xp_tg" aria-label="Mostrar u ocultar desglose"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
 <div class="tot" style="display:block;padding-right:40px"><span class="tl" id="xp_lbl">Ganancia sobre el costo (markup)</span><span class="xp-big" id="xp_pct">50%</span></div>
@@ -2603,14 +2709,28 @@ body.dark .xp-tbl th{border-top:0}
 <button class="copy-btn copy-btn-accent" id="xp_copy" type="button">Copiar</button>
 <button class="btn reset" id="xp_reset" type="button">Reset</button>
 </div></div>
+</div></div>
 
-<div class="card md-12 acc acc-gan" id="xp_card_sug">
-<h4 class="acc-h"><span class="acc-t">¿A cuánto vender para ganar más?</span></h4>
+</div></section>
+
+<section class="view" id="view-costos"><div class="grid">
+<div class="card md-12"><h3 style="margin:0 0 6px">Costos de materiales</h3><div class="sep"></div>
+<p class="muted" style="margin:6px 0 0">Guarda aquí el precio de cada material: una caja, un vinil, un frasco de tinta o una plancha. En <b>Producto personalizable</b>, al escribir el nombre en una línea de costos te sugiero el material y lleno su precio. Si después cambias un precio aquí, te aviso en esa línea y tú decides si lo actualizas.</p></div>
+<div class="card md-12 acc acc-dir pers-acc pers-fixed" id="cm_card">
+<h4 class="acc-h"><span class="acc-t">Mis materiales</span><span class="acc-pill" id="cm_pill"></span></h4>
 <div class="acc-body"><div class="acc-item">
-<p class="muted" style="margin:0 0 10px;font-size:12.5px">Según el costo que escribiste.</p>
-<table class="xp-tbl"><thead><tr><th>Ganancia deseada</th><th>Precio de venta</th></tr></thead><tbody id="xp_rows"></tbody></table>
-</div></div></div>
-
+<div class="cm-tools">
+<input id="cm_q" type="text" inputmode="search" enterkeyhint="search" placeholder="Buscar por nombre o proveedor…" autocomplete="off" aria-label="Buscar material">
+<select id="cm_ftipo" aria-label="Filtrar por tipo"><option value="">Todos los tipos</option><option value="material">Por unidad</option><option value="area">Por área</option><option value="equipo">Equipos</option></select>
+</div>
+<div class="cm-btns">
+<button type="button" class="btn ok" id="cm_new"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Nuevo material</button>
+<button type="button" class="btn" id="cm_import" title="Busca en tus productos guardados los materiales que aún no están en la lista"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M5 21h14"></path></svg>Traer de mis productos</button>
+</div>
+<div class="cm-count muted" id="cm_count"></div>
+</div>
+<div id="cm_list" class="cm-list"></div>
+</div></div>
 </div></section>
 
 
@@ -2910,6 +3030,7 @@ body.dark .xp-tbl th{border-top:0}
 </div>
 </div>
 
+<div class="gi-layout"><div class="gi-left">
 <div class="card md-12 acc acc-dir pers-acc" id="pers_area_card" data-closed="1">
 <h4 class="acc-h"><span class="acc-t">Material por área (<span class="ulbl" data-utl="area-price">cm²</span>)</span><span class="acc-pill" data-src="pers_area_total"></span></h4>
 <div class="acc-body"><div class="acc-item">
@@ -2990,6 +3111,24 @@ body.dark .xp-tbl th{border-top:0}
 <div style="min-width:120px"><label>Impuesto (%)</label><input id="pers_i_pct" type="text" value="16"></div>
 </div></div></div></div>
 
+
+<div class="card md-12 acc acc-qty pers-acc gi-after" id="pers_qty_card">
+<h4 class="acc-h"><span class="acc-t">Cantidad de productos</span><span class="acc-pill" data-src="pers_qty_total"></span></h4>
+<div class="acc-body"><div class="acc-item">
+<div class="row" style="align-items:center;gap:8px;flex-wrap:wrap">
+<label class="chk-label" style="display:flex;align-items:center;gap:6px;margin:0"><input type="checkbox" id="pers_qty_on"><span>Activar cantidad</span></label>
+<input type="number" id="pers_qty" min="1" step="1" value="1" style="max-width:100px">
+<span class="muted">Multiplica los valores finales por Q (solo vista).</span>
+</div><div class="sep"></div>
+<div class="row" style="flex-wrap:wrap;gap:8px">
+<div class="pill"><span>Base sin G/I ×Q</span><span class="result mono" id="pers_qty_base">$ 0,00</span></div>
+<div class="pill"><span>Subtotal ×Q</span><span class="result mono" id="pers_qty_subtotal">$ 0,00</span></div>
+<div class="pill"><span>Ganancia ×Q</span><span class="result mono" id="pers_qty_g">$ 0,00</span></div>
+<div class="pill"><span>Impuestos ×Q</span><span class="result mono" id="pers_qty_i">$ 0,00</span></div>
+<div class="pill"><span>Total ×Q</span><span class="result mono" id="pers_qty_total">$ 0,00</span></div>
+</div></div></div></div>
+</div>
+<div class="gi-side">
 <div class="card md-12 gi-final pers-final" id="pers_summary">
 <div class="tot"><span class="tl">Precio de Venta:</span> <span class="result" id="pers_pv">$ 0,00</span></div>
 <div class="gi-des">
@@ -3006,22 +3145,7 @@ body.dark .xp-tbl th{border-top:0}
 <button class="copy-btn copy-btn-accent" id="pers_btn_copy" type="button">Copiar</button>
 <button class="btn reset" id="pers_reset" type="button">Reset</button>
 </div></div>
-
-<div class="card md-12 acc acc-qty pers-acc" id="pers_qty_card">
-<h4 class="acc-h"><span class="acc-t">Cantidad de productos</span><span class="acc-pill" data-src="pers_qty_total"></span></h4>
-<div class="acc-body"><div class="acc-item">
-<div class="row" style="align-items:center;gap:8px;flex-wrap:wrap">
-<label class="chk-label" style="display:flex;align-items:center;gap:6px;margin:0"><input type="checkbox" id="pers_qty_on"><span>Activar cantidad</span></label>
-<input type="number" id="pers_qty" min="1" step="1" value="1" style="max-width:100px">
-<span class="muted">Multiplica los valores finales por Q (solo vista).</span>
-</div><div class="sep"></div>
-<div class="row" style="flex-wrap:wrap;gap:8px">
-<div class="pill"><span>Base sin G/I ×Q</span><span class="result mono" id="pers_qty_base">$ 0,00</span></div>
-<div class="pill"><span>Subtotal ×Q</span><span class="result mono" id="pers_qty_subtotal">$ 0,00</span></div>
-<div class="pill"><span>Ganancia ×Q</span><span class="result mono" id="pers_qty_g">$ 0,00</span></div>
-<div class="pill"><span>Impuestos ×Q</span><span class="result mono" id="pers_qty_i">$ 0,00</span></div>
-<div class="pill"><span>Total ×Q</span><span class="result mono" id="pers_qty_total">$ 0,00</span></div>
-</div></div></div></div>
+</div></div>
 </div></section>
 
 <section class="view" id="view-catalogo"><div class="grid">
@@ -3173,7 +3297,7 @@ body.dark .xp-tbl th{border-top:0}
 </div>
 </div></section>
 
-<footer class="footer">Suite creada por @subli_mada — V40.27</footer>
+<footer class="footer">Suite creada por @subli_mada — V40.30</footer>
 </div>
 <script>
 /* ═══════════════════════════════════════════════════════════
@@ -3184,7 +3308,7 @@ body.dark .xp-tbl th{border-top:0}
 'use strict';
 const $=id=>document.getElementById(id);
 const $$=(sel,ctx=document)=>Array.from(ctx.querySelectorAll(sel));
-const PWA_VER='v40_27';
+const PWA_VER='v40_30';
 
 /* ═══ HELPERS: number formatting (configurable decimal separator) ═══ */
 const EU_FMT=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -3792,6 +3916,7 @@ function xlAddRow(host,data){
       +'</div>';
   }
   row.innerHTML=head+grid;
+  cmPrepRow(row,k==='dir'?'material':'equipo',d);row.dataset.cmKind='xl';
   host.querySelector('.xl-list').appendChild(row);
   const modo=row.querySelector('.xl-modo');
   function changed(){
@@ -3816,7 +3941,7 @@ function xlSerialize(only){
       const o={on:r.querySelector('.xl-on').checked,desc:v('xl-desc'),precio:v('xl-precio')};
       if(k==='dir'){o.cant=v('xl-cant');o.use=v('xl-use');}
       else{o.modo=v('xl-modo');o.vida=v('xl-vida');o.uses=v('xl-uses');}
-      return o;
+      return Object.assign(o,cmLinkOf(r));
     });
     if(rows.length){(out[p]=out[p]||{})[k]=rows;}
   });
@@ -4513,6 +4638,860 @@ function convertMoneyValue(n,fromSym,toSym){
 }
 
 /* ═══════════════════════════════════════════════════════════
+   MODULE: COSTOS DE MATERIALES (V40.29 · conectado a todas las calculadoras en V40.30)
+   Lista de precios de materiales: por unidad (también por peso o volumen),
+   por área (vinil, laminado) y equipos (depreciación).
+   Producto personalizable la usa para sugerir por nombre y llenar la línea.
+   Regla: cada línea guarda la "foto" del material con que se armó (mat_snap).
+   Si el precio cambia en la lista, la línea AVISA y la persona decide; nada cambia solo.
+   Datos: localStorage "Suite.costmat". Los valores de área se guardan en métrico
+   (cm², cm, m) y los precios en la moneda indicada en datos.moneda.
+   ═══════════════════════════════════════════════════════════ */
+const CM_KEY='Suite.costmat';
+const CM_TIPOS={material:'Por unidad',area:'Por área',equipo:'Equipo'};
+const CM_QTY={
+  peso:{metric:[{v:'kilo',l:'kg',f:1000},{v:'gramo',l:'g',f:1}],imperial:[{v:'libra',l:'lb',f:16},{v:'onza',l:'oz',f:1}],cross:{metric:0.0352739619,imperial:28.349523125}},
+  volumen:{metric:[{v:'litro',l:'L',f:1000},{v:'mililitro',l:'mL',f:1}],imperial:[{v:'galon',l:'gal',f:128},{v:'onza_liq',l:'fl oz',f:1}],cross:{metric:0.0338140227,imperial:29.5735295625}}
+};
+const CM_ICO={
+  material:'<path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"></path><path d="M3.3 7L12 12l8.7-5"></path><path d="M12 22V12"></path>',
+  area:'<path d="M12 2L2 7l10 5 10-5-10-5z"></path><path d="M2 17l10 5 10-5"></path><path d="M2 12l10 5 10-5"></path>',
+  equipo:'<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>',
+  alerta:'<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><path d="M12 9v4"></path><path d="M12 17h.01"></path>',
+  plus:'<path d="M12 5v14M5 12h14"></path>',
+  close:'<path d="M18 6L6 18M6 6l12 12"></path>',
+  trash:'<path d="M3 6h18"></path><path d="M8 6V4h8v2"></path><path d="M19 6l-1 14H6L5 6"></path>',
+  down:'<path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M5 21h14"></path>',
+  save:'<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><path d="M17 21v-8H7v8"></path><path d="M7 3v5h8"></path>',
+  list:'<path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3 6h.01"></path><path d="M3 12h.01"></path><path d="M3 18h.01"></path>',
+  link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>'
+};
+function cmSvg(p,s){s=s||18;return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';}
+function cmEsc(v){return String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function cmNorm(s){return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/\s+/g,' ').trim();}
+function cmMatch(q,txt){const t=cmNorm(txt);return cmNorm(q).split(' ').filter(Boolean).every(w=>t.indexOf(w)>=0);}
+function cmLoad(){try{const a=JSON.parse(localStorage.getItem(CM_KEY)||'[]');return Array.isArray(a)?a.filter(x=>x&&typeof x==='object'&&x.id!=null):[];}catch(e){return[];}}
+function cmSave(a){try{localStorage.setItem(CM_KEY,JSON.stringify(a));return true;}catch(e){suiteToast('No se pudo guardar la lista en este dispositivo.');return false;}}
+function cmProducts(){try{const a=JSON.parse(localStorage.getItem('Suite.pers.products')||'[]');return Array.isArray(a)?a.filter(p=>p&&typeof p==='object'):[];}catch(e){return[];}}
+function cmFind(id){return cmLoad().find(x=>String(x.id)===String(id))||null;}
+function cmNewId(usados){let id;do{id=Date.now()+Math.floor(Math.random()*100000);}while(usados&&usados.has(String(id)));return id;}
+
+/* ── números y monedas ── */
+function cmMoney(v,mon){v=+v||0;if(!mon||mon===_curSym)return v;return v/moneyRate(mon)*moneyRate(_curSym);}
+function cmFix(v,dec){let s=(+v||0).toFixed(dec);if(DECIMAL_SEP===',')s=s.replace('.',',');return s;}
+function cmMoneyTxt(v){v=+v||0;return (v>0&&v<0.1)?sym()+' '+cmFix(v,4):fmtEU(v);}
+function cmField(v){v=+v||0;return Math.abs(v*100-Math.round(v*100))<1e-7?fmtPlain(v):fmtVarPlain(v,6);}
+function cmSys(){return UNIT_SYSTEM==='imperial'?'imperial':'metric';}
+function cmLenTxt(v,t){const u=UTYPES[t];const x=UNIT_SYSTEM==='imperial'?u.toI(v):v;return fmtVarPlain(x,2)+' '+unitLabelText(t);}
+
+/* ── foto de los valores que importan según el tipo ── */
+function cmChip(m){const d=cmDatos(m);if(m.tipo==='material'&&d.medida==='peso')return 'Por peso';if(m.tipo==='material'&&d.medida==='volumen')return 'Por volumen';return CM_TIPOS[m.tipo]||CM_TIPOS.material;}
+function cmDatos(m){return(m&&m.datos&&typeof m.datos==='object')?m.datos:{};}
+function cmSnap(m){
+  const d=cmDatos(m),n=v=>+v||0,mon=d.moneda||'$';
+  if(m.tipo==='area')return{modo:d.modo==='rollo'?'rollo':'cm2',precio_cm2:n(d.precio_cm2),precio_rollo:n(d.precio_rollo),ancho_rollo:n(d.ancho_rollo),largo_rollo:n(d.largo_rollo),moneda:mon};
+  if(m.tipo==='equipo')return{precio:n(m.precio),modo:d.modo==='capacidad'?'capacidad':'vida',vida:n(d.vida),meses:n(d.meses),capacidad:n(d.capacidad),moneda:mon};
+  const med=(d.medida==='peso'||d.medida==='volumen')?d.medida:'unidad';
+  return{precio:n(m.precio),cantidad:n(m.cantidad)||1,medida:med,unidad:med==='unidad'?'':String(d.unidad||''),moneda:mon};
+}
+/* Cantidad del material llevada al sistema de unidades actual (misma "talla": grande o base) */
+function cmQtyNow(s){
+  if(!s||s.medida==='unidad'||!CM_QTY[s.medida])return{unidad:'',label:'',cantidad:(s&&s.cantidad)||1};
+  const t=CM_QTY[s.medida],sys=cmSys();
+  let os='metric',idx=t.metric.findIndex(o=>o.v===s.unidad);
+  if(idx<0){idx=t.imperial.findIndex(o=>o.v===s.unidad);os=idx<0?sys:'imperial';if(idx<0)idx=0;}
+  const u=t[os][idx];
+  if(os===sys)return{unidad:u.v,label:u.l,cantidad:s.cantidad};
+  const nu=t[sys][idx];
+  return{unidad:nu.v,label:nu.l,cantidad:s.cantidad*u.f*t.cross[os]/nu.f};
+}
+/* Cifra principal en la moneda y unidades actuales:
+   material = costo por unidad (o por kg, L…) · área = precio por cm² (o in²) · equipo = costo por uso */
+function cmPrincipal(tipo,s){
+  s=s||{};
+  if(tipo==='material'){const q=cmQtyNow(s);return q.cantidad>0?cmMoney(s.precio,s.moneda)/q.cantidad:0;}
+  if(tipo==='area'){
+    let v;
+    if((s.modo||'cm2')==='cm2')v=s.precio_cm2||0;
+    else{const ar=(s.ancho_rollo||0)*((s.largo_rollo||0)*100);v=ar>0?(s.precio_rollo||0)/ar:0;}
+    v=cmMoney(v,s.moneda);
+    return UNIT_SYSTEM==='imperial'?UTYPES['area-price'].toI(v):v;
+  }
+  const p=cmMoney(s.precio,s.moneda);
+  if(s.modo==='capacidad')return(s.meses>0&&s.capacidad>0)?p/s.meses/s.capacidad:0;
+  return s.vida>0?p/s.vida:0;
+}
+function cmTxtPrincipal(tipo,s){
+  const v=cmPrincipal(tipo,s);
+  if(tipo==='material'){const q=cmQtyNow(s);return cmMoneyTxt(v)+(q.label?'/'+q.label:' c/u');}
+  if(tipo==='area')return sym()+' '+cmFix(v,6)+'/'+unitLabelText('area-price');
+  return cmMoneyTxt(v)+' por uso';
+}
+function cmDetalle(m){
+  const s=cmSnap(m),pr=cmTxtPrincipal(m.tipo,s);
+  if(m.tipo==='material'){
+    const q=cmQtyNow(s);
+    return cmMoneyTxt(cmMoney(s.precio,s.moneda))+' ÷ '+fmtVarPlain(q.cantidad,3)+(q.label?' '+q.label:'')+' = <b>'+cmEsc(pr)+'</b>';
+  }
+  if(m.tipo==='area'){
+    if(s.modo==='rollo')return 'Rollo de '+cmMoneyTxt(cmMoney(s.precio_rollo,s.moneda))+' · '+cmLenTxt(s.ancho_rollo,'len')+' × '+cmLenTxt(s.largo_rollo,'len-m')+' = <b>'+cmEsc(pr)+'</b>';
+    return '<b>'+cmEsc(pr)+'</b>';
+  }
+  const rep=s.modo==='capacidad'?fmtVarPlain(s.meses,0)+' meses × '+fmtVarPlain(s.capacidad,0)+'/mes':fmtVarPlain(s.vida,0)+' usos';
+  return cmMoneyTxt(cmMoney(s.precio,s.moneda))+' · '+rep+' = <b>'+cmEsc(pr)+'</b>';
+}
+function cmDifiere(a,b,tipo){
+  if(!a||typeof a!=='object'||!Object.keys(a).length)return false; // sin foto guardada: no se avisa
+  const money=tipo==='area'?['precio_cm2','precio_rollo']:['precio'];
+  return Object.keys(b||{}).some(k=>{
+    if(k==='moneda')return false;
+    if(typeof b[k]==='number'){
+      let x=+a[k]||0,y=b[k];
+      if(money.indexOf(k)>=0){x=cmMoney(x,a.moneda||b.moneda);y=cmMoney(y,b.moneda);}
+      return Math.abs(x-y)>1e-9*Math.max(1,Math.abs(y));
+    }
+    return String(a[k]||'')!==String(b[k]||'');
+  });
+}
+function cmUsos(){
+  const n={};
+  cmProducts().forEach(p=>{
+    const ids=new Set();
+    [p.directos,p.materiales_area,p.depreciacion].forEach(arr=>(arr||[]).forEach(x=>{if(x&&x.mat_id!=null&&x.mat_id!=='')ids.add(String(x.mat_id));}));
+    ids.forEach(id=>{n[id]=(n[id]||0)+1;});
+  });
+  return n;
+}
+
+/* ═════════ Pantalla «Costos de materiales» ═════════ */
+function cmRender(){
+  const c=$('cm_list');if(!c)return;
+  const all=cmLoad(),q=($('cm_q')&&$('cm_q').value||'').trim(),ft=($('cm_ftipo')&&$('cm_ftipo').value)||'';
+  const fil=all.filter(m=>(!ft||m.tipo===ft)&&(!q||cmMatch(q,m.nombre)||cmMatch(q,m.proveedor)))
+               .sort((a,b)=>String(a.nombre).localeCompare(String(b.nombre),'es'));
+  const pill=$('cm_pill');if(pill)pill.textContent=all.length?String(all.length):'';
+  const res=$('cm_count');
+  if(res)res.textContent=all.length?(fil.length===all.length?all.length+' material'+(all.length===1?'':'es')+' en la lista':fil.length+' de '+all.length+' materiales'):'';
+  if(!fil.length){
+    c.innerHTML='<div class="cm-empty"><div class="cm-empty-ico">'+cmSvg(CM_ICO.material,28)+'</div><div class="cm-empty-t">'+(all.length?'Sin resultados':'Aún no tienes materiales')+'</div>'+
+      '<p>'+(all.length?'Prueba con otra palabra o cambia el filtro de tipo.':'Agrega tus materiales con su precio, o tráelos de los productos que ya guardaste en Producto personalizable.')+'</p></div>';
+    return;
+  }
+  const usos=cmUsos();
+  c.innerHTML=fil.map(m=>{
+    const uso=usos[String(m.id)]||0,t=CM_TIPOS[m.tipo]?m.tipo:'material';
+    const meta=[m.proveedor?cmEsc(m.proveedor):'',uso?'En '+uso+' producto'+(uso===1?'':'s'):''].filter(Boolean).join(' · ');
+    return '<div class="cm-item cm-t-'+t+'">'+
+      '<div class="cm-ico">'+cmSvg(CM_ICO[t],20)+'</div>'+
+      '<div class="cm-body"><div class="cm-name"><span class="cm-nm">'+cmEsc(m.nombre)+'</span><span class="cm-chip">'+cmEsc(cmChip(m))+'</span></div>'+
+      '<div class="cm-det">'+cmDetalle(m)+'</div>'+(meta?'<div class="cm-meta">'+meta+'</div>':'')+'</div>'+
+      '<div class="cm-acts"><button type="button" class="btn cm-edit" data-cm="edit" data-id="'+cmEsc(String(m.id))+'">Editar</button>'+
+      '<button type="button" class="cm-del" data-cm="del" data-id="'+cmEsc(String(m.id))+'" aria-label="Eliminar '+cmEsc(m.nombre)+'">'+cmSvg(CM_ICO.trash,18)+'</button></div>'+
+    '</div>';
+  }).join('');
+}
+
+/* ═════════ Hojas (ventanas que suben desde abajo) ═════════ */
+let _cmLayer=null,_cmLast=null,_cmOnClose=null;
+function cmOpenLayer(html,onReady){
+  if(!_cmLayer){
+    _cmLayer=document.createElement('div');_cmLayer.className='sv-layer cm-layer';_cmLayer.hidden=true;
+    _cmLayer.innerHTML='<div class="sv-sheet cm-sheet" role="dialog" aria-modal="true"></div>';
+    document.body.appendChild(_cmLayer);
+    _cmLayer.addEventListener('mousedown',e=>{if(e.target===_cmLayer)cmCloseLayer();});
+    _cmLayer.addEventListener('keydown',e=>{if(e.key==='Escape'){e.stopPropagation();cmCloseLayer();}});
+    _cmLayer.addEventListener('click',e=>{if(e.target.closest('[data-cm-close]'))cmCloseLayer();});
+    cmSwipe(_cmLayer.querySelector('.cm-sheet'));
+  }
+  const sh=_cmLayer.querySelector('.cm-sheet');
+  sh.innerHTML=html;sh.scrollTop=0;sh.style.transform='';
+  _cmLast=document.activeElement;
+  _cmLayer.hidden=false;
+  document.body.style.overflow='hidden';document.body.classList.add('sv-open');
+  void _cmLayer.offsetWidth;_cmLayer.classList.add('show');
+  if(onReady)onReady(sh);
+}
+function cmCloseLayer(){
+  if(!_cmLayer||_cmLayer.hidden)return;
+  _cmLayer.classList.remove('show');
+  document.body.style.overflow='';document.body.classList.remove('sv-open');
+  const l=_cmLayer;setTimeout(()=>{if(!l.classList.contains('show')){l.hidden=true;l.querySelector('.cm-sheet').style.transform='';}},260);
+  const cb=_cmOnClose;_cmOnClose=null;if(cb)cb();
+  try{if(_cmLast&&_cmLast.focus)_cmLast.focus({preventScroll:true});}catch(e){}
+}
+/* Cerrar deslizando hacia abajo (celular): se arrastra desde la barrita o el encabezado,
+   o desde cualquier parte si la hoja está arriba del todo */
+function cmSwipe(sh){
+  let y0=null,dy=0,t0=0,on=false;
+  sh.addEventListener('touchstart',e=>{
+    if(window.matchMedia&&window.matchMedia('(min-width:720px)').matches)return;
+    if(e.touches.length!==1)return;
+    const enHead=!!e.target.closest('.sv-grab,.sv-hd');
+    if(!enHead&&(sh.scrollTop>0||e.target.closest('input,select,textarea,button')))return;
+    y0=e.touches[0].clientY;dy=0;t0=Date.now();on=false;
+  },{passive:true});
+  sh.addEventListener('touchmove',e=>{
+    if(y0==null)return;
+    dy=e.touches[0].clientY-y0;
+    if(!on&&dy>8){on=true;sh.style.transition='none';}
+    if(on){if(e.cancelable)e.preventDefault();sh.style.transform='translateY('+Math.max(0,dy)+'px)';}
+  },{passive:false});
+  function fin(){
+    if(y0==null)return;
+    const fast=dy>60&&(Date.now()-t0)<250;
+    sh.style.transition='';
+    if(on&&(dy>110||fast))cmCloseLayer();
+    else sh.style.transform='';
+    y0=null;on=false;dy=0;
+  }
+  sh.addEventListener('touchend',fin);sh.addEventListener('touchcancel',fin);
+}
+function cmHead(tipo,title,sub){
+  return '<div class="sv-grab"></div><div class="sv-hd"><div class="sv-hi cm-hi-'+tipo+'">'+cmSvg(CM_ICO[tipo]||CM_ICO.material,20)+'</div>'+
+    '<div class="sv-hm"><div class="sv-h1">'+cmEsc(title)+'</div><div class="sv-h2">'+cmEsc(sub)+'</div></div>'+
+    '<button type="button" class="sv-ic" data-cm-close="1" aria-label="Cerrar">'+cmSvg(CM_ICO.close,18)+'</button></div>';
+}
+
+/* ═════════ Crear / editar material ═════════ */
+let _cmEditId=null,_cmAlGuardar=null;
+function cmQtyOpts(medida,sel){
+  const t=CM_QTY[medida];if(!t)return '';
+  return t[cmSys()].map(o=>'<option value="'+o.v+'"'+(o.v===sel?' selected':'')+'>'+o.l+'</option>').join('');
+}
+function cmAbrirNuevo(){cmAbrirModal({tipo:'material',nombre:'',precio:0,cantidad:1,datos:{}},null,null);}
+function cmEditar(id){const m=cmFind(id);if(m)cmAbrirModal(m,null,m);}
+function cmAbrirModal(init,cb,editItem){
+  _cmEditId=editItem?editItem.id:null;_cmAlGuardar=cb||null;
+  const m=init||{},s=cmSnap(Object.assign({},m,{tipo:'material'})),tipo=CM_TIPOS[m.tipo]?m.tipo:'material';
+  const sa=cmSnap(Object.assign({},m,{tipo:'area'})),se=cmSnap(Object.assign({},m,{tipo:'equipo'}));
+  const qn=cmQtyNow(s);
+  const med=tipo==='material'?s.medida:'unidad';
+  const vM=v=>v?cmField(v):'';
+  const areaPcm2=cmMoney(sa.precio_cm2,sa.moneda);
+  const html=cmHead(tipo,editItem?'Editar material':'Nuevo material','Se guarda solo en este dispositivo')+
+  '<div class="sv-box cm-form">'+
+    '<label for="cm_f_nombre">Nombre *</label><input id="cm_f_nombre" type="text" autocomplete="off" maxlength="80" placeholder="Ej. Bolígrafo azul" value="'+cmEsc(m.nombre||'')+'">'+
+    '<label for="cm_f_tipo">Tipo</label><select id="cm_f_tipo"'+(editItem?' disabled':'')+'>'+
+      '<option value="material"'+(tipo==='material'?' selected':'')+'>Por unidad, peso o volumen</option>'+
+      '<option value="area"'+(tipo==='area'?' selected':'')+'>Por área (vinil, laminado…)</option>'+
+      '<option value="equipo"'+(tipo==='equipo'?' selected':'')+'>Equipo (depreciación)</option></select>'+
+    (editItem?'<div class="sv-hint">El tipo no se puede cambiar al editar, para no romper el vínculo con tus productos.</div>':'')+
+  '</div>'+
+  '<div class="sv-box cm-form" data-cm-sec="material">'+
+    '<label for="cm_f_medida">Se mide por</label><select id="cm_f_medida">'+
+      '<option value="unidad"'+(med==='unidad'?' selected':'')+'>Unidad</option><option value="peso"'+(med==='peso'?' selected':'')+'>Peso</option><option value="volumen"'+(med==='volumen'?' selected':'')+'>Volumen</option></select>'+
+    '<div class="cm-g2"><div><label for="cm_f_mprecio">Precio de compra ('+cmEsc(sym())+')</label><input id="cm_f_mprecio" type="text" inputmode="decimal" placeholder="0,00" value="'+vM(tipo==='material'?cmMoney(s.precio,s.moneda):0)+'"></div>'+
+    '<div><label for="cm_f_mcant">Cantidad que trae</label><div class="cm-qty"><input id="cm_f_mcant" type="text" inputmode="decimal" value="'+cmEsc(fmtVarPlain(tipo==='material'?qn.cantidad:1,4))+'">'+
+      '<select id="cm_f_munidad" aria-label="Unidad"'+(med==='unidad'?' hidden':'')+'>'+cmQtyOpts(med==='unidad'?'peso':med,qn.unidad)+'</select></div></div></div>'+
+    '<div class="sv-hint" id="cm_f_mhint"></div>'+
+  '</div>'+
+  '<div class="sv-box cm-form" data-cm-sec="area">'+
+    '<label for="cm_f_amodo">Se compra por</label><select id="cm_f_amodo"><option value="cm2"'+(sa.modo==='cm2'?' selected':'')+'>Precio por '+cmEsc(unitLabelText('area-price'))+'</option><option value="rollo"'+(sa.modo==='rollo'?' selected':'')+'>Precio por rollo</option></select>'+
+    '<div data-cm-amodo="cm2"><label for="cm_f_apcm2">Precio por '+cmEsc(unitLabelText('area-price'))+' ('+cmEsc(sym())+')</label><input id="cm_f_apcm2" type="text" inputmode="decimal" data-utype="area-price" placeholder="0,000000"></div>'+
+    '<div data-cm-amodo="rollo"><label for="cm_f_aprollo">Precio del rollo ('+cmEsc(sym())+')</label><input id="cm_f_aprollo" type="text" inputmode="decimal" placeholder="0,00" value="'+vM(cmMoney(sa.precio_rollo,sa.moneda))+'">'+
+      '<div class="cm-g2"><div><label for="cm_f_aancho">Ancho ('+cmEsc(unitLabelText('len'))+')</label><input id="cm_f_aancho" type="text" inputmode="decimal" data-utype="len" placeholder="0"></div>'+
+      '<div><label for="cm_f_alargo">Largo ('+cmEsc(unitLabelText('len-m'))+')</label><input id="cm_f_alargo" type="text" inputmode="decimal" data-utype="len-m" placeholder="0"></div></div></div>'+
+  '</div>'+
+  '<div class="sv-box cm-form" data-cm-sec="equipo">'+
+    '<label for="cm_f_eprecio">Precio del equipo ('+cmEsc(sym())+')</label><input id="cm_f_eprecio" type="text" inputmode="decimal" placeholder="0,00" value="'+vM(tipo==='equipo'?cmMoney(se.precio,se.moneda):0)+'">'+
+    '<label for="cm_f_emodo">Se reparte por</label><select id="cm_f_emodo"><option value="vida"'+(se.modo==='vida'?' selected':'')+'>Vida útil (usos)</option><option value="capacidad"'+(se.modo==='capacidad'?' selected':'')+'>Capacidad por mes + meses</option></select>'+
+    '<div data-cm-emodo="vida"><label for="cm_f_evida">Vida útil (usos)</label><input id="cm_f_evida" type="text" inputmode="decimal" value="'+cmEsc(fmtVarPlain(se.vida||100,2))+'"></div>'+
+    '<div data-cm-emodo="capacidad" class="cm-g2"><div><label for="cm_f_emeses">Meses</label><input id="cm_f_emeses" type="text" inputmode="decimal" value="'+cmEsc(fmtVarPlain(se.meses||24,2))+'"></div>'+
+      '<div><label for="cm_f_ecap">Capacidad por mes</label><input id="cm_f_ecap" type="text" inputmode="decimal" value="'+cmEsc(fmtVarPlain(se.capacidad||100,2))+'"></div></div>'+
+  '</div>'+
+  '<div class="cm-prev" id="cm_f_prev">—</div>'+
+  '<div class="sv-box cm-form">'+
+    '<label for="cm_f_prov">Proveedor</label><input id="cm_f_prov" type="text" maxlength="80" placeholder="Opcional" value="'+cmEsc(m.proveedor||'')+'">'+
+    '<label for="cm_f_notas">Notas</label><textarea id="cm_f_notas" rows="2" maxlength="300" placeholder="Marca, medida, dónde lo compras…">'+cmEsc(m.notas||'')+'</textarea>'+
+  '</div>'+
+  '<div class="sv-hint err" id="cm_f_err" role="alert" hidden></div>'+
+  '<div class="sv-row"><button type="button" class="sv-btn" data-cm-close="1">Cancelar</button><button type="button" class="sv-btn main" id="cm_f_save">'+cmSvg(CM_ICO.save,18)+'Guardar</button></div>';
+  cmOpenLayer(html,sh=>{
+    // campos con unidades: se escriben en el sistema actual
+    if(sa.precio_cm2)writeMetric($('cm_f_apcm2'),areaPcm2,6);
+    if(sa.ancho_rollo)writeMetric($('cm_f_aancho'),sa.ancho_rollo,2);
+    if(sa.largo_rollo)writeMetric($('cm_f_alargo'),sa.largo_rollo,2);
+    sh.addEventListener('input',cmPreview);
+    sh.addEventListener('change',e=>{
+      if(e.target.id==='cm_f_medida'){
+        const md=e.target.value,us=$('cm_f_munidad');
+        if(md==='unidad')us.hidden=true;else{us.innerHTML=cmQtyOpts(md,'');us.hidden=false;}
+      }
+      cmTipoCambio();
+    });
+    $('cm_f_save').addEventListener('click',cmGuardar);
+    $('cm_f_nombre').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();cmGuardar();}});
+    cmTipoCambio();
+    setTimeout(()=>{const n=$('cm_f_nombre');if(n&&!n.value&&window.matchMedia&&window.matchMedia('(min-width:720px)').matches)n.focus();},60);
+  });
+}
+function cmTipoCambio(){
+  const t=($('cm_f_tipo')&&$('cm_f_tipo').value)||'material';
+  document.querySelectorAll('.cm-sheet [data-cm-sec]').forEach(el=>{el.hidden=el.getAttribute('data-cm-sec')!==t;});
+  const am=($('cm_f_amodo')&&$('cm_f_amodo').value)||'cm2';
+  document.querySelectorAll('.cm-sheet [data-cm-amodo]').forEach(el=>{el.hidden=el.getAttribute('data-cm-amodo')!==am;});
+  const em=($('cm_f_emodo')&&$('cm_f_emodo').value)||'vida';
+  document.querySelectorAll('.cm-sheet [data-cm-emodo]').forEach(el=>{el.hidden=el.getAttribute('data-cm-emodo')!==em;});
+  const hi=document.querySelector('.cm-sheet .sv-hi');
+  if(hi){hi.className='sv-hi cm-hi-'+t;hi.innerHTML=cmSvg(CM_ICO[t],20);}
+  const mh=$('cm_f_mhint');
+  if(mh){const md=($('cm_f_medida')&&$('cm_f_medida').value)||'unidad';
+    mh.textContent=md==='unidad'?'Ej.: si un paquete de 50 bolígrafos cuesta 10, escribe precio 10 y cantidad 50. Si lo compras de a uno, deja la cantidad en 1.'
+      :md==='peso'?'Ej.: si un saco de 5 kg cuesta 12, escribe precio 12 y cantidad 5 kg.':'Ej.: si un envase de 1 L cuesta 8, escribe precio 8 y cantidad 1 L.';}
+  cmPreview();
+}
+/* Lee la hoja y devuelve el material en unidades canónicas (área en métrico) y en la moneda actual */
+function cmLeerModal(){
+  const t=($('cm_f_tipo')&&$('cm_f_tipo').value)||'material',v=id=>parseEU(($('cm_f_'+id)||{}).value||'');
+  const m={tipo:t,precio:0,cantidad:1,datos:{moneda:_curSym}};
+  if(t==='material'){
+    const md=$('cm_f_medida').value;
+    m.precio=v('mprecio');m.cantidad=v('mcant');
+    m.datos.medida=md;m.datos.unidad=md==='unidad'?'':$('cm_f_munidad').value;
+  }else if(t==='area'){
+    const modo=$('cm_f_amodo').value==='rollo'?'rollo':'cm2';
+    Object.assign(m.datos,{modo,precio_cm2:readMetric($('cm_f_apcm2')),precio_rollo:v('aprollo'),ancho_rollo:readMetric($('cm_f_aancho')),largo_rollo:readMetric($('cm_f_alargo'))});
+    if(modo==='cm2'){m.datos.precio_rollo=0;m.datos.ancho_rollo=0;m.datos.largo_rollo=0;}else m.datos.precio_cm2=0;
+    m.precio=modo==='rollo'?m.datos.precio_rollo:0;
+  }else{
+    const modo=$('cm_f_emodo').value==='capacidad'?'capacidad':'vida';
+    m.precio=v('eprecio');
+    Object.assign(m.datos,{modo,vida:modo==='vida'?v('evida'):0,meses:modo==='capacidad'?v('emeses'):0,capacidad:modo==='capacidad'?v('ecap'):0});
+  }
+  return m;
+}
+function cmPreview(){
+  const out=$('cm_f_prev');if(!out)return;
+  const m=cmLeerModal(),s=cmSnap(m),v=cmPrincipal(m.tipo,s);
+  if(m.tipo==='material'){const q=cmQtyNow(s);out.innerHTML=(q.label?'Cada '+cmEsc(q.label)+' sale a ':'Cada unidad sale a ')+'<b>'+cmEsc(cmMoneyTxt(v))+'</b>';}
+  else if(m.tipo==='area')out.innerHTML='Cada '+cmEsc(unitLabelText('area-price'))+' sale a <b>'+cmEsc(sym()+' '+cmFix(v,6))+'</b>';
+  else out.innerHTML='Cada uso sale a <b>'+cmEsc(cmMoneyTxt(v))+'</b>';
+}
+function cmError(msg){const e=$('cm_f_err');if(e){e.textContent=msg;e.hidden=!msg;}if(msg)suiteToast(msg);}
+function cmGuardar(){
+  const nombre=($('cm_f_nombre').value||'').trim().replace(/\s+/g,' ');
+  if(!nombre){cmError('Escribe el nombre del material.');$('cm_f_nombre').focus();return;}
+  const lei=cmLeerModal(),all=cmLoad();
+  const dup=all.find(x=>x.tipo===lei.tipo&&cmNorm(x.nombre)===cmNorm(nombre)&&String(x.id)!==String(_cmEditId));
+  if(dup){cmError('Ya tienes «'+dup.nombre+'» en la lista. Edítalo en vez de crear otro.');return;}
+  if(lei.tipo==='material'&&!(lei.cantidad>0)){cmError('La cantidad debe ser mayor a 0.');return;}
+  if(lei.tipo==='area'&&lei.datos.modo==='rollo'&&!(lei.datos.ancho_rollo>0&&lei.datos.largo_rollo>0)){cmError('Escribe el ancho y el largo del rollo.');return;}
+  if(lei.tipo==='equipo'){
+    const e=lei.datos;
+    if(e.modo==='vida'?!(e.vida>0):!(e.meses>0&&e.capacidad>0)){cmError(e.modo==='vida'?'Escribe la vida útil del equipo (en usos).':'Escribe los meses y la capacidad por mes.');return;}
+  }
+  cmError('');
+  const base=(_cmEditId!=null)?all.find(x=>String(x.id)===String(_cmEditId)):null;
+  const ahora=new Date().toISOString();
+  const item={
+    id:base?base.id:cmNewId(new Set(all.map(x=>String(x.id)))),
+    nombre,tipo:lei.tipo,precio:lei.precio,cantidad:lei.cantidad,datos:lei.datos,
+    proveedor:($('cm_f_prov').value||'').trim(),notas:($('cm_f_notas').value||'').trim(),
+    created_at:(base&&base.created_at)||ahora,updated_at:ahora
+  };
+  if(base)all[all.indexOf(base)]=item;else all.push(item);
+  if(!cmSave(all))return;
+  const cb=_cmAlGuardar;_cmAlGuardar=null;_cmEditId=null;
+  cmCloseLayer();cmRender();
+  suiteToast((base?'Actualizado: ':'Guardado en la lista: ')+nombre);
+  if(cb)cb(item);
+  cmRevisarTodas();
+}
+function cmEliminar(id){
+  const all=cmLoad(),m=all.find(x=>String(x.id)===String(id));if(!m)return;
+  const n=cmUsos()[String(m.id)]||0;
+  if(!confirm('¿Eliminar «'+m.nombre+'» de la lista de costos?'+(n?'\n\nSe usó en '+n+' producto'+(n===1?'':'s')+'. Esos productos NO cambian; solo dejan de recibir avisos de cambio de precio de este material.':'')))return;
+  if(!cmSave(all.filter(x=>x!==m)))return;
+  cmRender();cmRevisarTodas();
+  suiteToast('Eliminado de la lista: '+m.nombre);
+}
+
+/* ═════════ Traer materiales de los productos guardados ═════════ */
+let _cmImpLista=[];
+function cmDesdeProducto(p,ids){
+  // Devuelve las líneas con precio de un producto guardado, ya en la moneda actual y con el área en métrico.
+  // Una línea vinculada a un material que ya se borró de la lista cuenta como no vinculada.
+  const out=[],mon=p.currency||'$',imp=p.unit_system==='imperial';
+  const ligada=x=>x.mat_id!=null&&x.mat_id!==''&&(!ids||ids.has(String(x.mat_id)));
+  const toM=(v,t)=>imp?UTYPES[t].toM(v):v;
+  (p.directos||[]).forEach(x=>{
+    if(!x||ligada(x))return;
+    const precio=parseEU(x.precio);if(!(precio>0))return;
+    const md=(x.tipo==='peso'||x.tipo==='volumen')?x.tipo:'unidad';
+    let un='';if(md!=='unidad'){const opts=CM_QTY[md][imp?'imperial':'metric'];un=opts.some(o=>o.v===x.cantUnit)?x.cantUnit:opts[0].v;}
+    out.push({nombre:x.desc,item:{tipo:'material',precio:cmMoney(precio,mon),cantidad:parseEU(x.cant)||1,datos:{medida:md,unidad:un,moneda:_curSym}}});
+  });
+  (p.materiales_area||[]).forEach(x=>{
+    if(!x||ligada(x))return;
+    const modo=x.modo==='rollo'?'rollo':'cm2';
+    const datos={modo,moneda:_curSym,
+      precio_cm2:modo==='cm2'?cmMoney(toM(parseEU(x.precio_cm2),'area-price'),mon):0,
+      precio_rollo:modo==='rollo'?cmMoney(parseEU(x.precio_rollo),mon):0,
+      ancho_rollo:modo==='rollo'?toM(parseEU(x.ancho_rollo),'len'):0,
+      largo_rollo:modo==='rollo'?toM(parseEU(x.largo_rollo),'len-m'):0};
+    const it={tipo:'area',precio:modo==='rollo'?datos.precio_rollo:0,cantidad:1,datos};
+    const s=cmSnap(it),ok=modo==='cm2'?s.precio_cm2>0:(s.precio_rollo>0&&s.ancho_rollo>0&&s.largo_rollo>0);
+    if(ok)out.push({nombre:x.nombre,item:it});
+  });
+  (p.depreciacion||[]).forEach(x=>{
+    if(!x||ligada(x))return;
+    const precio=parseEU(x.precio);if(!(precio>0))return;
+    const modo=x.modo==='capacidad'?'capacidad':'vida';
+    out.push({nombre:x.desc,item:{tipo:'equipo',precio:cmMoney(precio,mon),cantidad:1,datos:{modo,moneda:_curSym,
+      vida:modo==='vida'?(parseEU(x.vida)||100):0,meses:modo==='capacidad'?(parseEU(x.meses)||24):0,capacidad:modo==='capacidad'?(parseEU(x.capacidad)||100):0}}});
+  });
+  return out.filter(o=>String(o.nombre||'').trim());
+}
+function cmSig(it){
+  // firma para agrupar variantes: cifra principal + datos que la definen, redondeados
+  const s=cmSnap(it),c=Object.assign({},s);delete c.moneda;
+  Object.keys(c).forEach(k=>{if(typeof c[k]==='number')c[k]=Math.round(c[k]*1e6)/1e6;});
+  return JSON.stringify(c);
+}
+function cmAbrirImportar(){
+  const lista0=cmLoad(),existentes=new Set(lista0.map(m=>m.tipo+'|'+cmNorm(m.nombre))),ids=new Set(lista0.map(m=>String(m.id)));
+  const grupos={},calc={};
+  const agregar=(dic,src,o,quien)=>{
+    const nombre=String(o.nombre).trim().replace(/\s+/g,' '),k=o.item.tipo+'|'+cmNorm(nombre);
+    if(existentes.has(k))return;
+    const g=dic[k]||(dic[k]={src,tipo:o.item.tipo,nombre,variantes:{},quien:new Set()});
+    const sg=cmSig(o.item),v=g.variantes[sg]||(g.variantes[sg]={n:0,item:o.item});
+    v.n++;g.quien.add(quien);
+  };
+  cmProducts().forEach((p,pi)=>{const key=String(p.id||p.name||pi);cmDesdeProducto(p,ids).forEach(o=>agregar(grupos,'prod',o,key));});
+  cmDesdeCalculadoras().forEach(o=>{
+    const k=o.item.tipo+'|'+cmNorm(o.nombre);if(grupos[k])return;   // ya viene de tus productos
+    agregar(calc,'calc',o,o.origen);
+  });
+  const armar=g=>{
+    const vars=Object.values(g.variantes).sort((a,b)=>b.n-a.n);
+    return{src:g.src,tipo:g.tipo,nombre:g.nombre,item:vars[0].item,quien:[...g.quien],
+      otros:vars.slice(1).map(v=>cmTxtPrincipal(g.tipo,cmSnap(v.item)))};
+  };
+  const orden=(a,b)=>a.nombre.localeCompare(b.nombre,'es');
+  const lp=Object.values(grupos).map(armar).sort(orden),lc=Object.values(calc).map(armar).sort(orden);
+  _cmImpLista=lp.concat(lc);
+  const n=_cmImpLista.length;
+  const fila=(g,i)=>{
+    const pr=cmTxtPrincipal(g.tipo,cmSnap(g.item));
+    const donde=g.src==='prod'?'en '+g.quien.length+' producto'+(g.quien.length===1?'':'s'):'en '+g.quien.join(', ');
+    return '<label class="cm-imp-it cm-t-'+g.tipo+'" data-cmi-src="'+g.src+'"><input type="checkbox" class="cmi-chk" data-i="'+i+'" checked>'+
+      '<span class="cm-body"><span class="cm-name"><span class="cm-nm">'+cmEsc(g.nombre)+'</span><span class="cm-chip">'+cmEsc(cmChip(g.item))+'</span></span>'+
+      '<span class="cm-det"><b>'+cmEsc(pr)+'</b> · '+cmEsc(donde)+'</span>'+
+      (g.otros.length?'<span class="cm-warn-t">Tiene precios distintos: '+cmEsc(g.otros.join(' · '))+'. Se usa el que más se repite.</span>':'')+
+      '</span></label>';
+  };
+  const cuerpo=n?(lp.length?'<div class="cm-imp-h" data-cmi-grupo="prod">De tus productos guardados</div>'+lp.map((g,i)=>fila(g,i)).join(''):'')+
+      (lc.length?'<div class="cm-imp-h" data-cmi-grupo="calc">De tus calculadoras</div>'+lc.map((g,i)=>fila(g,lp.length+i)).join(''):'')
+    :'<div class="cm-empty"><div class="cm-empty-t">No hay nada nuevo para traer</div><p>Todo lo que tiene precio en tus productos y calculadoras ya está en la lista.</p></div>';
+  const html=cmHead('material','Traer a mi lista','Tus productos y calculadoras no se modifican')+
+    '<p class="cm-imp-note">Busco precios en tus productos guardados de <b>Producto personalizable</b> y en tus calculadoras (las filas que activaste o cuyo precio cambiaste, y tus líneas extra), y los agrupo por nombre.</p>'+
+    (n?'<div class="cm-imp-bar"><span id="cmi_res">'+n+' material'+(n===1?'':'es')+' encontrado'+(n===1?'':'s')+'</span><span class="cm-imp-mk"><button type="button" class="btn" data-cmi="on">Marcar todos</button><button type="button" class="btn" data-cmi="off">Quitar todos</button></span></div>':'')+
+    '<div class="cm-imp-list">'+cuerpo+'</div>'+
+    '<div class="sv-row"><button type="button" class="sv-btn" data-cm-close="1">'+(n?'Cancelar':'Cerrar')+'</button>'+(n?'<button type="button" class="sv-btn main" id="cmi_ok">Agregar a la lista</button>':'')+'</div>';
+  cmOpenLayer(html,sh=>{
+    sh.querySelectorAll('[data-cmi]').forEach(b=>b.addEventListener('click',()=>{const on=b.getAttribute('data-cmi')==='on';sh.querySelectorAll('.cmi-chk').forEach(c=>{c.checked=on;});}));
+    const ok=$('cmi_ok');if(ok)ok.addEventListener('click',cmImportarAplicar);
+  });
+}
+function cmImportarAplicar(){
+  const marcados=Array.from(document.querySelectorAll('.cm-sheet .cmi-chk')).filter(c=>c.checked).map(c=>_cmImpLista[parseInt(c.getAttribute('data-i'),10)]).filter(Boolean);
+  if(!marcados.length){suiteToast('No marcaste ningún material');return;}
+  const all=cmLoad(),usados=new Set(all.map(m=>String(m.id))),ahora=new Date().toISOString(),nuevos=[];
+  marcados.forEach(g=>{
+    const id=cmNewId(usados);usados.add(String(id));
+    nuevos.push({id,nombre:g.nombre,tipo:g.tipo,precio:g.item.precio||0,cantidad:g.item.cantidad||1,datos:g.item.datos||{},proveedor:'',notas:'',created_at:ahora,updated_at:ahora});
+  });
+  if(!cmSave(all.concat(nuevos)))return;
+  cmCloseLayer();cmRender();
+  suiteToast(nuevos.length+' material'+(nuevos.length===1?'':'es')+' agregado'+(nuevos.length===1?'':'s')+' a la lista');
+}
+
+/* ═════════ Producto personalizable: vínculo, avisos y sugerencias ═════════ */
+const CM_NAME_SEL='.pers-dir-desc,.pers-area-name,.pers-dep-desc,.xl-desc';
+const CM_MODS={vin:'Vinil',sub:'Sublimación',esf:'Esferas',dtf:'DTF',pap:'Papelería',eti:'Etiquetas',emp:'Empaques',env:'Envíos'};
+const CM_FIX_VIEWS=['vinil','sublimacion','esferas','dtf','papeleria','etiquetas','empaques','envios'];
+/* Lo usa Producto personalizable al crear una línea (restaura el vínculo guardado) y al guardar el producto */
+function cmPrepRow(row,tipo,d){
+  row.dataset.cmTipo=tipo;
+  const av=document.createElement('div');av.className='cm-aviso';av.hidden=true;row.appendChild(av);
+  if(d&&d.mat_id!=null&&d.mat_id!==''){
+    row.dataset.matId=String(d.mat_id);
+    row.dataset.matSnap=JSON.stringify(d.mat_snap||{});
+    row.dataset.matNombre=cmNorm(d.desc!=null?d.desc:(d.nombre||''));
+  }
+}
+function cmLinkOf(row){
+  if(!row||!row.dataset.matId)return{};
+  let s={};try{s=JSON.parse(row.dataset.matSnap||'{}');}catch(e){}
+  return{mat_id:row.dataset.matId,mat_snap:s};
+}
+function cmVincular(row,m){
+  row.dataset.matId=String(m.id);row.dataset.matSnap=JSON.stringify(cmSnap(m));row.dataset.matNombre=cmNorm(m.nombre);
+  cmAviso(row,null);cmFixBtn(row);
+}
+function cmDesvincular(row){delete row.dataset.matId;delete row.dataset.matSnap;delete row.dataset.matNombre;cmAviso(row,null);cmFixBtn(row);}
+function cmAviso(row,html){
+  let a=row.querySelector(':scope > .cm-aviso');
+  if(!a&&html){a=document.createElement('div');a.className='cm-aviso';row.appendChild(a);}
+  if(!a)return;
+  if(!html){a.hidden=true;a.innerHTML='';}else{a.innerHTML=html;a.hidden=false;}
+}
+function cmRevisarFila(row){
+  const id=row.dataset.matId;if(!id){cmAviso(row,null);return;}
+  const tipo=row.dataset.cmTipo,m=cmFind(id);
+  if(!m||m.tipo!==tipo){cmDesvincular(row);return;}   // ya no está en la lista: la línea queda como está
+  let snap={};try{snap=JSON.parse(row.dataset.matSnap||'{}');}catch(e){}
+  const act=cmSnap(m);
+  if(!cmDifiere(snap,act,tipo)){cmAviso(row,null);return;}
+  const antes=cmTxtPrincipal(tipo,snap),ahora=cmTxtPrincipal(tipo,act);
+  const msg=(antes!==ahora)
+    ?'El precio de <b>'+cmEsc(m.nombre)+'</b> cambió en tu lista de costos: '+cmEsc(antes)+' → <b>'+cmEsc(ahora)+'</b>'
+    :'Los datos de <b>'+cmEsc(m.nombre)+'</b> cambiaron en tu lista de costos.';
+  cmAviso(row,cmSvg(CM_ICO.alerta,18)+'<span class="cm-aviso-t">'+msg+'</span>'+
+    '<span class="cm-aviso-b"><button type="button" class="btn ok" data-cm-act="actualizar">Actualizar</button><button type="button" class="btn" data-cm-act="ignorar">Mantener el mío</button></span>');
+}
+function cmRevisarTodas(){
+  document.querySelectorAll('[data-cm-tipo]').forEach(cmRevisarFila);
+}
+function cmSetSel(sel,val){if(!sel)return;sel.value=val;sel.dispatchEvent(new Event('change',{bubbles:true}));}
+function cmNum(v){return String(Math.round((+v||0)*10000)/10000);}
+function cmVidaDe(s){return s.modo==='capacidad'?(s.meses||0)*(s.capacidad||0):(s.vida||0);}
+function cmAplicarEnFila(row,m){
+  const tipo=row.dataset.cmTipo,kind=row.dataset.cmKind||'pers',s=cmSnap(m),qq=c=>row.querySelector(c),set=(c,v)=>{const e=qq(c);if(e)e.value=v;};
+  let f=null;
+  if(kind==='xl'){
+    set('.xl-desc',m.nombre);
+    if(tipo==='material'){const qn=cmQtyNow(s);set('.xl-cant',cmNum(qn.cantidad));}
+    else{
+      // "Por tiempo" de la Suite = 24 meses × 100 usos; cualquier otro reparto se pasa a vida útil con el mismo costo por uso
+      const tiempo=s.modo==='capacidad'&&s.meses===24&&s.capacidad===100;
+      cmSetSel(qq('.xl-modo'),tiempo?'tiempo':'vida');
+      if(!tiempo)set('.xl-vida',cmNum(cmVidaDe(s)));
+    }
+    set('.xl-precio',cmField(cmMoney(s.precio,s.moneda)));
+    f=qq('.xl-precio');
+  }else if(kind==='fix'){
+    const px=row.dataset.cmFix,el=id=>$(px+'_'+id);
+    if(tipo==='material'){const qn=cmQtyNow(s);if(el('cant'))el('cant').value=cmNum(qn.cantidad);}
+    else if(el('vida'))el('vida').value=cmNum(cmVidaDe(s));
+    if(el('precio'))el('precio').value=cmField(cmMoney(s.precio,s.moneda));
+    f=el('precio');
+  }else if(tipo==='material'){
+    const qn=cmQtyNow(s);
+    set('.pers-dir-desc',m.nombre);
+    cmSetSel(qq('.pers-dir-tipo'),s.medida);
+    if(s.medida!=='unidad'){const us=qq('.pers-dir-cant-unit');if(us){us.value=qn.unidad;}}
+    set('.pers-dir-cant',fmtVarPlain(qn.cantidad,4));
+    set('.pers-dir-precio',cmField(cmMoney(s.precio,s.moneda)));
+    f=qq('.pers-dir-precio');
+  }else if(tipo==='area'){
+    set('.pers-area-name',m.nombre);
+    cmSetSel(qq('.pers-area-mode'),s.modo);
+    if(s.modo==='cm2')writeMetric(qq('.pers-area-pcm2'),cmMoney(s.precio_cm2,s.moneda),6);
+    else{
+      set('.pers-area-prollo',cmField(cmMoney(s.precio_rollo,s.moneda)));
+      writeMetric(qq('.pers-area-ancho'),s.ancho_rollo,2);
+      writeMetric(qq('.pers-area-largo'),s.largo_rollo,2);
+    }
+    f=qq('.pers-area-mode');
+  }else{
+    set('.pers-dep-desc',m.nombre);
+    set('.pers-dep-precio',cmField(cmMoney(s.precio,s.moneda)));
+    cmSetSel(qq('.pers-dep-modo'),s.modo);
+    if(s.modo==='vida')set('.pers-dep-vida',fmtVarPlain(s.vida,2));
+    else{set('.pers-dep-meses',fmtVarPlain(s.meses,2));set('.pers-dep-capacidad',fmtVarPlain(s.capacidad,2));}
+    f=qq('.pers-dep-precio');
+  }
+  cmVincular(row,m);
+  // recalcula (se dispara en un campo que no es el nombre, para no reabrir las sugerencias)
+  if(f){f.dispatchEvent(new Event('input',{bubbles:true}));f.dispatchEvent(new Event('change',{bubbles:true}));}
+  if(kind!=='pers'&&window.__suiteSaveSoon)window.__suiteSaveSoon();
+}
+/* «Guardar en la lista»: abre la hoja ya llena con lo que tiene la línea y, al guardar, la deja vinculada */
+function cmFixNombre(px){
+  const on=$(px+'_on'),sel=$(px+'_select')||$(px+'_sel'),nm=$(px+'_otro_name');
+  if(sel&&sel.selectedIndex>=0){
+    const t=sel.options[sel.selectedIndex].textContent.trim();
+    if(t==='Otro')return(nm&&nm.value.trim())||rowLabelText(on,px);
+    return t;
+  }
+  return rowLabelText(on,px);
+}
+function cmLeerFila(row){
+  // datos de la línea en la moneda actual (para "Guardar en la lista" y "Traer de mis calculadoras")
+  const tipo=row.dataset.cmTipo,kind=row.dataset.cmKind||'pers',g=c=>{const e=row.querySelector(c);return e?e.value:'';};
+  const it={tipo,nombre:'',precio:0,cantidad:1,datos:{moneda:_curSym}};
+  if(kind==='xl'){
+    it.nombre=g('.xl-desc').trim();it.precio=parseEU(g('.xl-precio'));
+    if(tipo==='material'){it.cantidad=parseEU(g('.xl-cant'))||1;Object.assign(it.datos,{medida:'unidad',unidad:''});}
+    else if(g('.xl-modo')==='vida')Object.assign(it.datos,{modo:'vida',vida:parseEU(g('.xl-vida'))||1000,meses:0,capacidad:0});
+    else Object.assign(it.datos,{modo:'capacidad',vida:0,meses:24,capacidad:100});
+  }else if(kind==='fix'){
+    const px=row.dataset.cmFix,v=id=>{const e=$(px+'_'+id);return e?e.value:'';};
+    it.nombre=cmFixNombre(px);it.precio=parseEU(v('precio'));
+    if(tipo==='material'){it.cantidad=parseEU(v('cant'))||1;Object.assign(it.datos,{medida:'unidad',unidad:''});}
+    else if($(px+'_vida'))Object.assign(it.datos,{modo:'vida',vida:parseEU(v('vida'))||1,meses:0,capacidad:0});
+    else Object.assign(it.datos,{modo:'capacidad',vida:0,meses:24,capacidad:100});
+  }else if(tipo==='material'){
+    const md=g('.pers-dir-tipo');
+    it.nombre=g('.pers-dir-desc').trim();it.precio=parseEU(g('.pers-dir-precio'));it.cantidad=parseEU(g('.pers-dir-cant'))||1;
+    it.datos.medida=(md==='peso'||md==='volumen')?md:'unidad';it.datos.unidad=it.datos.medida==='unidad'?'':g('.pers-dir-cant-unit');
+  }else if(tipo==='area'){
+    it.nombre=g('.pers-area-name').trim();
+    const modo=g('.pers-area-mode')==='rollo'?'rollo':'cm2';
+    Object.assign(it.datos,{modo,precio_cm2:readMetric(row.querySelector('.pers-area-pcm2')),precio_rollo:parseEU(g('.pers-area-prollo')),
+      ancho_rollo:readMetric(row.querySelector('.pers-area-ancho')),largo_rollo:readMetric(row.querySelector('.pers-area-largo'))});
+    it.precio=modo==='rollo'?it.datos.precio_rollo:0;
+  }else{
+    it.nombre=g('.pers-dep-desc').trim();it.precio=parseEU(g('.pers-dep-precio'));
+    const modo=g('.pers-dep-modo')==='capacidad'?'capacidad':'vida';
+    Object.assign(it.datos,{modo,vida:parseEU(g('.pers-dep-vida'))||100,meses:parseEU(g('.pers-dep-meses'))||24,capacidad:parseEU(g('.pers-dep-capacidad'))||100});
+  }
+  return it;
+}
+function cmGuardarDesdeFila(row){
+  const kind=row.dataset.cmKind||'pers',tipo=row.dataset.cmTipo;
+  const selNombre=kind==='xl'?'.xl-desc':kind==='fix'?null:(tipo==='material'?'.pers-dir-desc':tipo==='area'?'.pers-area-name':'.pers-dep-desc');
+  cmAbrirModal(cmLeerFila(row),item=>{
+    if(selNombre){const e=row.querySelector(selNombre);if(e)e.value=item.nombre;}
+    cmVincular(row,item);
+    const f=kind==='xl'?row.querySelector('.xl-precio'):kind==='fix'?$(row.dataset.cmFix+'_precio'):row.querySelector('.pers-dir-precio,.pers-area-mode,.pers-dep-precio');
+    if(f)f.dispatchEvent(new Event('input',{bubbles:true}));
+    if(kind!=='pers'&&window.__suiteSaveSoon)window.__suiteSaveSoon();
+  },null);
+}
+
+/* ═════════ Filas fijas de las calculadoras: botón «Mi lista» ═════════ */
+function cmFixRowOf(px){const on=$(px+'_on');return on?on.closest('.acc-concept'):null;}
+function cmFixPrefixes(){
+  // filas con casilla y Cant./Precio (insumos) o Precio/Cant. de usos (equipos)
+  const out=[];
+  CM_FIX_VIEWS.forEach(v=>{
+    const sec=$('view-'+v);if(!sec)return;
+    sec.querySelectorAll('input[id$="_precio"]').forEach(el=>{
+      const px=el.id.slice(0,-7);
+      if(!$(px+'_on')||!cmFixRowOf(px))return;
+      if($(px+'_cant')&&$(px+'_use'))out.push({px,tipo:'material'});
+      else if($(px+'_uses')&&($(px+'_mes')||$(px+'_vida')))out.push({px,tipo:'equipo'});
+    });
+  });
+  return out;
+}
+function cmFixMark(px,tipo){
+  const row=cmFixRowOf(px);if(!row)return null;
+  row.dataset.cmKind='fix';row.dataset.cmFix=px;row.dataset.cmTipo=tipo;
+  return row;
+}
+function cmFixBtn(row){
+  if(!row||row.dataset.cmKind!=='fix')return;
+  const b=row.querySelector('.cm-fixbtn');if(!b)return;
+  const m=row.dataset.matId?cmFind(row.dataset.matId):null;
+  b.classList.toggle('on',!!m);
+  b.innerHTML=cmSvg(m?CM_ICO.link:CM_ICO.list,15)+'<span>'+cmEsc(m?m.nombre:'Mi lista')+'</span>';
+  b.setAttribute('aria-label',m?'Vinculado a '+m.nombre+' de tu lista de costos. Cambiar':'Elegir un material de mi lista de costos');
+}
+function cmFixSetup(){
+  cmFixPrefixes().forEach(({px,tipo})=>{
+    const row=cmFixMark(px,tipo);if(!row||row.querySelector('.cm-fixbtn'))return;
+    const head=$(px+'_on').closest('label');const hr=head&&head.parentElement;
+    const b=document.createElement('button');b.type='button';b.className='cm-fixbtn';b.dataset.cmPick='1';
+    (hr&&hr!==row?hr:row).appendChild(b);
+    cmFixBtn(row);
+  });
+}
+/* Vínculos de las filas fijas: se guardan en el estado y en los Guardados de cada módulo */
+function cmFixLinks(view){
+  const out={},sc=view?$('view-'+view):document;if(!sc)return out;
+  sc.querySelectorAll('[data-cm-kind="fix"][data-mat-id]').forEach(r=>{out[r.dataset.cmFix]=cmLinkOf(r);});
+  return out;
+}
+function cmFixApply(map,view){
+  const sc=view?$('view-'+view):document;if(!sc)return;
+  sc.querySelectorAll('[data-cm-kind="fix"][data-mat-id]').forEach(r=>{delete r.dataset.matId;delete r.dataset.matSnap;delete r.dataset.matNombre;cmAviso(r,null);cmFixBtn(r);});
+  Object.keys(map||{}).forEach(px=>{
+    const d=map[px];if(!d||d.mat_id==null)return;
+    const on=$(px+'_on');if(!on||(view&&!sc.contains(on)))return;
+    const tipo=$(px+'_cant')?'material':'equipo';
+    const row=cmFixMark(px,tipo);if(!row)return;
+    row.dataset.matId=String(d.mat_id);row.dataset.matSnap=JSON.stringify(d.mat_snap||{});
+    cmFixBtn(row);
+  });
+  if(typeof _cmLayer!=='undefined')cmRevisarTodas();
+}
+function cmFixClearAll(){cmFixApply({},null);}
+/* Hoja para elegir un material de la lista para una fila fija */
+function cmAbrirSelector(row){
+  const tipo=row.dataset.cmTipo,px=row.dataset.cmFix,actual=row.dataset.matId?cmFind(row.dataset.matId):null;
+  const nombre=cmFixNombre(px),mod=CM_MODS[px.split('_')[0]]||'';
+  const tiempo=tipo==='equipo'&&!$(px+'_vida');
+  const html=cmHead(tipo,'Elegir de mi lista',nombre+(mod?' · '+mod:''))+
+    (actual?'<div class="cm-pick-cur"><span>Vinculado a <b>'+cmEsc(actual.nombre)+'</b></span><button type="button" class="btn" id="cm_pick_off">Quitar vínculo</button></div>':'')+
+    (tiempo?'<p class="cm-imp-note">Esta fila reparte el equipo en 2 años × 100 usos al mes: se toma solo el precio.</p>':'')+
+    '<input id="cm_pick_q" class="cm-pick-q" type="text" inputmode="search" autocomplete="off" placeholder="Buscar en '+(tipo==='equipo'?'mis equipos':'mis materiales')+'…" aria-label="Buscar">'+
+    '<div class="cm-imp-list" id="cm_pick_list"></div>'+
+    '<div class="sv-row"><button type="button" class="sv-btn" data-cm-close="1">Cancelar</button><button type="button" class="sv-btn main" id="cm_pick_new">'+cmSvg(CM_ICO.plus,18)+'Nuevo con estos datos</button></div>';
+  cmOpenLayer(html,sh=>{
+    const lista=()=>{
+      const q=($('cm_pick_q').value||'').trim();
+      const its=cmLoad().filter(m=>m.tipo===tipo&&(!q||cmMatch(q,m.nombre)||cmMatch(q,m.proveedor))).sort((a,b)=>String(a.nombre).localeCompare(String(b.nombre),'es'));
+      $('cm_pick_list').innerHTML=its.length?its.map(m=>'<button type="button" class="cm-pick-it cm-t-'+tipo+(actual&&String(actual.id)===String(m.id)?' sel':'')+'" data-id="'+cmEsc(String(m.id))+'">'+
+        '<span class="cm-body"><span class="cm-name"><span class="cm-nm">'+cmEsc(m.nombre)+'</span><span class="cm-chip">'+cmEsc(cmChip(m))+'</span></span><span class="cm-det">'+cmDetalle(m)+'</span></span></button>').join('')
+        :'<div class="cm-empty"><div class="cm-empty-t">'+(q?'Sin resultados':(tipo==='equipo'?'Aún no tienes equipos en la lista':'Aún no tienes materiales por unidad en la lista'))+'</div><p>Usa «Nuevo con estos datos» para guardar esta fila en tu lista.</p></div>';
+    };
+    lista();
+    $('cm_pick_q').addEventListener('input',lista);
+    $('cm_pick_list').addEventListener('click',e=>{const b=e.target.closest('[data-id]');if(!b)return;const m=cmFind(b.getAttribute('data-id'));cmCloseLayer();if(m){cmAplicarEnFila(row,m);suiteToast('Vinculado a: '+m.nombre);}});
+    $('cm_pick_new').addEventListener('click',()=>cmGuardarDesdeFila(row));
+    const off=$('cm_pick_off');if(off)off.addEventListener('click',()=>{cmDesvincular(row);cmCloseLayer();if(window.__suiteSaveSoon)window.__suiteSaveSoon();suiteToast('Se quitó el vínculo');});
+  });
+}
+/* Líneas de las calculadoras para «Traer»: filas fijas activas o con precio distinto al de fábrica, y líneas extra */
+function cmDesdeCalculadoras(){
+  const out=[];
+  cmFixPrefixes().forEach(({px,tipo})=>{
+    const row=cmFixMark(px,tipo);if(!row||row.dataset.matId)return;
+    const pr=$(px+'_precio'),on=$(px+'_on');
+    const fabrica=parseEU(pr.defaultValue)*moneyRate(_curSym),actual=parseEU(pr.value);
+    if(!(actual>0))return;
+    // filas con selector (Producto, Sustrato…): el precio lo pone la opción elegida, así que cuentan solo si están activadas
+    const conSelector=!!($(px+'_select')||$(px+'_sel'));
+    if(!on.checked&&(conSelector||Math.abs(actual-fabrica)<0.005))return;
+    out.push({nombre:cmFixNombre(px),origen:CM_MODS[px.split('_')[0]]||'',item:cmLeerFila(row)});
+  });
+  document.querySelectorAll('.xl-host .xl-row').forEach(row=>{
+    if(!row.dataset.cmTipo||row.dataset.matId)return;
+    const it=cmLeerFila(row);if(!it.nombre||!(it.precio>0))return;
+    const host=row.closest('.xl-host');
+    out.push({nombre:it.nombre,origen:CM_MODS[host&&host.getAttribute('data-xl-p')]||'',item:it});
+  });
+  return out;
+}
+/* ── Menú de sugerencias (flota sobre la página para que ninguna tarjeta lo recorte) ── */
+const _cmSug={el:null,inp:null,items:[],nuevo:null,idx:-1,dentro:false};
+function cmSugEl(){
+  if(_cmSug.el)return _cmSug.el;
+  const el=document.createElement('div');el.id='cm_sug';el.className='cm-sug';el.setAttribute('role','listbox');el.hidden=true;
+  document.body.appendChild(el);
+  el.addEventListener('mousedown',e=>e.preventDefault());            // no quitar el foco del campo
+  el.addEventListener('pointerdown',()=>{_cmSug.dentro=true;});
+  el.addEventListener('click',e=>{const it=e.target.closest('[data-i]');if(it)cmSugElegir(it.getAttribute('data-i'));});
+  _cmSug.el=el;return el;
+}
+function cmSugOcultar(){if(_cmSug.el)_cmSug.el.hidden=true;_cmSug.inp=null;_cmSug.idx=-1;_cmSug.dentro=false;}
+function cmSugPosicionar(){
+  const el=_cmSug.el,inp=_cmSug.inp;if(!el||!inp||el.hidden)return;
+  const r=inp.getBoundingClientRect(),vw=window.innerWidth,vh=window.innerHeight;
+  el.style.width=Math.min(Math.max(r.width,260),vw-16)+'px';
+  el.style.left=Math.max(8,Math.min(r.left,vw-8-el.offsetWidth))+'px';
+  el.style.top=(r.bottom+4)+'px';
+  const h=el.offsetHeight;
+  if(r.bottom+4+h>vh-8&&r.top>h+8)el.style.top=(r.top-h-4)+'px';
+}
+function cmSugMostrar(inp){
+  const row=inp.closest('[data-cm-tipo]'),tipo=row?row.dataset.cmTipo:'';
+  if(!tipo){cmSugOcultar();return;}
+  const q=(inp.value||'').trim(),qn=cmNorm(q);
+  const todos=cmLoad().filter(m=>m.tipo===tipo);
+  let items=qn?todos.filter(m=>cmMatch(q,m.nombre)):todos.slice();
+  const rank=m=>{const n=cmNorm(m.nombre);return n===qn?0:n.indexOf(qn)===0?1:n.indexOf(qn)>=0?2:3;};
+  items.sort((a,b)=>rank(a)-rank(b)||String(a.nombre).localeCompare(String(b.nombre),'es'));
+  items=items.slice(0,8);
+  const exacto=todos.some(m=>cmNorm(m.nombre)===qn);
+  const nuevo=(q.length>=2&&!exacto)?q:null;
+  if(!items.length&&!nuevo){cmSugOcultar();return;}
+  _cmSug.inp=inp;_cmSug.items=items;_cmSug.nuevo=nuevo;_cmSug.idx=-1;
+  const el=cmSugEl();
+  el.innerHTML=items.map((m,i)=>'<div class="cm-sug-it" role="option" data-i="'+i+'"><span class="cm-sug-n">'+cmEsc(m.nombre)+'</span><span class="cm-sug-p">'+cmEsc(cmTxtPrincipal(tipo,cmSnap(m)))+'</span></div>').join('')+
+    (nuevo?'<div class="cm-sug-it cm-sug-new" role="option" data-i="nuevo">'+cmSvg(CM_ICO.plus,16)+'<span class="cm-sug-n">Guardar «'+cmEsc(nuevo)+'» en la lista de costos</span></div>':'');
+  el.hidden=false;
+  cmSugPosicionar();
+}
+function cmSugElegir(i){
+  const inp=_cmSug.inp;if(!inp)return;
+  const row=inp.closest('[data-cm-tipo]');if(!row){cmSugOcultar();return;}
+  if(i==='nuevo'){cmSugOcultar();cmGuardarDesdeFila(row);return;}
+  const m=_cmSug.items[parseInt(i,10)];cmSugOcultar();if(!m)return;
+  cmAplicarEnFila(row,m);
+  if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+}
+function cmSugMarcar(delta){
+  const el=_cmSug.el;if(!el)return;
+  const its=Array.from(el.querySelectorAll('.cm-sug-it'));if(!its.length)return;
+  _cmSug.idx=(_cmSug.idx+delta+its.length)%its.length;
+  its.forEach((x,k)=>x.classList.toggle('on',k===_cmSug.idx));
+  its[_cmSug.idx].scrollIntoView({block:'nearest'});
+}
+function cmInitEditorHooks(){
+  if(window.__cmHooks)return;
+  window.__cmHooks=true;
+  const esNombre=t=>!!(t&&t.matches&&t.matches(CM_NAME_SEL)&&t.closest('[data-cm-tipo]'));
+  document.addEventListener('focusin',e=>{if(esNombre(e.target))cmSugMostrar(e.target);});
+  document.addEventListener('input',e=>{
+    if(!esNombre(e.target))return;
+    const row=e.target.closest('[data-cm-tipo]');
+    // si cambia el nombre a mano, la línea deja de estar vinculada a la lista
+    if(row&&row.dataset.matId&&cmNorm(e.target.value)!==row.dataset.matNombre)cmDesvincular(row);
+    cmSugMostrar(e.target);
+  });
+  document.addEventListener('change',e=>{
+    // fila fija con selector (Producto, Sustrato…): si eliges otra opción, ya es otro material
+    const t=e.target;if(!t||t.tagName!=='SELECT'||_stRestoring||!/_(select|sel)$/.test(t.id||''))return;
+    const row=t.closest('[data-cm-kind="fix"][data-mat-id]');
+    if(row){cmDesvincular(row);if(window.__suiteSaveSoon)window.__suiteSaveSoon();}
+  });
+  document.addEventListener('keydown',e=>{
+    if(!esNombre(e.target)||_cmSug.inp!==e.target||!_cmSug.el||_cmSug.el.hidden)return;
+    if(e.key==='ArrowDown'){e.preventDefault();cmSugMarcar(1);}
+    else if(e.key==='ArrowUp'){e.preventDefault();cmSugMarcar(-1);}
+    else if(e.key==='Enter'&&_cmSug.idx>=0){e.preventDefault();const it=_cmSug.el.querySelectorAll('.cm-sug-it')[_cmSug.idx];if(it)cmSugElegir(it.getAttribute('data-i'));}
+    else if(e.key==='Escape'){e.preventDefault();cmSugOcultar();}
+  });
+  document.addEventListener('focusout',e=>{
+    if(!esNombre(e.target))return;
+    setTimeout(()=>{if(!_cmSug.dentro&&document.activeElement!==_cmSug.inp)cmSugOcultar();},150);
+  });
+  document.addEventListener('click',e=>{
+    const pk=e.target.closest&&e.target.closest('[data-cm-pick]');
+    if(pk){const row=pk.closest('[data-cm-kind="fix"]');if(row)cmAbrirSelector(row);return;}
+    const b=e.target.closest&&e.target.closest('[data-cm-act]');if(!b)return;
+    const row=b.closest('[data-cm-tipo]');if(!row)return;
+    const m=cmFind(row.dataset.matId);if(!m){cmDesvincular(row);return;}
+    if(b.getAttribute('data-cm-act')==='actualizar'){cmAplicarEnFila(row,m);suiteToast('Precio actualizado: '+m.nombre);}
+    else{row.dataset.matSnap=JSON.stringify(cmSnap(m));cmAviso(row,null);if(window.__suiteSaveSoon)window.__suiteSaveSoon();}
+  });
+  document.addEventListener('pointerdown',e=>{
+    if(!_cmSug.inp)return;
+    if(e.target.closest&&(e.target.closest('#cm_sug')||esNombre(e.target)))return;
+    cmSugOcultar();
+  },true);
+  window.addEventListener('resize',()=>{if(_cmSug.inp)cmSugPosicionar();});
+  document.addEventListener('scroll',()=>{if(_cmSug.inp)cmSugPosicionar();},true);
+}
+function initCostMat(){
+  const v=$('view-costos');
+  if(v){
+    $('cm_q')&&$('cm_q').addEventListener('input',cmRender);
+    $('cm_ftipo')&&$('cm_ftipo').addEventListener('change',cmRender);
+    $('cm_new')&&$('cm_new').addEventListener('click',cmAbrirNuevo);
+    $('cm_import')&&$('cm_import').addEventListener('click',cmAbrirImportar);
+    $('cm_list')&&$('cm_list').addEventListener('click',e=>{
+      const b=e.target.closest('[data-cm]');if(!b)return;
+      const id=b.getAttribute('data-id');
+      if(b.getAttribute('data-cm')==='edit')cmEditar(id);else cmEliminar(id);
+    });
+    // la lista se redibuja al entrar (los productos o la moneda pudieron cambiar)
+    const menu=$('menu');
+    if(menu)menu.addEventListener('click',e=>{const it=e.target.closest('.item');if(it&&it.dataset.view==='costos')cmRender();});
+  }
+  ALL_RECALCS.push(()=>{cmRender();cmRevisarTodas();});
+  cmFixSetup();
+  cmInitEditorHooks();
+  cmRender();
+  cmRevisarTodas();
+}
+
+/* ═══════════════════════════════════════════════════════════
    MODULE: PRODUCTO PERSONALIZABLE (dynamic save/load/export)
    ═══════════════════════════════════════════════════════════ */
 (function(){
@@ -4696,6 +5675,7 @@ function convertMoneyValue(n,fromSym,toSym){
       <div class="pers-dir-util-unit-wrap" style="min-width:90px;flex:1;display:none"><label>Unidad</label><select class="pers-dir-util-unit"></select></div>
       <div style="min-width:150px;flex:1"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input type="text" class="ud pers-dir-used" value="0,00" readonly></div>
       <div><button class="copy-btn" type="button">Eliminar</button></div>`;
+    cmPrepRow(row,'material',data);
     q('.pers-dir-tipo',row).addEventListener('change',()=>{refreshQtyRowUnits(row);recalc();});
     refreshQtyRowUnits(row,data.cantUnit,data.utilUnit);
     q('.copy-btn',row).addEventListener('click',()=>{row.remove();recalc();});
@@ -4721,6 +5701,7 @@ function convertMoneyValue(n,fromSym,toSym){
       <div style="min-width:110px;flex:1"><label>Cant. de usos</label><input type="text" class="pers-dep-usos" value="${escapeHTML(data.usos||'1')}"></div>
       <div style="min-width:140px;flex:1"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input type="text" class="ud pers-dep-used" value="0,00" readonly></div>
       <div><button class="copy-btn" type="button">Eliminar</button></div>`;
+    cmPrepRow(row,'equipo',data);
     const modoSel=q('.pers-dep-modo',row),vidaWrap=q('.pers-dep-vida-wrap',row),capWrap=q('.pers-dep-cap-wrap',row);
     modoSel.addEventListener('change',()=>{
       const m=modoSel.value;
@@ -4768,6 +5749,7 @@ function convertMoneyValue(n,fromSym,toSym){
       <div style="min-width:90px"><label>Merma (%)</label><input type="text" class="pers-area-merma" value="${escapeHTML(data.merma||'')}" placeholder="0"></div>
       <div style="min-width:150px;flex:1"><label>Costo</label><div class="pill"><strong class="pers-area-pill-cost">$ 0,00</strong></div></div>
       <div><button class="copy-btn pers-area-del" type="button">Eliminar</button></div>`;
+    cmPrepRow(row,'area',data);
     q('.pers-area-mode',row).addEventListener('change',()=>{
       const m=q('.pers-area-mode',row).value;
       q('.pers-area-cm2',row).style.display=(m==='cm2')?'block':'none';
@@ -4942,20 +5924,21 @@ function convertMoneyValue(n,fromSym,toSym){
     data.icon=currentIcon;
     dirWrap.querySelectorAll('.row').forEach(r=>{
       data.directos.push({desc:q('.pers-dir-desc',r)?.value||'',cant:q('.pers-dir-cant',r)?.value||'',precio:q('.pers-dir-precio',r)?.value||'',utilcant:q('.pers-dir-utilcant',r)?.value||'',
-        tipo:q('.pers-dir-tipo',r)?.value||'unidad',cantUnit:q('.pers-dir-cant-unit',r)?.value||'',utilUnit:q('.pers-dir-util-unit',r)?.value||''});
+        tipo:q('.pers-dir-tipo',r)?.value||'unidad',cantUnit:q('.pers-dir-cant-unit',r)?.value||'',utilUnit:q('.pers-dir-util-unit',r)?.value||'',...cmLinkOf(r)});
     });
     areaWrap.querySelectorAll('.pers-area-row').forEach(r=>{
       data.materiales_area.push({nombre:q('.pers-area-name',r)?.value||'',modo:q('.pers-area-mode',r)?.value||'cm2',
         precio_cm2:q('.pers-area-pcm2',r)?.value||'',precio_rollo:q('.pers-area-prollo',r)?.value||'',
         ancho_rollo:q('.pers-area-ancho',r)?.value||'',largo_rollo:q('.pers-area-largo',r)?.value||'',
         ancho_uso:q('.pers-area-usoancho',r)?.value||'',alto_uso:q('.pers-area-usoalto',r)?.value||'',
-        cantidad:q('.pers-area-cant',r)?.value||'',merma:q('.pers-area-merma',r)?.value||''});
+        cantidad:q('.pers-area-cant',r)?.value||'',merma:q('.pers-area-merma',r)?.value||'',...cmLinkOf(r)});
     });
     depWrap.querySelectorAll('.row').forEach(r=>{
       const modo=q('.pers-dep-modo',r)?.value||'vida';
       const item={desc:q('.pers-dep-desc',r)?.value||'',precio:q('.pers-dep-precio',r)?.value||'',modo,usos:q('.pers-dep-usos',r)?.value||''};
       if(modo==='vida')item.vida=q('.pers-dep-vida',r)?.value||'';
       else{item.meses=q('.pers-dep-meses',r)?.value||'';item.capacidad=q('.pers-dep-capacidad',r)?.value||'';}
+      Object.assign(item,cmLinkOf(r));
       data.depreciacion.push(item);
     });
     moWrap.querySelectorAll('.row').forEach(r=>{
@@ -5012,6 +5995,7 @@ function convertMoneyValue(n,fromSym,toSym){
     $('pers_gmode').value=gi.modo||'Margen';$('pers_g_on').checked=!!gi.gOn;$('pers_g_pct').value=gi.gPct||'30';
     $('pers_i_on').checked=!!gi.iOn;$('pers_i_pct').value=gi.iPct||'16';
     recalc();
+    cmRevisarTodas();
   }
   window.__persFillFromJSON=fillFromJSON;
   window.__persCurrentToJSON=currentToJSON;
@@ -6128,7 +7112,7 @@ function convertMoneyValue(n,fromSym,toSym){
    ═══════════════════════════════════════════════════════════ */
 (function(){
   const BACKUP_KEYS=[
-    'Suite.pers.products','Suite.pers.categories','Suite.pers.quotes',
+    'Suite.pers.products','Suite.pers.categories','Suite.pers.quotes','Suite.costmat',
     'suite_money_rates','suite_money_rates_updated','suite_currency_symbol','suite_dark',
     'suite_decimal_sep','suite_first_run_done','suite_unit_system',
     'last_view','calc_history','Suite.state.v1',
@@ -7952,6 +8936,7 @@ $('btn_factory_reset')?.addEventListener('click',()=>{
   // whichever unit system (Métrico/Americano) is currently active. Fields tagged
   // [data-money] store their USD default the same way, restored via the active
   // exchange rate so they respect whichever moneda is currently selected.
+  cmFixClearAll();
   $$('.view input[type="checkbox"]').forEach(c=>{c.checked=false;});
   $$('.view input[type="number"]').forEach(i=>{
     if(!i.id||i.readOnly)return;
@@ -8622,6 +9607,7 @@ function stBlocks(){
 }
 function stSnapshot(){
   const snap={v:1,cur:_curSym,unit:UNIT_SYSTEM,f:stFields(),b:stBlocks(),xl:xlSerialize()};
+  const cml=cmFixLinks();if(Object.keys(cml).length)snap.cml=cml;
   try{if(typeof window.__persCurrentToJSON==='function')snap.pers={d:window.__persCurrentToJSON(),n:($('pers_name')&&$('pers_name').value)||''};}catch(e){}
   try{if(typeof window.__cotCurrentToJSON==='function')snap.cot=window.__cotCurrentToJSON();}catch(e){}
   return snap;
@@ -8753,6 +9739,9 @@ function stRestore(snapIn,mod){
       });
     });
 
+    /* 3b) Vínculos de filas fijas con Costos de materiales */
+    step(()=>{if(mod&&!mod.view)return;cmFixApply(snap.cml||{},mod?mod.view:null);});
+
     /* 4) Borrador de Producto personalizable y de la Cotización en curso */
     step(()=>{
       if(snap.pers&&snap.pers.d&&typeof window.__persFillFromJSON==='function'){
@@ -8801,6 +9790,7 @@ window.__modSnap=function(m){
     const all=stBlocks();snap.b={};
     d.blocks.forEach(k=>{snap.b[k]=all[k];});
     snap.xl=xlSerialize(d.xl);
+    const cml=cmFixLinks(d.view);if(Object.keys(cml).length)snap.cml=cml;
   }
   if(d.pers){
     snap.f={};snap.b={};snap.xl={};
@@ -8842,6 +9832,7 @@ stWire();
 initComfort();
 initZeroDim();
 initPriceBar();
+initCostMat();
 })();
 </script>
 <script>
@@ -9151,6 +10142,7 @@ body.dark .sv-li-m b{color:var(--ink)}
   /* dónde va la tarjeta "Guardado": bajo el Precio de Venta; en Envíos bajo el total; en Hoja al final */
   function anchorFor(m,sec){
     if(m==='hojaetq'){var c6=$('hoj_card_6');return c6?{host:c6.parentNode,after:c6,solo:true}:null;}
+    if(m==='express'){var xh=$('xp_hero');if(xh&&xh.parentNode&&xh.parentNode.classList.contains('gi-side'))return{host:xh.parentNode,after:xh,solo:false};}
     if(m==='envios'||m==='express'){var g=sec.querySelector('.grid'),last=g&&g.lastElementChild;return last?{host:g,after:last,solo:true}:null;}
     var fin=sec.querySelector('.gi-side > .gi-final');
     return fin?{host:fin.parentNode,after:fin,solo:false}:null;
