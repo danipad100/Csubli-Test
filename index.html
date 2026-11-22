@@ -1054,7 +1054,7 @@ body.dark .xp-tbl th{border-top:0}
 @media(prefers-reduced-motion:reduce){.xp-seg button:active{transform:none}.xp-bar i{transition:none}}
 </style>
 </head>
-<body data-app-version="V40.33">
+<body data-app-version="V40.34">
 <div class="app">
 <header class="app-header">
   <div class="menu-wrapper">
@@ -3361,7 +3361,7 @@ body.dark .xp-tbl th{border-top:0}
 </div>
 </div></section>
 
-<footer class="footer">Suite creada por @subli_mada — V40.33</footer>
+<footer class="footer">Suite creada por @subli_mada — V40.34</footer>
 </div>
 <!-- V40.33: aviso de actualización disponible -->
 <div class="upd-veil" id="upd_veil" hidden></div>
@@ -3375,7 +3375,7 @@ body.dark .xp-tbl th{border-top:0}
 'use strict';
 const $=id=>document.getElementById(id);
 const $$=(sel,ctx=document)=>Array.from(ctx.querySelectorAll(sel));
-const PWA_VER='v40_33';
+const PWA_VER='v40_34';
 
 /* ═══ HELPERS: number formatting (configurable decimal separator) ═══ */
 const EU_FMT=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -3538,17 +3538,17 @@ try{_curSym=localStorage.getItem('suite_currency_symbol')||'$';}catch(e){}
 window.Suite.currency={symbol:_curSym};
 
 /* ═══ TASAS DE CAMBIO (moneda local por 1 USD) ═══
-   Referencia aproximada de julio 2026. El dólar (USD) es siempre la base fija = 1.
+   Referencia del 21 de noviembre de 2026 (fuente: fawazahmed0/exchange-api, la misma del botón «Actualizar tasas»). El dólar (USD) es siempre la base fija = 1.
    Todo campo [data-money] en la Suite está SIEMPRE guardado en el DOM en la moneda
    actualmente seleccionada (no en un valor canónico): al cambiar de moneda se
    reescriben con la razón (tasaNueva/tasaVieja), igual que hace convertContainerUnits
    con las unidades físicas. Las tasas son editables en Configuración porque se
    desactualizan con el tiempo; el usuario las corrige ahí cuando quiera.  */
 const DEFAULT_MONEY_RATES={
-  '$':1,'€':0.87,'£':0.76,'Bs.':639.70,'COP$':3450,'MX$':17.40,'AR$':1480,
-  'CL$':900,'S/.':3.41,'R$':5.10,'$U':40.60,'Bs':6.92,'₲':6132,'₡':453,
-  'RD$':59,'CA$':1.42,'CU$':120,'J$':159,'G':131,'TT$':6.80,'B$':1.00,
-  'Bds$':2.00,'GY$':208.50,'Q':7.63,'L':26.72,'C$':36.63,'B/.':1.00,'Sr$':36.50
+  '$':1,'€':0.91,'£':0.76,'Bs.':918.04,'COP$':3509,'MX$':19.16,'AR$':1571,
+  'CL$':1023,'S/.':3.42,'R$':5.95,'$U':40.61,'Bs':11.74,'₲':6300,'₡':447.35,
+  'RD$':59.74,'CA$':1.43,'CU$':23.97,'J$':158.36,'G':131.00,'TT$':6.78,'B$':1.00,
+  'Bds$':2.00,'GY$':208.59,'Q':7.64,'L':26.97,'C$':36.79,'B/.':1.00,'Sr$':37.42
 };
 let MONEY_RATES={};
 Object.assign(MONEY_RATES,DEFAULT_MONEY_RATES);
