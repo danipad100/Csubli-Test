@@ -1054,7 +1054,7 @@ body.dark .xp-tbl th{border-top:0}
 @media(prefers-reduced-motion:reduce){.xp-seg button:active{transform:none}.xp-bar i{transition:none}}
 </style>
 </head>
-<body data-app-version="V40.40">
+<body data-app-version="V40.41">
 <div class="app">
 <header class="app-header">
   <div class="menu-wrapper">
@@ -3356,7 +3356,7 @@ body.dark .xp-tbl th{border-top:0}
 </div>
 </div></section>
 
-<footer class="footer">Suite creada por @subli_mada — V40.40</footer>
+<footer class="footer">Suite creada por @subli_mada — V40.41</footer>
 </div>
 <!-- V40.33: aviso de actualización disponible -->
 <div class="upd-veil" id="upd_veil" hidden></div>
@@ -3370,7 +3370,7 @@ body.dark .xp-tbl th{border-top:0}
 'use strict';
 const $=id=>document.getElementById(id);
 const $$=(sel,ctx=document)=>Array.from(ctx.querySelectorAll(sel));
-const PWA_VER='v40_40';
+const PWA_VER='v40_41';
 
 /* ═══ HELPERS: number formatting (configurable decimal separator) ═══ */
 const EU_FMT=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -3934,7 +3934,8 @@ function xlRowCalc(row){
     used=ud*clamp0(parseEU(g('xl-use').value));
   }else{
     const P=clamp0(parseEU(g('xl-precio').value));
-    ud=g('xl-modo').value==='vida'?P/Math.max(1,clamp0(parseEU(g('xl-vida').value))):(P/24)/100;
+    const xn=c=>{const e=g(c);return e?clamp0(parseEU(e.value)):0;};          // V40.41: meses y usos al mes de la línea (24 × 100 si no hay)
+    ud=g('xl-modo').value==='vida'?P/Math.max(1,xn('xl-vida')):P/Math.max(1,g('xl-meses')?xn('xl-meses'):24)/Math.max(1,g('xl-cap')?xn('xl-cap'):100);
     used=ud*clamp0(parseEU(g('xl-uses').value));
   }
   g('xl-ud').value=fmtPlain(ud);g('xl-used').value=fmtPlain(used);
@@ -3972,7 +3973,9 @@ function xlAddRow(host,data){
     const vida=d.modo==='vida';
     grid='<div class="xl-grid">'
       +'<div><label>Precio (<span class="cur-lbl">'+xlEsc(_curSym)+'</span>)</label><input class="xl-precio" type="text" inputmode="decimal" data-money="1" placeholder="0,00" value="'+xlEsc(d.precio)+'"></div>'
-      +'<div><label>Cálculo</label><select class="xl-modo"><option value="tiempo"'+(vida?'':' selected')+'>Por tiempo (2 años)</option><option value="vida"'+(vida?' selected':'')+'>Por vida útil (usos)</option></select></div>'
+      +'<div><label>Cálculo</label><select class="xl-modo"><option value="tiempo"'+(vida?'':' selected')+'>Por tiempo</option><option value="vida"'+(vida?' selected':'')+'>Por vida útil (usos)</option></select></div>'
+      +'<div class="xl-t-wrap"'+(vida?' style="display:none"':'')+'><label>Meses</label><input class="xl-meses" type="number" min="1" step="1" value="'+xlEsc(d.meses==null||d.meses===''?'24':d.meses)+'"></div>'
+      +'<div class="xl-t-wrap"'+(vida?' style="display:none"':'')+'><label>Usos al mes</label><input class="xl-cap" type="number" min="1" step="1" value="'+xlEsc(d.cap==null||d.cap===''?'100':d.cap)+'"></div>'
       +'<div class="xl-vida-wrap"'+(vida?'':' style="display:none"')+'><label>Vida útil (usos)</label><input class="xl-vida" type="number" min="1" step="1" value="'+xlEsc(d.vida==null?'1000':d.vida)+'"></div>'
       +'<div><label>Costo Ud. (<span class="cur-lbl">'+xlEsc(_curSym)+'</span>)</label><input class="ud xl-ud" readonly type="text"></div>'
       +'<div><label>Cant. de usos</label><input class="xl-uses" type="number" min="0" step="1" value="'+xlEsc(d.uses==null?'1':d.uses)+'"></div>'
@@ -3984,7 +3987,8 @@ function xlAddRow(host,data){
   host.querySelector('.xl-list').appendChild(row);
   const modo=row.querySelector('.xl-modo');
   function changed(){
-    if(modo){const w=row.querySelector('.xl-vida-wrap');if(w)w.style.display=modo.value==='vida'?'':'none';}
+    if(modo){const w=row.querySelector('.xl-vida-wrap');if(w)w.style.display=modo.value==='vida'?'':'none';
+      row.querySelectorAll('.xl-t-wrap').forEach(x=>{x.style.display=modo.value==='vida'?'none':'';});}
     const fn=XL_RECALC[p];
     if(fn){try{fn();}catch(e){}}else xlRowCalc(row);
   }
@@ -4004,7 +4008,7 @@ function xlSerialize(only){
       const v=c=>{const e=r.querySelector('.'+c);return e?e.value:'';};
       const o={on:r.querySelector('.xl-on').checked,desc:v('xl-desc'),precio:v('xl-precio')};
       if(k==='dir'){o.cant=v('xl-cant');o.use=v('xl-use');}
-      else{o.modo=v('xl-modo');o.vida=v('xl-vida');o.uses=v('xl-uses');}
+      else{o.modo=v('xl-modo');o.vida=v('xl-vida');o.uses=v('xl-uses');o.meses=v('xl-meses');o.cap=v('xl-cap');}
       return Object.assign(o,cmLinkOf(r));
     });
     if(rows.length){(out[p]=out[p]||{})[k]=rows;}
@@ -4024,7 +4028,7 @@ function collectXl(p,k){
     }else if(v('xl-modo')==='vida'){
       out.push({desc,precio:v('xl-precio')||'',modo:'vida',vida:v('xl-vida')||'1',usos:v('xl-uses')||'1'});
     }else{
-      out.push({desc,precio:v('xl-precio')||'',modo:'capacidad',meses:'24',capacidad:'100',usos:v('xl-uses')||'1'});
+      out.push({desc,precio:v('xl-precio')||'',modo:'capacidad',meses:v('xl-meses')||'24',capacidad:v('xl-cap')||'100',usos:v('xl-uses')||'1'});
     }
   });
   return out;
@@ -5236,10 +5240,11 @@ function cmAplicarEnFila(row,m){
     set('.xl-desc',m.nombre);
     if(tipo==='material'){const qn=cmQtyNow(s);set('.xl-cant',cmNum(qn.cantidad));}
     else{
-      // "Por tiempo" de la Suite = 24 meses × 100 usos; cualquier otro reparto se pasa a vida útil con el mismo costo por uso
-      const tiempo=s.modo==='capacidad'&&s.meses===24&&s.capacidad===100;
+      // V40.41: se carga tal cual se guardó en la lista: meses × usos al mes → "Por tiempo"; vida útil → "Por vida útil"
+      const tiempo=s.modo==='capacidad';
+      if(tiempo){set('.xl-meses',cmNum(s.meses||24));set('.xl-cap',cmNum(s.capacidad||100));}
+      else set('.xl-vida',cmNum(cmVidaDe(s)));
       cmSetSel(qq('.xl-modo'),tiempo?'tiempo':'vida');
-      if(!tiempo)set('.xl-vida',cmNum(cmVidaDe(s)));
     }
     set('.xl-precio',cmField(cmMoney(s.precio,s.moneda)));
     f=qq('.xl-precio');
@@ -5298,7 +5303,7 @@ function cmLeerFila(row){
     it.nombre=g('.xl-desc').trim();it.precio=parseEU(g('.xl-precio'));
     if(tipo==='material'){it.cantidad=parseEU(g('.xl-cant'))||1;Object.assign(it.datos,{medida:'unidad',unidad:''});}
     else if(g('.xl-modo')==='vida')Object.assign(it.datos,{modo:'vida',vida:parseEU(g('.xl-vida'))||1000,meses:0,capacidad:0});
-    else Object.assign(it.datos,{modo:'capacidad',vida:0,meses:24,capacidad:100});
+    else Object.assign(it.datos,{modo:'capacidad',vida:0,meses:parseEU(g('.xl-meses'))||24,capacidad:parseEU(g('.xl-cap'))||100});
   }else if(kind==='fix'){
     const px=row.dataset.cmFix,v=id=>{const e=$(px+'_'+id);return e?e.value:'';};
     it.nombre=cmFixNombre(px);it.precio=parseEU(v('precio'));
@@ -5499,7 +5504,8 @@ function cmInitEditorHooks(){
   if(window.__cmHooks)return;
   window.__cmHooks=true;
   const esNombre=t=>!!(t&&t.matches&&t.matches(CM_NAME_SEL)&&t.closest('[data-cm-tipo]'));
-  // V40.38: la lista ya no se abre al tocar el campo; solo aparece al escribir
+  // V40.41: al tocar un campo que ya tiene texto se abre la lista; si está vacío no (V40.38: cmSugMostrar no muestra nada sin texto)
+  document.addEventListener('focusin',e=>{if(esNombre(e.target))cmSugMostrar(e.target);});
   document.addEventListener('input',e=>{
     if(!esNombre(e.target))return;
     const row=e.target.closest('[data-cm-tipo]');
