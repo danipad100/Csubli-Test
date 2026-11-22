@@ -1054,7 +1054,7 @@ body.dark .xp-tbl th{border-top:0}
 @media(prefers-reduced-motion:reduce){.xp-seg button:active{transform:none}.xp-bar i{transition:none}}
 </style>
 </head>
-<body data-app-version="V40.41">
+<body data-app-version="V40.42">
 <div class="app">
 <header class="app-header">
   <div class="menu-wrapper">
@@ -1889,8 +1889,10 @@ body.dark .xp-tbl th{border-top:0}
 <div style="min-width:160px;flex:1"><label>Precio paquete (<span class="cur-lbl">$</span>)</label><input id="dtf_prenda_precio" type="number" min="0" step="0.01" placeholder="0" data-money="1"></div>
 <div style="min-width:200px;flex:1"><label>Costo Ud. prenda (<span class="cur-lbl">$</span>)</label><input id="dtf_prenda_costo_ud" readonly type="text" value="0,00"></div>
 </div><div class="xl-host" data-xl-p="dtf" data-xl-k="dir"></div>
-<div class="sep"></div>
-<h4 style="margin:0 0 10px">Depreciación de equipos</h4>
+</div>
+<!-- V40.42: Depreciación y Extras de DTF en sus propias tarjetas -->
+<div class="card md-6">
+<h4 style="margin:0 0 10px">Depreciación de equipos <span class="muted">(base 2 años)</span></h4>
 <div class="row" style="gap:8px;align-items:center;margin:4px 0 6px">
 <label class="chk-label" style="display:flex;align-items:center;gap:8px"><input id="dtf_dep_on" type="checkbox"> Plancha térmica</label></div>
 <div class="row" style="gap:14px;flex-wrap:wrap">
@@ -1909,7 +1911,8 @@ body.dark .xp-tbl th{border-top:0}
 <div style="min-width:160px;flex:1"><label>Cant. de usos</label><input id="dtf_dep_pc_uses" type="number" min="0" step="1" value="1"></div>
 <div style="min-width:160px;flex:1"><label>Costo utilizado (<span class="cur-lbl">$</span>)</label><input class="ud" id="dtf_dep_pc_used" readonly type="text" value="0,00"></div>
 </div><div class="xl-host" data-xl-p="dtf" data-xl-k="dep"></div>
-<div class="sep"></div>
+</div>
+<div class="card md-6">
 <h4 style="margin:0 0 10px">Extras</h4>
 <div class="row" style="gap:8px;align-items:center">
 <div style="flex:1;min-width:160px"><label>Envío del proveedor (<span class="cur-lbl">$</span>)</label><input id="dtf_extra_envio" type="number" min="0" step="0.01" placeholder="0" data-money="1"></div>
@@ -3356,7 +3359,7 @@ body.dark .xp-tbl th{border-top:0}
 </div>
 </div></section>
 
-<footer class="footer">Suite creada por @subli_mada — V40.41</footer>
+<footer class="footer">Suite creada por @subli_mada — V40.42</footer>
 </div>
 <!-- V40.33: aviso de actualización disponible -->
 <div class="upd-veil" id="upd_veil" hidden></div>
@@ -3370,7 +3373,7 @@ body.dark .xp-tbl th{border-top:0}
 'use strict';
 const $=id=>document.getElementById(id);
 const $$=(sel,ctx=document)=>Array.from(ctx.querySelectorAll(sel));
-const PWA_VER='v40_41';
+const PWA_VER='v40_42';
 
 /* ═══ HELPERS: number formatting (configurable decimal separator) ═══ */
 const EU_FMT=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -9346,6 +9349,7 @@ function initRedesign(){
     if(cat==='dir'&&/^Costos directos\s*$/i.test(title))return view==='vinil'?'vin_pro_directos':p+'_total_directos';
     if(cat==='dep')return view==='vinil'?'vin_pro_dep':p+'_total_dep';
     if(cat==='ind')return p+'_ind_ud';
+    if(cat==='ext'&&view==='dtf')return'dtf_total_extras';   // V40.42
     return'';
   }
   function bindPill(pill,id){
