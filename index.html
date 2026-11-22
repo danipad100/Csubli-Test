@@ -1054,7 +1054,7 @@ body.dark .xp-tbl th{border-top:0}
 @media(prefers-reduced-motion:reduce){.xp-seg button:active{transform:none}.xp-bar i{transition:none}}
 </style>
 </head>
-<body data-app-version="V40.36">
+<body data-app-version="V40.37">
 <div class="app">
 <header class="app-header">
   <div class="menu-wrapper">
@@ -3362,7 +3362,7 @@ body.dark .xp-tbl th{border-top:0}
 </div>
 </div></section>
 
-<footer class="footer">Suite creada por @subli_mada — V40.36</footer>
+<footer class="footer">Suite creada por @subli_mada — V40.37</footer>
 </div>
 <!-- V40.33: aviso de actualización disponible -->
 <div class="upd-veil" id="upd_veil" hidden></div>
@@ -3376,7 +3376,7 @@ body.dark .xp-tbl th{border-top:0}
 'use strict';
 const $=id=>document.getElementById(id);
 const $$=(sel,ctx=document)=>Array.from(ctx.querySelectorAll(sel));
-const PWA_VER='v40_36';
+const PWA_VER='v40_37';
 
 /* ═══ HELPERS: number formatting (configurable decimal separator) ═══ */
 const EU_FMT=new Intl.NumberFormat('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -3867,7 +3867,7 @@ function calcIndirectos(prefix){
 /* --- Mano de obra --- */
 function calcMO(prefix){
   const on=$(prefix+'_mo_on')?.checked;
-  if(!on){if($(prefix+'_mo_pill'))$(prefix+'_mo_pill').style.display='none';return 0;}
+  if(!on){if($(prefix+'_mo_pill'))$(prefix+'_mo_pill').style.display='none';if($(prefix+'_mo_val'))$(prefix+'_mo_val').textContent=fmtEU(0);return 0;}
   const sueldo=parseEU($(prefix+'_mo_sueldo')?.value);
   const horas=Math.max(1,parseEU($(prefix+'_mo_horas')?.value));
   const setup=clamp0(parseEU($(prefix+'_mo_setup')?.value));
